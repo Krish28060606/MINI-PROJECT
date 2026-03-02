@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Writing Assistant</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>🤖 AI Writing Assistant</h1>
+
+    <textarea id="userText" placeholder="Start writing here..."></textarea>
+
+    <div class="buttons">
+        <button onclick="improveText()">✨ Improve Writing</button>
+        <button onclick="checkPlagiarism()">🔍 Check Plagiarism</button>
+    </div>
+
+    <div class="result-section">
+        <h3>Improved Text</h3>
+        <div id="improveOutput" class="output-box"></div>
+
+        <h4>Word Count: <span id="wordCount">0</span></h4>
+
+        <h3>Plagiarism Score</h3>
+        <div id="plagiarismOutput" class="output-box"></div>
+    </div>
+</div>
+
+<script src="/static/script.js"></script>
+</body>
+</html>
