@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AI.CREATIVE — Ultimate AI Writing</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+--bg:#070b14;
+--primary:#00f5ff;
+--secondary:#8a2eff;
+--accent:#ff00cc;
+}
+
+body{
+margin:0;
+background:var(--bg);
+color:white;
+font-family:'Poppins',sans-serif;
+}
+
+nav{
+position:fixed;
+top:0;
+width:100%;
+padding:20px 8%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:rgba(0,0,0,0.4);
+}
+
+.logo{
+font-weight:800;
+font-size:1.5rem;
+background:linear-gradient(to right,var(--primary),var(--secondary));
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.hero{
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.auth-box{
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(20px);
+padding:40px;
+border-radius:20px;
+width:360px;
+text-align:center;
+}
+
+.auth-box input{
+width:100%;
+padding:12px;
+margin:8px 0;
+border-radius:10px;
+border:none;
+background:#111;
+color:white;
+}
+
+.auth-btn{
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:10px;
+background:linear-gradient(90deg,var(--primary),var(--secondary));
+color:white;
+cursor:pointer;
+}
+
+.switch{
+margin-top:10px;
+cursor:pointer;
+color:#aaa;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="hero">
+
+<div class="auth-box">
+
+<h2 id="authTitle">Login</h2>
+
+<input id="email" type="email" placeholder="Email">
+<input id="mobile" type="text" placeholder="Mobile Number">
+<input id="password" type="password" placeholder="Password">
+
+<div id="errorMsg"></div>
+
+<button class="auth-btn" onclick="submitAuth()">Continue</button>
+
+<br><br>
+
+<!-- GOOGLE LOGIN -->
+<div id="g_id_onload"
+data-client_id="293196604777-a7jgop08pdsb6pgg3k98190k7q2u747k.apps.googleusercontent.com"
+data-callback="handleCredentialResponse">
+</div>
+
+<div class="g_id_signin"
+data-type="standard"
+data-size="large"
+data-theme="outline"
+data-text="signin_with"
+data-shape="rectangular">
+</div>
+
+<div class="switch" onclick="toggleMode()">
+Switch Login / Signup
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+let mode="login"
+
+function toggleMode(){
+
+mode = mode==="login"?"signup":"login"
+
+document.getElementById("authTitle").innerText =
+mode==="login"?"Login":"Signup"
+
+}
+
+function submitAuth(){
+
+let email=document.getElementById("email").value
+let mobile=document.getElementById("mobile").value
+let password=document.getElementById("password").value
+
+if(mode==="signup"){
+
+fetch("/signup",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+name:"User",
+email:email,
+phone:mobile,
+password:password
+})
+})
+
+.then(res=>res.json())
+.then(data=>{
+alert("Signup successful")
+})
+
+}
+
+else{
+
+fetch("/login",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+email:email,
+mobile:mobile,
+password:password
+})
+})
+
+.then(res=>res.json())
+.then(data=>{
+
+if(data.status==="success"){
+window.location.href="/index"
+}
+
+})
+
+}
+
+}
+
+function handleCredentialResponse(response){
+
+fetch("/google-login",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+token:response.credential
+})
+})
+.then(res=>res.json())
+.then(data=>{
+
+if(data.status==="success"){
+window.location.href="/index"
+}
+
+})
+
+}
+
+</script>
+
+</body>
+</html>
