@@ -1,33 +1,102 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>AI Writing Assistant</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <title>AI Creative Studio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-<div class="container">
-    <h1>🤖 AI Writing Assistant</h1>
+<nav class="navbar">
+    <div class="logo">AI<span>.CREATIVE</span></div>
+    <ul>
+    <li id="featuresBtn">Features</li>
+    <li id="studioBtn">Studio</li>
+    <li id="recentBtn">Recent Topics</li>
+    <li onclick="logoutUser()">Logout</li>
+</ul>
+</nav>
 
-    <textarea id="userText" placeholder="Start writing here..."></textarea>
+<div id="overlay" class="overlay"></div>
 
-    <div class="buttons">
-        <button onclick="improveText()">✨ Improve Writing</button>
-        <button onclick="checkPlagiarism()">🔍 Check Plagiarism</button>
-    </div>
-
-    <div class="result-section">
-        <h3>Improved Text</h3>
-        <div id="improveOutput" class="output-box"></div>
-
-        <h4>Word Count: <span id="wordCount">0</span></h4>
-
-        <h3>Plagiarism Score</h3>
-        <div id="plagiarismOutput" class="output-box"></div>
-    </div>
+<div id="recentPanel" class="recent-panel">
+    <h3>Recent Topics</h3>
+    <ul id="historyList"></ul>
 </div>
 
-<script src="/static/script.js"></script>
-</body>
+<section id="featuresSection" class="features-section hidden-section">
+    <h1>Advanced Features</h1>
+    <div class="feature-grid">
+        <div class="feature-card">
+            <h3>Grammar Refinement</h3>
+            <p>Correct grammar without altering names.</p>
+        </div>
+        <div class="feature-card">
+            <h3>AI Enhancement</h3>
+            <p>Professional rewriting using Groq AI.</p>
+        </div>
+        <div class="feature-card">
+            <h3>Plagiarism Detection</h3>
+            <p>Similarity-based repetition check.</p>
+        </div>
+        <div class="feature-card">
+            <h3>Live Analysis</h3>
+            <p>Grammar, clarity & professionalism scoring.</p>
+        </div>
+    </div>
+</section>
 
+<section id="studioSection">
+    <div class="studio-container">
+
+        <div class="input-panel">
+            <h2>Human Input</h2>
+            <textarea id="inputText" 
+                placeholder="Type your story spark here..."
+                oninput="updateCounts()"></textarea>
+
+            <div class="counts">
+                Words: <span id="wordCount">0</span> |
+                Characters: <span id="charCount">0</span>
+            </div>
+
+            <button onclick="improveText()">✨ Generate AI Suggestion</button>
+
+            <!-- SPINNER ADDED -->
+            <div id="spinner" class="spinner"></div>
+
+            <button onclick="checkPlagiarism()">🔍 Check Plagiarism</button>
+
+            <div class="plagiarism">
+                Plagiarism Risk: <span id="plagiarismResult">0%</span>
+            </div>
+        </div>
+
+        <div class="output-panel">
+            <h2>AI Co-Author</h2>
+
+            <div class="result-box corrected-box">
+                <h4>Corrected Version</h4>
+                <p id="corrected"></p>
+            </div>
+
+            <div class="result-box enhanced-box">
+                <h4>AI Enhanced Version</h4>
+                <p id="enhanced"></p>
+            </div>
+
+            <div class="analysis-box">
+                <h4>Writing Analysis</h4>
+                <p>Grammar: <span id="grammarScore">0</span>/100</p>
+                <p>Clarity: <span id="clarityScore">0</span>/100</p>
+                <p>Professionalism: <span id="professionalScore">0</span>/100</p>
+                <p>Overall: <span id="overallScore">0</span>/100</p>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
 </html>
