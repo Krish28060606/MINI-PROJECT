@@ -6,11 +6,16 @@ from google.oauth2 import id_token
 from google.auth.transport import requests as grequests
 import jwt
 import os
-
 import psycopg2
 
 def create_tables():
-    conn = psycopg2.connect(os.environ.get("DATABASE_URL"))
+    db_url = os.environ.get("DATABASE_URL")
+
+    if not db_url:
+        print("DATABASE_URL not found. Skipping table creation locally.")
+        return
+
+    conn = psycopg2.connect(db_url, sslmode="require")
     cur = conn.cursor()
 
     cur.execute("""
