@@ -1,771 +1,326 @@
-/* Ultra High-End CSS Variables & Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100..900;1,100..900&display=swap');
-
-:root {
---bg-primary: linear-gradient(135deg, #6a4ac7 0%, #8b5bcf 50%, #667eea 100%);
-  --bg-secondary: linear-gradient(135deg, #5a67d8 0%, #718096 50%, #6a4190 100%);
-  --glass-bg: rgba(255, 255, 255, 0.08);
-  --glass-border: rgba(255, 255, 255, 0.15);
-  --glass-glow: rgba(255, 255, 255, 0.25);
-  --text-primary: #ffffff;
-  --text-muted: rgba(255, 255, 255, 0.8);
-  --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.2);
-  --shadow-hover: 0 20px 50px rgba(0, 0, 0, 0.35);
-  --neon-glow: 0 0 30px rgba(102, 126, 234, 0.6);
-  --blur-light: blur(10px);
-  --blur-heavy: blur(20px);
-}
+function showTopic(){
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+document.getElementById("topicSection").style.display="block"
+document.getElementById("improveSection").style.display="none"
 
-html {
-  scroll-behavior: smooth;
 }
 
-body {
-  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: 
-    radial-gradient(1200px 800px at 10% 20%, rgba(106,74,199,0.2), transparent 50%),
-    radial-gradient(900px 600px at 90% 80%, rgba(139,91,207,0.18), transparent 50%),
-    radial-gradient(600px 400px at 50% 50%, rgba(102,126,234,0.1), transparent 60%),
-    var(--bg-primary);
-  min-height: 100vh;
-  margin: 0;
-  padding-bottom: 50px;
-  overflow-x: hidden;
-  position: relative;
-}
+function showImprove(){
 
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background-image: 
-    radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.3), transparent),
-    radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.2), transparent),
-    radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.4), transparent),
-    radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.25), transparent);
-  background-repeat: repeat;
-  background-size: 200px 200px;
-  animation: particles 20s linear infinite;
-  opacity: 0.6;
-  mix-blend-mode: screen;
-  z-index: 1;
-}
+document.getElementById("improveSection").style.display="block"
+document.getElementById("topicSection").style.display="none"
 
-@keyframes particles {
-  from { transform: translateY(0) rotate(0deg); }
-  to { transform: translateY(-200px) rotate(360deg); }
 }
 
-/* Animated Background Elements */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background-image: 
-    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-  background-size: 50px 50px;
-  mix-blend-mode: overlay;
-  opacity: 0.3;
-  animation: gridFloat 20s ease-in-out infinite;
-}
 
-@keyframes gridFloat {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(10px, -10px) scale(1.02); }
+function logoutUser(){
+window.location.href="/logout"
 }
 
-.bg-orbs {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
 
-.orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: var(--blur-heavy);
-  opacity: 0.4;
-  animation: orbFloat 25s ease-in-out infinite;
-}
 
-.orb:nth-child(1) {
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, rgba(102,126,234,0.3), transparent 70%);
-  top: -150px;
-  left: -100px;
-  animation-delay: 0s;
-}
+/* ---------------- LIVE WORD COUNT ---------------- */
 
-.orb:nth-child(2) {
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, rgba(118,75,162,0.25), transparent 70%);
-  bottom: -100px;
-  right: -150px;
-  animation-delay: -10s;
-}
+function updateWordCount(){
 
-@keyframes orbFloat {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(20px, -20px) scale(1.1); }
-  66% { transform: translate(-15px, 15px) scale(0.95); }
-}
+let text = document.getElementById("userText").value
 
-/* Premium Navbar */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 18px 50px;
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: var(--blur-light);
-  border-bottom: 1px solid var(--glass-border);
-  box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255,255,255,0.2);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  will-change: transform;
-  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
+let words = text.trim().split(/\s+/).filter(Boolean).length
+let chars = text.length
 
-.navbar:hover {
-  box-shadow: var(--shadow-hover), var(--neon-glow);
-  transform: translateY(-2px);
-}
+document.getElementById("wordCount").innerText = words
+document.getElementById("charCount").innerText = chars
 
-.logo {
-  font-size: 28px;
-  font-weight: 800;
-  font-variation-settings: 'wght' 900;
-  background: linear-gradient(135deg, #ffffff 0%, var(--glass-glow) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  letter-spacing: -0.5px;
-  text-shadow: none;
-  position: relative;
 }
 
-.logo::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--primary), var(--secondary));
-  transition: width 0.4s ease;
-}
 
-.navbar:hover .logo::after {
-  width: 100%;
-}
 
-.navbar ul{
-list-style: none;
-display: flex;
-gap: 25px;
-}
+/* ---------------- GENERATE TEXT ---------------- */
 
-.navbar ul li{
-cursor: pointer;
-color: rgba(255, 255, 255, 0.9);
-font-weight: 500;
-transition: all 0.3s ease;
-padding: 8px 16px;
-border-radius: 25px;
-}
+async function generateText(){
 
-.navbar ul li:hover {
-  color: var(--text-primary);
-  background: var(--glass-glow);
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: var(--neon-glow), var(--shadow-hover);
-}
+let text = document.getElementById("userText").value
 
-/* Premium Hero Container */
-.container {
-  text-align: center;
-  margin-top: 80px;
-  padding: 0 20px;
-  position: relative;
-  z-index: 2;
-  animation: containerSlideIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s both;
-}
+document.getElementById("loaderText").style.display="block"
+document.getElementById("textOutput").innerText=""
 
-@keyframes containerSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+let res = await fetch("/generate",{
+method:"POST",
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({text:text})
+})
 
-.container h1 {
-  color: var(--text-primary);
-  font-size: clamp(32px, 5vw, 48px);
-  font-weight: 800;
-  font-variation-settings: 'wght' 850;
-  margin-bottom: 50px;
-  background: linear-gradient(135deg, var(--text-primary) 0%, var(--glass-glow) 50%, rgba(255,255,255,0.8) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  letter-spacing: -1px;
-  line-height: 1.1;
-  position: relative;
-}
+let data = await res.json()
 
-.container h1::before {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  width: 0;
-  height: 4px;
-  background: linear-gradient(90deg, transparent, var(--neon-glow), transparent);
-  transform: translateX(-50%);
-  transition: width 0.6s ease;
-  border-radius: 2px;
-}
+document.getElementById("loaderText").style.display="none"
 
-.container:hover h1::before {
-  width: 120px;
-}
+document.getElementById("textOutput").innerText = data.result
 
-/* Ultra-Premium Choice Boxes */
-.choice-box {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 40px;
-  margin-top: 50px;
-  perspective: 1200px;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 0 20px;
-}
+checkProfessionalAuto()
+checkPlagiarism()
 
-.choice:nth-child(1) {
-  transform: translateZ(0) rotateY(-5deg);
-  transition-delay: 0.1s;
 }
 
-.choice:nth-child(2) {
-  transform: translateZ(0) rotateY(5deg);
-  transition-delay: 0.2s;
-}
 
-.choice {
-  padding: 22px 50px;
-  margin: 10px;
-  border: none;
-  background: linear-gradient(145deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05)), var(--bg-secondary);
-  backdrop-filter: var(--blur-light);
-  border: 1px solid var(--glass-border);
-  color: var(--text-primary);
-  font-size: clamp(16px, 2.2vw, 20px);
-  font-weight: 700;
-  font-variation-settings: 'wght' 700;
-  cursor: pointer;
-  border-radius: 60px;
-  box-shadow: var(--shadow-soft);
-  transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
-  font-family: 'Poppins', sans-serif;
-  position: relative;
-  overflow: hidden;
-  transform-style: preserve-3d;
-  will-change: transform, box-shadow;
-}
 
-.choice::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--neon-glow);
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  z-index: -1;
-}
+/* ---------------- CORRECT TEXT ---------------- */
 
-.choice:hover {
-  transform: translateY(-8px) rotateX(10deg) scale(1.05);
-  box-shadow: var(--shadow-hover), var(--neon-glow);
-  background: linear-gradient(145deg, rgba(255,255,255,0.2), rgba(255,255,255,0.08)), var(--bg-primary);
-}
+async function correctText(){
 
-.choice:hover::before {
-  opacity: 1;
-}
+let text = document.getElementById("userText").value
 
-.choice:active {
-  transform: translateY(-4px) rotateX(5deg) scale(0.99);
-}
+document.getElementById("loaderText").style.display="block"
+document.getElementById("textOutput").innerText=""
 
-/* Enhanced Sections */
-.section {
-  display: none;
-  margin-top: 60px;
-  animation: sectionReveal 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  transform-origin: top center;
-}
+let res = await fetch("/correct",{
+method:"POST",
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({text:text})
+})
 
-@keyframes sectionReveal {
-  from {
-    opacity: 0;
-    transform: translateY(30px) scaleY(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scaleY(1);
-  }
-}
+let data = await res.json()
 
-.section h2 {
-  color: var(--text-primary);
-  font-size: clamp(26px, 4vw, 34px);
-  font-weight: 800;
-  margin-bottom: 40px;
-  background: linear-gradient(135deg, var(--text-primary) 0%, var(--glass-glow) 70%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  letter-spacing: -0.5px;
-}
+document.getElementById("loaderText").style.display="none"
 
-/* Input Fields */
-/* Premium Input Fields */
-input, select {
-  padding: 18px 24px 18px 48px;
-  border: 2px solid var(--glass-border);
-  border-radius: 50px;
-  font-size: clamp(15px, 2vw, 17px);
-  background: linear-gradient(145deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
-  backdrop-filter: var(--blur-light);
-  color: var(--text-primary);
-  transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  font-family: 'Poppins', sans-serif;
-  font-weight: 500;
-  width: clamp(280px, 40vw, 400px);
-  margin: 8px 4px;
-  position: relative;
-  box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
-}
+document.getElementById("textOutput").innerText = data.result
 
-input::placeholder {
-  color: var(--text-muted);
-}
+checkProfessionalAuto()
 
-input:focus, select:focus {
-  outline: none;
-  border-color: var(--glass-glow);
-  background: linear-gradient(145deg, rgba(255,255,255,0.22), rgba(255,255,255,0.08));
-  box-shadow: 
-    0 0 0 4px rgba(102,126,234,0.25),
-    var(--neon-glow),
-    inset 0 1px 0 rgba(255,255,255,0.3);
-  transform: translateY(-2px);
 }
 
-input::placeholder{
-color: rgba(255, 255, 255, 0.6);
-}
 
-input:focus, select:focus{
-outline: none;
-border-color: rgba(255, 255, 255, 0.8);
-background: rgba(255, 255, 255, 0.25);
-box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-}
 
-select{
-cursor: pointer;
-appearance: none;
-background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-background-repeat: no-repeat;
-background-position: right 15px center;
-background-size: 12px;
-padding-right: 40px;
-}
+/* ---------------- ENHANCE TEXT ---------------- */
 
-select option{
-background: #667eea;
-color: white;
-}
+async function enhanceText(){
 
-/* Textarea */
-/* Enhanced Textarea */
-textarea {
-  width: 100%;
-  max-width: 650px;
-  height: 160px;
-  padding: 24px;
-  border: 2px solid var(--glass-border);
-  border-radius: 24px;
-  font-size: clamp(15px, 2vw, 17px);
-  background: linear-gradient(145deg, rgba(255,255,255,0.12), rgba(255,255,255,0.02));
-  backdrop-filter: var(--blur-light);
-  color: var(--text-primary);
-  transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  font-family: 'Poppins', sans-serif;
-  font-weight: 500;
-  resize: vertical;
-  box-shadow: inset 0 2px 12px rgba(0,0,0,0.15);
-  line-height: 1.6;
-}
+let text = document.getElementById("userText").value
 
-textarea:focus {
-  border-color: var(--glass-glow);
-  background: linear-gradient(145deg, rgba(255,255,255,0.22), rgba(255,255,255,0.06));
-  box-shadow: 
-    0 0 0 4px rgba(102,126,234,0.2),
-    var(--neon-glow),
-    inset 0 1px 0 rgba(255,255,255,0.4);
-  transform: translateY(-2px);
-}
+document.getElementById("loaderText").style.display="block"
+document.getElementById("textOutput").innerText=""
 
-textarea::placeholder{
-color: rgba(255, 255, 255, 0.6);
-}
+let res = await fetch("/enhance",{
+method:"POST",
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({text:text})
+})
 
-textarea:focus{
-outline: none;
-border-color: rgba(255, 255, 255, 0.8);
-background: rgba(255, 255, 255, 0.25);
-box-shadow: 0 0 25px rgba(255, 255, 255, 0.2);
-}
+let data = await res.json()
 
-/* Buttons */
-/* Premium Buttons */
-button {
-  padding: 16px 42px;
-  margin: 10px;
-  cursor: pointer;
-  border: none;
-  background: linear-gradient(145deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05)), var(--bg-secondary);
-  backdrop-filter: var(--blur-light);
-  border: 1px solid var(--glass-border);
-  color: var(--text-primary);
-  border-radius: 50px;
-  font-size: clamp(15px, 2vw, 17px);
-  font-weight: 700;
-  font-variation-settings: 'wght' 700;
-  transition: all 0.35s cubic-bezier(0.23, 1, 0.320, 1);
-  font-family: 'Poppins', sans-serif;
-  box-shadow: var(--shadow-soft);
-  position: relative;
-  overflow: hidden;
-  min-height: 56px;
-}
+document.getElementById("loaderText").style.display="none"
 
-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-  transition: left 0.6s ease;
-}
+document.getElementById("textOutput").innerText = data.result
 
-button:hover::before {
-  left: 100%;
-}
+checkProfessionalAuto()
+checkPlagiarism()
 
-button::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: 
-    radial-gradient(circle at 20% 50%, rgba(255,255,255,0.15) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(255,255,255,0.15) 0%, transparent 50%),
-    radial-gradient(circle at 40% 80%, rgba(255,255,255,0.1) 0%, transparent 30%);
-  opacity: 0;
-  transition: opacity 0.4s ease;
 }
 
-button:hover::after {
-  opacity: 1;
-}
 
-button:active::before {
-  width: 300px;
-  height: 300px;
-}
 
-button:hover {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: var(--shadow-hover), var(--neon-glow);
-  background: linear-gradient(145deg, rgba(255,255,255,0.25), rgba(255,255,255,0.1)), var(--bg-primary);
-}
+/* ---------------- TOPIC GENERATOR ---------------- */
 
-button:active {
-  transform: translateY(-2px) scale(0.98);
-}
+async function generateTopic(){
 
-/* Button Group */
-.btn-group {
-  margin: 30px 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 16px 20px;
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 0 20px;
-}
+let topic = document.getElementById("topicInput").value
+let length = document.getElementById("lengthSelect").value
 
-.btn-group button:nth-child(1) { order: 1; grid-column: 1; }
-.btn-group button:nth-child(2) { order: 3; grid-column: 2; }
-.btn-group button:nth-child(3) { order: 2; grid-column: 3; }
-.btn-group button:nth-child(4) { order: 5; grid-column: 1 / 4; }
-.btn-group button:nth-child(5) { order: 4; grid-column: 1 / 2; }
-.btn-group button:nth-child(6) { order: 6; grid-column: 2 / 4; }
-
-/* Output */
-/* Premium Output & Cards */
-.output, .analysis-card {
-  margin-top: 35px;
-  width: 100%;
-  max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
-  background: linear-gradient(145deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03));
-  backdrop-filter: var(--blur-light);
-  padding: 35px;
-  border-radius: 24px;
-  box-shadow: 
-    var(--shadow-soft),
-    inset 0 1px 0 rgba(255,255,255,0.2);
-  border: 1px solid var(--glass-border);
-  min-height: 90px;
-  transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
-  position: relative;
-  overflow: hidden;
-}
+document.getElementById("loaderTopic").style.display="block"
+document.getElementById("topicOutput").innerText=""
 
-.output::before, .analysis-card::before {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  background: linear-gradient(135deg, var(--neon-glow), rgba(118,75,162,0.4));
-  border-radius: 24px;
-  opacity: 0;
-  z-index: -1;
-  transition: opacity 0.4s ease;
-}
+let res = await fetch("/topic",{
+method:"POST",
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({topic:topic,length:length})
+})
 
-.output:hover, .analysis-card:hover {
-  transform: translateY(-4px) scale(1.01);
-  box-shadow: var(--shadow-hover), 0 0 40px rgba(102,126,234,0.3);
-}
+let data = await res.json()
 
-.output:hover::before, .analysis-card:hover::before {
-  opacity: 1;
-}
+document.getElementById("loaderTopic").style.display="none"
 
-.output:hover{
-box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-}
+document.getElementById("topicOutput").innerText = data.result
 
-.output p{
-color: white;
-font-size: 17px;
-line-height: 1.7;
-white-space: pre-wrap;
-word-wrap: break-word;
 }
 
-/* Loader */
-/* Premium Multi-Ring Loader */
-.loader {
-  width: 60px;
-  height: 60px;
-  border: 4px solid rgba(255,255,255,0.15);
-  border-top: 4px solid var(--glass-glow);
-  border-radius: 50%;
-  animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  margin: 40px auto;
-  display: none;
-  position: relative;
-  box-shadow: var(--neon-glow);
-}
 
-.loader::before {
-  content: '';
-  position: absolute;
-  inset: -8px;
-  border: 2px solid rgba(102,126,234,0.3);
-  border-top-color: rgba(118,75,162,0.5);
-  border-radius: 50%;
-  animation: spin 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite reverse;
-}
 
-.loader::after {
-  content: '';
-  position: absolute;
-  inset: 6px;
-  border: 2px solid rgba(255,255,255,0.1);
-  border-top-color: rgba(255,255,255,0.6);
-  border-radius: 50%;
-  animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
+/* ---------------- GOOGLE LOGIN HANDLER ---------------- */
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+function handleCredentialResponse(response){
+
+fetch("/google-login",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+token:response.credential
+})
+})
+.then(res=>res.json())
+.then(data=>{
+
+if(data.status==="success"){
+
+window.location.href="/index"
 
-@keyframes spin{
-0%{transform:rotate(0deg);}
-100%{transform:rotate(360deg);}
+}else{
+
+alert("Google login failed")
+
 }
+
+})
+.catch(error=>{
+console.error("Google login error:",error)
+})
 
-/* Responsive */
-/* Ultra-Responsive Design */
-@media (max-width: 768px) {
-  .navbar {
-    padding: 16px 24px;
-  }
-
-  .container {
-    margin-top: 60px;
-    padding: 0 16px;
-  }
-
-  .container h1 {
-    font-size: clamp(26px, 8vw, 36px);
-    margin-bottom: 40px;
-  }
-
-  .choice-box {
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-  }
-
-  .choice {
-    width: 100%;
-    max-width: 320px;
-  }
-
-  input, select, textarea {
-    width: 100% !important;
-    max-width: 100%;
-    padding-left: 20px;
-  }
-
-  .btn-group {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .btn-group button {
-    width: 100%;
-    max-width: 280px;
-  }
-
-  .output, .analysis-panel {
-    margin-left: 16px;
-    margin-right: 16px;
-    padding: 24px;
-  }
-
-  .analysis-panel {
-    flex-direction: column;
-    gap: 20px;
-  }
 }
+
+
+
+/* ---------------- WORD COUNT BUTTON ---------------- */
+
+async function wordCount(){
 
-@media (max-width: 480px) {
-  .navbar {
-    padding: 14px 16px;
-  }
-
-  .logo {
-    font-size: 24px;
-  }
-
-  .choice, button {
-    padding: 18px 32px;
-  }
+let text = document.getElementById("userText").value
+
+let res = await fetch("/wordcount",{
+method:"POST",
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({text:text})
+})
+
+let data = await res.json()
+
+document.getElementById("textOutput").innerText =
+"Words: " + data.words + " | Characters: " + data.characters
+
 }
+
+
+
+/* ---------------- PROFESSIONALISM BUTTON ---------------- */
+
+async function checkProfessional(){
+
+let text = document.getElementById("userText").value
+
+document.getElementById("loaderText").style.display="block"
+
+let res = await fetch("/professional",{
+method:"POST",
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({text:text})
+})
+
+let data = await res.json()
+
+document.getElementById("loaderText").style.display="none"
+
+document.getElementById("textOutput").innerText = data.result
 
-/* Landscape mobile */
-@media (max-height: 500px) and (orientation: landscape) {
-  .container {
-    margin-top: 40px;
-  }
-  
-  textarea {
-    height: 120px;
-  }
 }
 
-/* Premium Analysis Panel */
-.analysis-panel {
-  display: flex;
-  gap: 24px;
-  margin-top: 28px;
-  flex-wrap: wrap;
+
+
+/* ---------------- AUTO PROFESSIONAL SCORE ---------------- */
+
+async function checkProfessionalAuto(){
+
+let text = document.getElementById("textOutput").innerText
+
+if(text.length < 20){
+return
 }
+
+let res = await fetch("/professional",{
+method:"POST",
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({text:text})
+})
+
+let data = await res.json()
 
-.analysis-card {
-  flex: 1;
-  min-width: 280px;
-  background: linear-gradient(145deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
-  backdrop-filter: var(--blur-light);
-  border-radius: 20px;
-  padding: 28px;
-  box-shadow: var(--shadow-soft);
-  border: 1px solid var(--glass-border);
-  transition: all 0.35s cubic-bezier(0.23, 1, 0.320, 1);
+let score = data.result.match(/\d+/)
+
+if(score){
+document.getElementById("professionalScore").innerText = score[0] + "/10"
+}else{
+document.getElementById("professionalScore").innerText = "Analyzing"
 }
 
-.analysis-card:hover {
-  transform: translateY(-6px);
-  box-shadow: var(--shadow-hover), 0 0 25px rgba(102,126,234,0.25);
 }
+
+
 
-.analysis-card h3{
-margin-bottom:10px;
-font-size:18px;
-color:#333;
+/* ---------------- PLAGIARISM CHECK ---------------- */
+
+async function checkPlagiarism(){
+
+let text = document.getElementById("userText").value
+
+if(text.trim()===""){
+alert("Please enter text first")
+return
 }
+
+document.getElementById("loaderText").style.display="block"
 
-.analysis-card p{
-font-size:15px;
-margin:6px 0;
-color:#555;
-}.feedback-box{
-margin-top:20px;
+let res = await fetch("/plagiarism",{
+method:"POST",
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({text:text})
+})
+
+let data = await res.json()
+
+document.getElementById("loaderText").style.display="none"
+
+document.getElementById("plagiarismResult").innerText = data.result
+
 }
+/* ---------------- REGENERATE WITH FEEDBACK ---------------- */
+
+async function regenerateText(){
 
-.feedback-box textarea{
-width:100%;
-height:80px;
-padding:10px;
-margin-top:10px;
+let original = document.getElementById("textOutput").innerText
+let feedback = document.getElementById("userFeedback").value
+
+if(original.trim()===""){
+alert("Generate text first")
+return
 }
+
+let res = await fetch("/regenerate",{
+method:"POST",
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+original:original,
+feedback:feedback
+})
+})
+
+let data = await res.json()
+
+document.getElementById("textOutput").innerText = data.result
+
+}async function regenerateTopic(){
+
+let original = document.getElementById("topicOutput").innerText
+let feedback = document.getElementById("topicFeedback").value
+
+let res = await fetch("/regenerate",{
+method:"POST",
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+original: original,
+feedback: feedback
+})
+})
+
+let data = await res.json()
+
+document.getElementById("topicOutput").innerText = data.result
 
-.feedback-box button{
-margin-top:10px;
 }
