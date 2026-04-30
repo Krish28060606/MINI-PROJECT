@@ -3,6 +3,7 @@
 
 <head>
 <title>AI Writing Assistant</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
@@ -10,8 +11,25 @@
 
 <nav class="navbar">
 <div class="logo">AI Writer</div>
-<ul>
-<li onclick="logoutUser()">Logout</li>
+
+<ul class="nav-actions">
+
+<li>
+<button id="themeToggle" class="nav-action-btn" onclick="toggleTheme()">
+☀️ Light Mode
+</button>
+</li>
+
+<li>
+<button class="nav-action-btn" onclick="downloadCurrentResult()">
+⬇ Download Result
+</button>
+</li>
+
+<li onclick="logoutUser()" class="logout-link">
+Logout
+</li>
+
 </ul>
 </nav>
 
@@ -52,7 +70,12 @@ Improve My Text
 
 <div class="output">
 <p id="topicOutput"></p>
+
+<button class="download-btn" onclick="downloadText('topicOutput','ai-topic-description.txt')">
+⬇ Download Description
+</button>
 </div>
+
 
 <!-- ===== FEEDBACK SECTION ===== -->
 
@@ -60,8 +83,7 @@ Improve My Text
 
 <h3>Modify Generated Description</h3>
 
-<textarea id="topicFeedback"
-placeholder="Write what changes you want..."></textarea>
+<textarea id="topicFeedback" placeholder="Write what changes you want..."></textarea>
 
 <button onclick="regenerateTopic()">
 Regenerate With Feedback
@@ -133,7 +155,12 @@ oninput="updateWordCount()"
 
 <div class="output">
 <h3>AI Result</h3>
+
 <p id="textOutput"></p>
+
+<button class="download-btn" onclick="downloadText('textOutput','ai-writing-result.txt')">
+⬇ Download Result
+</button>
 </div>
 
 </div>
