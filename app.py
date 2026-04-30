@@ -53,8 +53,7 @@ app.secret_key = os.environ.get("SECRET_KEY", "fallback-secret")
 # GROQ API
 # ------------------------
 
-GROQ_API_KEY = os.environ.get( "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")
-
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 API_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 headers = {
