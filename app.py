@@ -103,8 +103,25 @@ def index():
     if "user_id" not in session:
         return redirect(url_for("login_page"))
 
-    return render_template("index.html")
+    user_name = None
 
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+
+        cur.execute("SELECT name FROM users WHERE id=%s", (session["user_id"],))
+        user = cur.fetchone()
+
+        if user:
+            user_name = user[0]
+
+        cur.close()
+        conn.close()
+
+    except Exception as e:
+        print("User name fetch error:", e)
+
+    return render_template("index.html", user_name=user_name)
 
 # ------------------------
 # SIGNUP API
