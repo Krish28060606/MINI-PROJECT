@@ -1,0 +1,7 @@
+Flask
+requests
+bcrypt
+psycopg2-binary
+PyJWT
+google-auth
+gunicorn
