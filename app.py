@@ -1,18 +1,21 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session
 import requests
-import re
 import bcrypt
-import base64
-import json
 from db import get_connection
+from google.oauth2 import id_token
+from google.auth.transport import requests as grequests
+import jwt
+import os
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY", "fallback-secret")
+
 
 # ------------------------
 # GROQ API
 # ------------------------
 
-GROQ_API_KEY = "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"
+GROQ_API_KEY = os.environ.get( "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")
 
 API_URL = "https://api.groq.com/openai/v1/chat/completions"
 
@@ -21,58 +24,31 @@ headers = {
     "Content-Type": "application/json"
 }
 
-# ------------------------
-# Protect Proper Names
-# ------------------------
-
-def protect_names(text):
-
-    names = re.findall(r'\b[A-Z][a-z]+\s[A-Z][a-z]+\b', text)
-
-    protected = {}
-
-    for i, name in enumerate(names):
-        placeholder = f"NAME{i}"
-        protected[placeholder] = name
-        text = text.replace(name, placeholder)
-
-    return text, protected
-
-
-def restore_names(text, protected):
-
-    for placeholder, name in protected.items():
-        text = text.replace(placeholder, name)
-
-    return text
-
-
-# ------------------------
-# Call AI
-# ------------------------
 
 def call_ai(prompt):
 
     payload = {
-        "model": "openai/gpt-oss-120b",
+        "model": "llama-3.3-70b-versatile",
         "messages": [
             {"role": "user", "content": prompt}
-        ],
-        "temperature": 0.5
+        ]
     }
 
-    response = requests.post(API_URL, headers=headers, json=payload)
+    try:
+        response = requests.post(API_URL, headers=headers, json=payload)
+        result = response.json()
 
-    if response.status_code != 200:
-        return "AI Error"
+        if "choices" not in result:
+            return "AI service error"
 
-    result = response.json()
+        return result["choices"][0]["message"]["content"]
 
-    return result["choices"][0]["message"]["content"]
+    except Exception as e:
+        return "AI request failed"
 
 
 # ------------------------
-# ROUTES
+# LOGIN PAGE
 # ------------------------
 
 @app.route("/")
@@ -80,13 +56,21 @@ def login_page():
     return render_template("login.html")
 
 
+# ------------------------
+# INDEX PAGE
+# ------------------------
+
 @app.route("/index")
 def index():
+
+    if "user_id" not in session:
+        return redirect(url_for("login_page"))
+
     return render_template("index.html")
 
 
 # ------------------------
-# SIGNUP
+# SIGNUP API
 # ------------------------
 
 @app.route("/signup", methods=["POST"])
@@ -99,10 +83,18 @@ def signup():
     phone = data.get("phone")
     password = data.get("password")
 
-    hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
-
     conn = get_connection()
     cur = conn.cursor()
+
+    cur.execute("SELECT id FROM users WHERE email=%s", (email,))
+    existing = cur.fetchone()
+
+    if existing:
+        cur.close()
+        conn.close()
+        return jsonify({"status": "fail", "message": "User already exists"})
+
+    hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
     cur.execute(
         "INSERT INTO users (name,email,phone,password) VALUES (%s,%s,%s,%s)",
@@ -114,11 +106,11 @@ def signup():
     cur.close()
     conn.close()
 
-    return jsonify({"message": "User created"})
+    return jsonify({"status": "success"})
 
 
 # ------------------------
-# LOGIN
+# LOGIN API
 # ------------------------
 
 @app.route("/login", methods=["POST"])
@@ -144,95 +136,22 @@ def login():
     conn.close()
 
     if not user:
-        return jsonify({"status": "fail"})
+        return jsonify({"status": "fail", "message": "Invalid credentials"})
 
     user_id = user[0]
     stored_password = user[1].encode()
 
     if bcrypt.checkpw(password.encode(), stored_password):
-        return jsonify({
-            "status": "success",
-            "user_id": user_id
-        })
+
+        session["user_id"] = user_id
+        return jsonify({"status": "success"})
+
     else:
-        return jsonify({"status": "fail"})
+        return jsonify({"status": "fail", "message": "Invalid password"})
 
 
-# ------------------------
-# AI IMPROVE
-# ------------------------
-
-@app.route("/improve", methods=["POST"])
-def improve():
-
-    data = request.json
-    text = data.get("text", "")
-    user_id = data.get("user_id", 1)
-
-    protected_text, protected_names = protect_names(text)
-
-    corrected_prompt = f"Correct grammar only.\n\n{protected_text}"
-    enhanced_prompt = f"Rewrite professionally.\n\n{protected_text}"
-
-    corrected = call_ai(corrected_prompt)
-    enhanced = call_ai(enhanced_prompt)
-
-    corrected = restore_names(corrected, protected_names)
-    enhanced = restore_names(enhanced, protected_names)
-
-    # ------------------------
-    # SAVE HISTORY
-    # ------------------------
-
-    conn = get_connection()
-    cur = conn.cursor()
-
-    cur.execute("""
-        INSERT INTO ai_history (user_id,input_text,corrected_text,enhanced_text)
-        VALUES (%s,%s,%s,%s)
-    """,(user_id,text,corrected,enhanced))
-
-    conn.commit()
-
-    cur.close()
-    conn.close()
-
-    return jsonify({
-        "corrected": corrected,
-        "enhanced": enhanced
-    })
 
 
-# ------------------------
-# PLAGIARISM
-# ------------------------
-
-@app.route("/plagiarism", methods=["POST"])
-def plagiarism():
-
-    data = request.json
-    text = data.get("text", "")
-
-    words = text.split()
-
-    unique_words = len(set(words))
-    total_words = len(words)
-
-    if total_words == 0:
-        similarity = 0
-    else:
-        similarity = int((1 - unique_words / total_words) * 100)
-
-    return jsonify({"similarity": similarity})
-
-
-# ------------------------
-# LOGOUT
-# ------------------------
-
-@app.route("/logout")
-def logout():
-    return jsonify({"status": "logged_out"})
 
 
 # ------------------------
@@ -245,33 +164,261 @@ def google_login():
     data = request.json
     token = data.get("token")
 
-    payload = token.split('.')[1]
-    payload += '=' * (-len(payload) % 4)
+    try:
+        # Decode Google JWT token
+        decoded = jwt.decode(token, options={"verify_signature": False})
 
-    decoded = json.loads(base64.b64decode(payload))
+        email = decoded.get("email")
+        name = decoded.get("name", "Google User")
 
-    email = decoded["email"]
-    name = decoded.get("name","Google User")
+        if not email:
+            return jsonify({"status": "fail"})
+
+        conn = get_connection()
+        cur = conn.cursor()
+
+        cur.execute("SELECT id FROM users WHERE email=%s", (email,))
+        user = cur.fetchone()
+
+        if user:
+            user_id = user[0]
+        else:
+            cur.execute(
+                "INSERT INTO users (name,email,phone,password) VALUES (%s,%s,%s,%s)",
+                (name, email, "", "")
+            )
+            conn.commit()
+
+            cur.execute("SELECT id FROM users WHERE email=%s", (email,))
+            user_id = cur.fetchone()[0]
+
+        session["user_id"] = user_id
+
+        cur.close()
+        conn.close()
+
+        return jsonify({"status": "success"})
+
+    except Exception as e:
+        print("Google Login Error:", e)
+        return jsonify({"status": "fail"})
+
+
+# ------------------------
+# GENERATE TEXT
+# ------------------------
+
+@app.route("/generate", methods=["POST"])
+def generate():
+
+    data = request.json
+    text = data.get("text")
+
+    prompt = f"Rewrite this text clearly:\n{text}"
+
+    result = call_ai(prompt)
+
+    # SAVE HISTORY
+    conn = get_connection()
+    cur = conn.cursor()
+
+    cur.execute(
+        """
+        INSERT INTO history (user_id, action, input_text, output_text)
+        VALUES (%s,%s,%s,%s)
+        """,
+        (session["user_id"], "generate", text, result)
+    )
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return jsonify({"result": result})
+
+
+# ------------------------
+# CORRECT TEXT
+# ------------------------
+
+@app.route("/correct", methods=["POST"])
+def correct():
+
+    data = request.json
+    text = data.get("text")
+
+    prompt = f"Correct grammar of this text:\n{text}"
+
+    result = call_ai(prompt)
 
     conn = get_connection()
     cur = conn.cursor()
 
-    cur.execute("SELECT id FROM users WHERE email=%s",(email,))
-    user = cur.fetchone()
+    cur.execute(
+        """
+        INSERT INTO history (user_id, action, input_text, output_text)
+        VALUES (%s,%s,%s,%s)
+        """,
+        (session["user_id"], "correct", text, result)
+    )
 
-    if not user:
-
-        cur.execute(
-            "INSERT INTO users (name,email,phone,password) VALUES (%s,%s,%s,%s)",
-            (name,email,"google_user","google_auth")
-        )
-
-        conn.commit()
-
+    conn.commit()
     cur.close()
     conn.close()
 
-    return jsonify({"status":"success"})
+    return jsonify({"result": result})
+
+
+# ------------------------
+# ENHANCE TEXT
+# ------------------------
+
+@app.route("/enhance", methods=["POST"])
+def enhance():
+
+    data = request.json
+    text = data.get("text")
+
+    prompt = f"Improve and enhance this writing:\n{text}"
+
+    result = call_ai(prompt)
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    cur.execute(
+        """
+        INSERT INTO history (user_id, action, input_text, output_text)
+        VALUES (%s,%s,%s,%s)
+        """,
+        (session["user_id"], "enhance", text, result)
+    )
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return jsonify({"result": result})
+
+# ------------------------
+# REGENERATE WITH FEEDBACK
+# ------------------------
+
+@app.route("/regenerate", methods=["POST"])
+def regenerate():
+
+    data = request.json
+
+    original = data.get("original")
+    feedback = data.get("feedback")
+
+    prompt = f"""
+    Here is the AI generated text:
+
+    {original}
+
+    The user wants the following changes:
+    {feedback}
+
+    Rewrite the text according to the user's feedback.
+    """
+
+    result = call_ai(prompt)
+
+    return jsonify({"result": result})
+
+# ------------------------
+# TOPIC GENERATOR
+# ------------------------
+
+@app.route("/topic", methods=["POST"])
+def topic():
+
+    data = request.json
+
+    topic = data.get("topic")
+    length = data.get("length")
+
+    prompt = f"Write a {length} description about {topic}"
+
+    result = call_ai(prompt)
+
+    return jsonify({"result": result})
+
+
+# ------------------------
+# LOGOUT
+# ------------------------
+
+@app.route("/logout")
+def logout():
+
+    session.clear()
+
+    return redirect(url_for("login_page"))
+    # ------------------------
+# WORD COUNT
+# ------------------------
+
+@app.route("/wordcount", methods=["POST"])
+def wordcount():
+
+    data = request.json
+    text = data.get("text","")
+
+    words = len(text.split())
+    chars = len(text)
+
+    return jsonify({
+        "words": words,
+        "characters": chars
+    })
+
+
+# ------------------------
+# PROFESSIONALISM CHECK
+# ------------------------
+
+@app.route("/professional", methods=["POST"])
+def professional():
+
+    data = request.json
+    text = data.get("text")
+
+    prompt = f"""
+    Analyze the professionalism of the following text.
+    Give a professionalism score out of 10 and explain briefly.
+
+    Text:
+    {text}
+    """
+
+    result = call_ai(prompt)
+
+    return jsonify({"result": result})
+
+
+# ------------------------
+# PLAGIARISM CHECK (AI ESTIMATE)
+# ------------------------
+
+@app.route("/plagiarism", methods=["POST"])
+def plagiarism():
+
+    data = request.json
+    text = data.get("text")
+
+    prompt = f"""
+    Estimate plagiarism risk for this text.
+    Give percentage originality and explain briefly.
+
+    Text:
+    {text}
+    """
+
+    result = call_ai(prompt)
+
+    return jsonify({"result": result})
 
 
 # ------------------------
