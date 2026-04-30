@@ -1,3 +1,105 @@
+/* ---------------- THEME TOGGLE + DOWNLOAD RESULT ---------------- */
+
+document.addEventListener("DOMContentLoaded", function(){
+    applySavedTheme();
+});
+
+function applySavedTheme(){
+    let savedTheme = localStorage.getItem("aiWriterTheme") || "dark";
+
+    if(savedTheme === "light"){
+        document.body.classList.add("light-theme");
+    }else{
+        document.body.classList.remove("light-theme");
+    }
+
+    updateThemeButton();
+}
+
+function toggleTheme(){
+    let isLight = document.body.classList.toggle("light-theme");
+
+    if(isLight){
+        localStorage.setItem("aiWriterTheme", "light");
+    }else{
+        localStorage.setItem("aiWriterTheme", "dark");
+    }
+
+    updateThemeButton();
+}
+
+function updateThemeButton(){
+    let btn = document.getElementById("themeToggle");
+
+    if(!btn){
+        return;
+    }
+
+    if(document.body.classList.contains("light-theme")){
+        btn.innerText = "🌙 Dark Mode";
+    }else{
+        btn.innerText = "☀️ Light Mode";
+    }
+}
+
+function downloadText(elementId, fileName){
+    let element = document.getElementById(elementId);
+    let text = "";
+
+    if(element){
+        text = element.innerText.trim();
+    }
+
+    if(text === ""){
+        alert("Please generate result first");
+        return;
+    }
+
+    let blob = new Blob([text], {
+        type: "text/plain;charset=utf-8"
+    });
+
+    let url = URL.createObjectURL(blob);
+
+    let a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+
+    document.body.appendChild(a);
+    a.click();
+
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+function downloadCurrentResult(){
+    let topicSection = document.getElementById("topicSection");
+    let improveSection = document.getElementById("improveSection");
+
+    if(topicSection && topicSection.style.display === "block"){
+        downloadText("topicOutput", "ai-topic-description.txt");
+        return;
+    }
+
+    if(improveSection && improveSection.style.display === "block"){
+        downloadText("textOutput", "ai-writing-result.txt");
+        return;
+    }
+
+    let topicOutput = document.getElementById("topicOutput");
+    let textOutput = document.getElementById("textOutput");
+
+    let topicText = topicOutput ? topicOutput.innerText.trim() : "";
+    let writingText = textOutput ? textOutput.innerText.trim() : "";
+
+    if(writingText !== ""){
+        downloadText("textOutput", "ai-writing-result.txt");
+    }else if(topicText !== ""){
+        downloadText("topicOutput", "ai-topic-description.txt");
+    }else{
+        alert("Please generate result first");
+    }
+}
 function showTopic(){
 
 document.getElementById("topicSection").style.display="block"
