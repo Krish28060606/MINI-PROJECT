@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>AI Writing Assistant</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<nav class="navbar">
+<div class="logo">AI Writer</div>
+<ul>
+<li onclick="logoutUser()">Logout</li>
+</ul>
+</nav>
+
+<div class="container">
+
+<h1>What do you want to do?</h1>
+
+<div class="choice-box">
+
+<button class="choice" onclick="showTopic()">
+Generate Short Description
+</button>
+
+<button class="choice" onclick="showImprove()">
+Improve My Text
+</button>
+
+</div>
+
+
+<!-- ================= TOPIC GENERATOR ================= -->
+
+<div id="topicSection" class="section">
+
+<h2>AI Topic Generator</h2>
+
+<input type="text" id="topicInput" placeholder="Enter topic...">
+
+<select id="lengthSelect">
+<option value="short">Short</option>
+<option value="medium">Medium</option>
+<option value="long">Long</option>
+</select>
+
+<button onclick="generateTopic()">Generate</button>
+
+<div id="loaderTopic" class="loader"></div>
+
+<div class="output">
+<p id="topicOutput"></p>
+</div>
+
+<!-- ===== FEEDBACK SECTION ===== -->
+
+<div class="feedback-box">
+
+<h3>Modify Generated Description</h3>
+
+<textarea id="topicFeedback"
+placeholder="Write what changes you want..."></textarea>
+
+<button onclick="regenerateTopic()">
+Regenerate With Feedback
+</button>
+
+</div>
+
+</div>
+
+
+
+<!-- ================= TEXT IMPROVER ================= -->
+
+<div id="improveSection" class="section">
+
+<h2>Improve Your Text</h2>
+
+<textarea 
+id="userText"
+placeholder="Write your text..."
+oninput="updateWordCount()"
+></textarea>
+
+
+<!-- ===== AI WRITING ANALYSIS PANEL ===== -->
+
+<div class="analysis-panel">
+
+<div class="analysis-card">
+<h3>Writing Stats</h3>
+<p>Words: <span id="wordCount">0</span></p>
+<p>Characters: <span id="charCount">0</span></p>
+<p>Professionalism: <span id="professionalScore">--</span></p>
+</div>
+
+<div class="analysis-card">
+<h3>Plagiarism Analysis</h3>
+<p id="plagiarismResult">No analysis yet</p>
+</div>
+
+</div>
+
+
+<!-- ===== ACTION BUTTONS ===== -->
+
+<div class="btn-group">
+
+<button onclick="wordCount()">Word Count</button>
+
+<button onclick="checkProfessional()">Check Professionalism</button>
+
+<button onclick="checkPlagiarism()">Plagiarism Check</button>
+
+<button onclick="generateText()">Generate</button>
+
+<button onclick="correctText()">Correction</button>
+
+<button onclick="enhanceText()">AI Enhanced</button>
+
+</div>
+
+
+<!-- ===== LOADER ===== -->
+
+<div id="loaderText" class="loader"></div>
+
+
+<!-- ===== AI OUTPUT ===== -->
+
+<div class="output">
+<h3>AI Result</h3>
+<p id="textOutput"></p>
+</div>
+
+</div>
+
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
