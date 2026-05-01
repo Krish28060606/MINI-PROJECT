@@ -2,16 +2,12 @@ import os
 import re
 import time
 import random
-import smtplib
-from email.mime.text import MIMEText
 from functools import wraps
 
 import bcrypt
 import psycopg2
 import requests
 from flask import Flask, jsonify, redirect, render_template, request, session, url_for
-from google.auth.transport import requests as google_requests
-from google.oauth2 import id_token as google_id_token
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "change-this-secret-key")
@@ -19,11 +15,6 @@ app.secret_key = os.environ.get("SECRET_KEY", "change-this-secret-key")
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "").strip()
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 GROQ_MODEL = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
-
-GOOGLE_CLIENT_ID = os.environ.get(
-    "GOOGLE_CLIENT_ID",
-    "293196604777-a7jgop08pdsb6pgg3k98190k7q2u747k.apps.googleusercontent.com"
-)
 
 ALLOWED_DOMAINS = ("@gmail.com", "@outlook.com", "@gla.ac.in")
 OTP_EXPIRY_SECONDS = 10 * 60
@@ -59,10 +50,22 @@ def create_tables():
             );
         """)
 
+        cur.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS name VARCHAR(100);")
         cur.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS username VARCHAR(80);")
+        cur.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS phone VARCHAR(20);")
+        cur.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS password TEXT;")
         cur.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS is_verified BOOLEAN DEFAULT TRUE;")
         cur.execute("UPDATE users SET is_verified = TRUE WHERE is_verified IS NULL;")
-        cur.execute("CREATE UNIQUE INDEX IF NOT EXISTS users_username_unique ON users (username);")
+
+        # Username uniqueness is checked in Python before insert also.
+        # This index may already exist from your previous version.
+        try:
+            cur.execute("CREATE UNIQUE INDEX IF NOT EXISTS users_username_unique ON users (username);")
+        except Exception as idx_error:
+            print("Username unique index warning:", idx_error)
+            conn.rollback()
+            conn = get_connection()
+            cur = conn.cursor()
 
         cur.execute("""
             CREATE TABLE IF NOT EXISTS history (
@@ -111,58 +114,38 @@ def login_required(fn):
 
 
 def valid_email(email):
-    return bool(email) and email.endswith(ALLOWED_DOMAINS)
-
-
-def validate_email_only(email):
     email = (email or "").strip().lower()
-
-    if not valid_email(email):
-        return None, "Use Gmail, Outlook, or GLA email only"
-
-    return email, None
-
-
-def validate_complete_signup_payload(data, verified_email):
-    name = (data.get("name") or "").strip()
-    username = clean_username(data.get("username"))
-    phone = (data.get("phone") or "").strip()
-    password = data.get("password") or ""
-
-    if not verified_email:
-        return None, "Please verify your email first"
-
-    if not name:
-        return None, "Full name is required"
-
-    if len(username) < 3 or len(username) > 30:
-        return None, "Username must be 3 to 30 characters"
-
-    if len(password) < 6:
-        return None, "Password must be at least 6 characters"
-
-    return {
-        "name": name,
-        "username": username,
-        "email": verified_email,
-        "phone": phone,
-        "password": password,
-    }, None
+    return bool(email) and email.endswith(ALLOWED_DOMAINS)
 
 
 def clean_username(username):
     return re.sub(r"[^a-zA-Z0-9_]", "", (username or "").strip().lower())
 
 
-def validate_signup_payload(data):
-    name = (data.get("name") or "").strip()
+def clean_phone(phone):
+    phone = re.sub(r"\D", "", (phone or "").strip())
+
+    if len(phone) == 12 and phone.startswith("91"):
+        phone = phone[2:]
+
+    if len(phone) == 11 and phone.startswith("0"):
+        phone = phone[1:]
+
+    return phone
+
+
+def validate_mobile_signup_payload(data, verified_phone):
     username = clean_username(data.get("username"))
     email = (data.get("email") or "").strip().lower()
-    phone = (data.get("phone") or "").strip()
+    phone = clean_phone(data.get("phone"))
     password = data.get("password") or ""
+    confirm_password = data.get("confirm_password") or data.get("recheck_password") or ""
 
-    if not name:
-        return None, "Full name is required"
+    if not verified_phone:
+        return None, "Please verify your mobile number first"
+
+    if phone != verified_phone:
+        return None, "Mobile number changed. Please verify OTP again."
 
     if len(username) < 3 or len(username) > 30:
         return None, "Username must be 3 to 30 characters"
@@ -170,11 +153,17 @@ def validate_signup_payload(data):
     if not valid_email(email):
         return None, "Use Gmail, Outlook, or GLA email only"
 
+    if len(phone) != 10:
+        return None, "Enter a valid 10-digit mobile number"
+
     if len(password) < 6:
         return None, "Password must be at least 6 characters"
 
+    if password != confirm_password:
+        return None, "Password and recheck password do not match"
+
     return {
-        "name": name,
+        "name": username,
         "username": username,
         "email": email,
         "phone": phone,
@@ -198,54 +187,6 @@ def generate_unique_username(cur, email):
         counter += 1
 
     return username
-
-
-def send_otp_email(receiver_email, otp):
-    sender_email = (
-        os.environ.get("MAIL_USERNAME")
-        or os.environ.get("EMAIL_USER")
-        or os.environ.get("GMAIL_USER")
-        or ""
-    ).strip()
-    sender_password = (
-        os.environ.get("MAIL_PASSWORD")
-        or os.environ.get("EMAIL_PASS")
-        or os.environ.get("GMAIL_APP_PASSWORD")
-        or ""
-    ).strip()
-
-    subject = "Your AI.CREATIVE verification OTP"
-    body = f"""
-Hello,
-
-Your OTP for AI.CREATIVE account verification is: {otp}
-
-This OTP is valid for 10 minutes. Do not share it with anyone.
-
-Regards,
-AI.CREATIVE Team
-""".strip()
-
-    if not sender_email or not sender_password:
-        print(f"OTP for {receiver_email}: {otp}")
-        return True, "OTP generated. Mail credentials are not set, so check Render/local logs for OTP."
-
-    try:
-        msg = MIMEText(body)
-        msg["Subject"] = subject
-        msg["From"] = sender_email
-        msg["To"] = receiver_email
-
-        with smtplib.SMTP("smtp.gmail.com", 587) as server:
-            server.starttls()
-            server.login(sender_email, sender_password)
-            server.sendmail(sender_email, [receiver_email], msg.as_string())
-
-        return True, "OTP sent successfully. Check your email inbox."
-
-    except Exception as e:
-        print("OTP email error:", e)
-        return False, "OTP email failed. Check MAIL_USERNAME and MAIL_PASSWORD app password."
 
 
 def demo_ai_response(prompt, mode="generate"):
@@ -357,7 +298,7 @@ def login_page():
     if "user_id" in session:
         return redirect(url_for("index"))
 
-    return render_template("login.html", google_client_id=GOOGLE_CLIENT_ID)
+    return render_template("login.html")
 
 
 @app.route("/index")
@@ -391,16 +332,19 @@ def index():
 @app.route("/send-otp", methods=["POST"])
 def send_otp():
     data = request.get_json(silent=True) or {}
-    email, error = validate_email_only(data.get("email"))
+    phone = clean_phone(data.get("phone"))
 
-    if error:
-        return jsonify({"status": "fail", "message": error})
+    if len(phone) != 10:
+        return jsonify({
+            "status": "fail",
+            "message": "Enter a valid 10-digit mobile number"
+        })
 
     try:
         conn = get_connection()
         cur = conn.cursor()
 
-        cur.execute("SELECT id FROM users WHERE email = %s", (email,))
+        cur.execute("SELECT id FROM users WHERE phone = %s", (phone,))
         existing_user = cur.fetchone()
 
         cur.close()
@@ -409,99 +353,128 @@ def send_otp():
         if existing_user:
             return jsonify({
                 "status": "fail",
-                "message": "This email is already registered. Please login with your username."
+                "message": "This mobile number is already registered. Please login."
             })
 
         otp = str(random.randint(100000, 999999))
 
-        session["pending_signup_email"] = email
+        session["pending_signup_phone"] = phone
         session["pending_signup_otp"] = otp
         session["pending_signup_time"] = time.time()
-        session.pop("verified_signup_email", None)
+        session.pop("verified_signup_phone", None)
 
-        sent, message = send_otp_email(email, otp)
+        print(f"Mobile OTP for {phone}: {otp}")
 
-        if not sent:
-            return jsonify({"status": "fail", "message": message})
-
-        return jsonify({"status": "success", "message": message})
+        return jsonify({
+            "status": "success",
+            "message": "OTP generated successfully. For demo, OTP is shown below and printed in Render logs.",
+            "demo_otp": otp
+        })
 
     except Exception as e:
-        print("Send OTP error:", e)
-        return jsonify({"status": "fail", "message": "OTP failed. Check database/mail settings."})
+        print("Send mobile OTP error:", e)
+        return jsonify({
+            "status": "fail",
+            "message": "OTP failed. Check database settings."
+        })
+
 
 @app.route("/verify-otp", methods=["POST"])
 def verify_otp():
     data = request.get_json(silent=True) or {}
-    email, error = validate_email_only(data.get("email"))
+    phone = clean_phone(data.get("phone"))
     otp = (data.get("otp") or "").strip()
 
-    if error:
-        return jsonify({"status": "fail", "message": error})
+    if len(phone) != 10:
+        return jsonify({
+            "status": "fail",
+            "message": "Enter a valid 10-digit mobile number"
+        })
 
     if not otp:
-        return jsonify({"status": "fail", "message": "OTP is required"})
+        return jsonify({
+            "status": "fail",
+            "message": "OTP is required"
+        })
 
-    pending_email = session.get("pending_signup_email")
+    pending_phone = session.get("pending_signup_phone")
     saved_otp = session.get("pending_signup_otp")
     pending_time = session.get("pending_signup_time")
 
-    if not pending_email or not saved_otp or not pending_time:
-        return jsonify({"status": "fail", "message": "Please send OTP first"})
+    if not pending_phone or not saved_otp or not pending_time:
+        return jsonify({
+            "status": "fail",
+            "message": "Please send OTP first"
+        })
 
-    if pending_email != email:
-        return jsonify({"status": "fail", "message": "Email changed. Please send OTP again."})
+    if pending_phone != phone:
+        return jsonify({
+            "status": "fail",
+            "message": "Mobile number changed. Please send OTP again."
+        })
 
     if time.time() - float(pending_time) > OTP_EXPIRY_SECONDS:
-        session.pop("pending_signup_email", None)
+        session.pop("pending_signup_phone", None)
         session.pop("pending_signup_otp", None)
         session.pop("pending_signup_time", None)
-        session.pop("verified_signup_email", None)
-        return jsonify({"status": "fail", "message": "OTP expired. Send a new OTP."})
+        session.pop("verified_signup_phone", None)
+
+        return jsonify({
+            "status": "fail",
+            "message": "OTP expired. Send a new OTP."
+        })
 
     if otp != saved_otp:
-        return jsonify({"status": "fail", "message": "Invalid OTP"})
+        return jsonify({
+            "status": "fail",
+            "message": "Invalid OTP"
+        })
 
-    session["verified_signup_email"] = email
+    session["verified_signup_phone"] = phone
     session.pop("pending_signup_otp", None)
 
     return jsonify({
         "status": "success",
-        "message": "Email verified. Now create your username and password.",
-        "email": email
+        "message": "Mobile number verified. Now create your account."
     })
 
 
 @app.route("/complete-signup", methods=["POST"])
 def complete_signup():
     data = request.get_json(silent=True) or {}
-    verified_email = session.get("verified_signup_email")
-    payload, error = validate_complete_signup_payload(data, verified_email)
+    verified_phone = session.get("verified_signup_phone")
+
+    payload, error = validate_mobile_signup_payload(data, verified_phone)
 
     if error:
-        return jsonify({"status": "fail", "message": error})
+        return jsonify({
+            "status": "fail",
+            "message": error
+        })
 
     try:
         conn = get_connection()
         cur = conn.cursor()
 
         cur.execute(
-            "SELECT id FROM users WHERE email = %s OR username = %s",
-            (payload["email"], payload["username"])
+            "SELECT id FROM users WHERE email = %s OR username = %s OR phone = %s",
+            (payload["email"], payload["username"], payload["phone"])
         )
+
         existing_user = cur.fetchone()
 
         if existing_user:
             cur.close()
             conn.close()
+
             return jsonify({
                 "status": "fail",
-                "message": "Email or username already exists. Please choose another username or login."
+                "message": "Email, username, or mobile number already exists."
             })
 
         hashed_password = bcrypt.hashpw(
             payload["password"].encode("utf-8"),
-            bcrypt.gensalt()
+            bcrypt.gensalt(rounds=10)
         ).decode("utf-8")
 
         cur.execute(
@@ -522,10 +495,10 @@ def complete_signup():
         cur.close()
         conn.close()
 
-        session.pop("pending_signup_email", None)
+        session.pop("pending_signup_phone", None)
         session.pop("pending_signup_otp", None)
         session.pop("pending_signup_time", None)
-        session.pop("verified_signup_email", None)
+        session.pop("verified_signup_phone", None)
 
         return jsonify({
             "status": "success",
@@ -534,8 +507,12 @@ def complete_signup():
         })
 
     except Exception as e:
-        print("Complete signup error:", e)
-        return jsonify({"status": "fail", "message": "Signup failed. Check database connection."})
+        print("Complete mobile signup error:", e)
+
+        return jsonify({
+            "status": "fail",
+            "message": "Signup failed. Check database connection."
+        })
 
 
 @app.route("/signup", methods=["POST"])
@@ -590,13 +567,13 @@ def login():
         if not is_verified:
             return jsonify({
                 "status": "fail",
-                "message": "Please verify your email before login"
+                "message": "Please verify your account before login"
             })
 
         if not stored_password:
             return jsonify({
                 "status": "fail",
-                "message": "This account uses Google login. Please continue with Google."
+                "message": "Password not found for this account. Please create a normal account."
             })
 
         if bcrypt.checkpw(password.encode("utf-8"), stored_password.encode("utf-8")):
@@ -617,82 +594,6 @@ def login():
         return jsonify({
             "status": "fail",
             "message": "Login failed. Check database connection."
-        })
-
-
-@app.route("/google-login", methods=["POST"])
-def google_login():
-    data = request.get_json(silent=True) or {}
-    token = data.get("token")
-
-    if not token:
-        return jsonify({
-            "status": "fail",
-            "message": "Google token missing"
-        })
-
-    try:
-        decoded = google_id_token.verify_oauth2_token(
-            token,
-            google_requests.Request(),
-            GOOGLE_CLIENT_ID
-        )
-
-        email = (decoded.get("email") or "").strip().lower()
-        name = decoded.get("name") or "Google User"
-        email_verified = decoded.get("email_verified")
-
-        if not email or not email_verified:
-            return jsonify({
-                "status": "fail",
-                "message": "Google email is not verified"
-            })
-
-        if not valid_email(email):
-            return jsonify({
-                "status": "fail",
-                "message": "Use Gmail, Outlook, or GLA email only"
-            })
-
-        conn = get_connection()
-        cur = conn.cursor()
-
-        cur.execute("SELECT id FROM users WHERE email = %s", (email,))
-        row = cur.fetchone()
-
-        if row:
-            user_id = row[0]
-            cur.execute("UPDATE users SET is_verified = TRUE WHERE id = %s", (user_id,))
-            conn.commit()
-        else:
-            username = generate_unique_username(cur, email)
-            cur.execute(
-                """
-                INSERT INTO users (name, username, email, phone, password, is_verified)
-                VALUES (%s, %s, %s, %s, %s, TRUE)
-                RETURNING id
-                """,
-                (name, username, email, "", ""),
-            )
-
-            user_id = cur.fetchone()[0]
-            conn.commit()
-
-        cur.close()
-        conn.close()
-
-        session["user_id"] = user_id
-
-        return jsonify({
-            "status": "success"
-        })
-
-    except Exception as e:
-        print("Google login error:", e)
-
-        return jsonify({
-            "status": "fail",
-            "message": "Google login failed. Check GOOGLE_CLIENT_ID."
         })
 
 
