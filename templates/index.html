@@ -317,7 +317,10 @@
 
   <div id="toast" class="toast">Done</div>
 
-  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script>
+  window.CURRENT_USER_ID = "{{ user_id }}";
+</script>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
 
 </body>
 </html>
