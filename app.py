@@ -121,7 +121,11 @@ def index():
     except Exception as e:
         print("User name fetch error:", e)
 
-    return render_template("index.html", user_name=user_name)
+   return render_template(
+    "index.html",
+    user_name=user_name,
+    user_id=session["user_id"]
+)
 
 # ------------------------
 # SIGNUP API
