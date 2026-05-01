@@ -821,9 +821,10 @@
         } else {
           setMessage("loginMessage", data.message || "Google login failed.", "error");
         }
-      } catch (error) {
-        setMessage("loginMessage", "Google login server error.", "error");
-      }
+      }  catch (error) {
+  setMessage("signupMessage", "Server error while sending OTP: " + error.message, "error");
+  console.error("OTP error:", error);
+}
     }
   </script>
 </body>
