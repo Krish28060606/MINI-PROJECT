@@ -3,772 +3,372 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI.CREATIVE — Secure Login</title>
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <title>AI.CREATIVE - Secure Login</title>
 
   <style>
-    :root {
-      --bg: #060815;
-      --bg2: #0b1024;
-      --card: rgba(255, 255, 255, 0.08);
-      --border: rgba(255, 255, 255, 0.16);
-      --text: #f8fbff;
-      --muted: #a9b6cf;
-      --primary: #6c7cff;
-      --cyan: #30e7ff;
-      --pink: #ff4fd8;
-      --green: #27f5a9;
-      --danger: #ff6b7a;
-      --warning: #ffd166;
-      --shadow: 0 30px 90px rgba(0, 0, 0, 0.42);
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Inter, Arial, sans-serif;
     }
-
-    * { box-sizing: border-box; }
-    html, body { min-height: 100%; }
 
     body {
-      margin: 0;
-      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--text);
+      min-height: 100vh;
       background:
-        radial-gradient(circle at 12% 12%, rgba(48, 231, 255, 0.18), transparent 28%),
-        radial-gradient(circle at 88% 10%, rgba(255, 79, 216, 0.14), transparent 30%),
-        radial-gradient(circle at 70% 92%, rgba(39, 245, 169, 0.13), transparent 32%),
-        linear-gradient(135deg, var(--bg), var(--bg2));
-      overflow-x: hidden;
+        radial-gradient(circle at top left, rgba(48, 231, 255, 0.22), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(255, 77, 216, 0.24), transparent 35%),
+        linear-gradient(135deg, #060815, #111827 45%, #1e1233);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 28px;
     }
 
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
-      background-size: 52px 52px;
-      mask-image: radial-gradient(circle at center, black, transparent 78%);
-    }
-
-    .orb {
-      position: fixed;
-      width: 360px;
-      height: 360px;
-      border-radius: 50%;
-      filter: blur(60px);
-      opacity: 0.75;
-      pointer-events: none;
-      animation: float 16s ease-in-out infinite;
-    }
-
-    .orb.one { left: -110px; top: 120px; background: rgba(108, 124, 255, 0.45); }
-    .orb.two { right: -120px; top: -90px; background: rgba(255, 79, 216, 0.35); animation-delay: -5s; }
-    .orb.three { left: 52%; bottom: -150px; background: rgba(39, 245, 169, 0.28); animation-delay: -9s; }
-
-    @keyframes float {
-      0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-      50% { transform: translate3d(28px, -24px, 0) scale(1.08); }
+    .box {
+      width: 100%;
+      max-width: 620px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 32px;
+      padding: 34px;
+      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(20px);
     }
 
     .brand {
-      position: fixed;
-      top: 22px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: min(1180px, calc(100% - 32px));
-      z-index: 3;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 14px;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      background: rgba(8, 12, 28, 0.58);
-      backdrop-filter: blur(20px);
-      box-shadow: 0 16px 45px rgba(0,0,0,0.20);
+      text-align: center;
+      margin-bottom: 26px;
     }
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 900;
-      letter-spacing: -0.04em;
+    .brand h1 {
+      font-size: 34px;
+      letter-spacing: -1px;
     }
 
-    .logo-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 15px;
-      display: grid;
-      place-items: center;
-      background: linear-gradient(135deg, var(--cyan), var(--primary), var(--pink));
-      box-shadow: 0 12px 35px rgba(108,124,255,0.35);
-    }
-
-    .secure-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      color: var(--muted);
-      font-size: 0.86rem;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.06);
-    }
-
-    .page {
-      position: relative;
-      z-index: 2;
-      width: min(1180px, calc(100% - 32px));
-      min-height: 100vh;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      align-items: center;
-      gap: 44px;
-      padding: 110px 0 34px;
-    }
-
-    .hero h1 {
-      margin: 0 0 18px;
-      font-size: clamp(2.55rem, 6vw, 5.4rem);
-      line-height: 0.92;
-      letter-spacing: -0.075em;
-    }
-
-    .hero h1 span {
-      display: block;
-      background: linear-gradient(120deg, #ffffff, #c9f8ff, #e8d7ff);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero p {
-      max-width: 620px;
-      margin: 0 0 24px;
-      color: var(--muted);
-      font-size: 1.06rem;
-      line-height: 1.8;
-    }
-
-    .feature-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 30px;
-    }
-
-    .chip {
-      padding: 12px 14px;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      background: rgba(255,255,255,0.07);
-      color: #dbe7ff;
-      font-weight: 700;
-      font-size: 0.9rem;
-      backdrop-filter: blur(18px);
-    }
-
-    .auth-card {
-      width: 100%;
-      max-width: 500px;
-      justify-self: end;
-      padding: 28px;
-      border: 1px solid var(--border);
-      border-radius: 34px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.06)),
-        rgba(10, 14, 31, 0.72);
-      backdrop-filter: blur(28px);
-      box-shadow: var(--shadow);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .auth-card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      padding: 1px;
-      background: linear-gradient(135deg, rgba(48,231,255,0.7), rgba(108,124,255,0.35), rgba(255,79,216,0.48));
-      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      pointer-events: none;
+    .brand p {
+      color: #b8c4d9;
+      margin-top: 8px;
     }
 
     .tabs {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.14);
       padding: 8px;
       border-radius: 22px;
-      background: rgba(0,0,0,0.18);
-      border: 1px solid var(--border);
-      margin-bottom: 24px;
+      margin-bottom: 26px;
     }
 
     .tab {
       border: 0;
-      cursor: pointer;
-      color: var(--muted);
-      background: transparent;
+      padding: 15px;
       border-radius: 16px;
-      padding: 13px;
-      font-weight: 900;
-      transition: 0.25s ease;
+      background: transparent;
+      color: #c8d1e2;
+      font-weight: 800;
+      font-size: 16px;
+      cursor: pointer;
     }
 
     .tab.active {
       color: white;
-      background: linear-gradient(135deg, rgba(48,231,255,0.18), rgba(108,124,255,0.32));
-      box-shadow: 0 14px 30px rgba(0,0,0,0.22);
+      background: linear-gradient(135deg, #2dd4bf, #38bdf8, #6366f1);
+      box-shadow: 0 12px 35px rgba(56, 189, 248, 0.25);
     }
 
-    .form { display: none; animation: rise 0.35s ease; }
-    .form.active { display: block; }
-
-    @keyframes rise {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
+    .panel {
+      display: none;
     }
 
-    .auth-title {
-      margin: 0 0 8px;
-      font-size: 1.85rem;
-      letter-spacing: -0.05em;
+    .panel.active {
+      display: block;
     }
 
-    .auth-subtitle {
-      margin: 0 0 22px;
-      color: var(--muted);
-      line-height: 1.65;
-      font-size: 0.94rem;
+    h2 {
+      font-size: 30px;
+      margin-bottom: 10px;
     }
 
-    .stepper {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 20px;
+    .sub {
+      color: #b8c4d9;
+      margin-bottom: 24px;
+      line-height: 1.6;
     }
 
-    .step {
-      padding: 12px;
-      border-radius: 18px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.06);
-      color: var(--muted);
-      font-weight: 800;
-      font-size: 0.83rem;
+    .row {
+      margin-bottom: 16px;
     }
 
-    .step.active {
-      color: white;
-      border-color: rgba(48,231,255,0.45);
-      background: linear-gradient(135deg, rgba(48,231,255,0.14), rgba(108,124,255,0.18));
-    }
-
-    .signup-step { display: none; }
-    .signup-step.active { display: block; }
-
-    .field { margin-bottom: 15px; }
-
-    label {
+    .row label {
       display: flex;
       justify-content: space-between;
-      gap: 12px;
-      color: #edf4ff;
-      font-size: 0.86rem;
+      color: #e5e7eb;
       font-weight: 800;
       margin-bottom: 8px;
     }
 
-    label span { color: var(--muted); font-weight: 600; }
+    .hint {
+      color: #9ca3af;
+      font-size: 13px;
+    }
 
     input {
       width: 100%;
-      border: 1px solid var(--border);
+      padding: 17px 18px;
+      border-radius: 18px;
       outline: none;
-      border-radius: 17px;
-      padding: 15px 15px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.12);
       color: white;
-      background: rgba(255,255,255,0.075);
-      font-size: 0.96rem;
-      transition: 0.25s ease;
+      font-size: 16px;
     }
 
     input:focus {
-      border-color: rgba(48,231,255,0.72);
-      box-shadow: 0 0 0 5px rgba(48,231,255,0.10);
-      background: rgba(255,255,255,0.1);
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.12);
     }
 
-    input::placeholder { color: rgba(207, 221, 245, 0.50); }
-
-    .button {
+    .btn {
       width: 100%;
       border: 0;
-      cursor: pointer;
-      margin-top: 4px;
+      padding: 17px 20px;
       border-radius: 18px;
-      padding: 15px 18px;
-      color: white;
+      font-size: 17px;
       font-weight: 900;
-      font-size: 0.98rem;
-      background: linear-gradient(135deg, var(--cyan), var(--primary), var(--pink));
-      box-shadow: 0 20px 45px rgba(108,124,255,0.28);
-      transition: 0.25s ease;
+      cursor: pointer;
+      margin-top: 8px;
+      color: #031018;
+      background: linear-gradient(135deg, #34d399, #22d3ee);
+      transition: 0.2s;
     }
 
-    .button:hover { transform: translateY(-2px); filter: brightness(1.08); }
-    .button:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
-
-    .button.secondary {
-      background: linear-gradient(135deg, rgba(39,245,169,0.92), rgba(48,231,255,0.92));
-      color: #06111d;
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 35px rgba(34, 211, 238, 0.25);
     }
 
-    .button.ghost {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid var(--border);
+    .btn.secondary {
+      background: linear-gradient(135deg, #818cf8, #c084fc);
+      color: white;
+    }
+
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
       box-shadow: none;
+    }
+
+    .message {
+      display: none;
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .message.success {
+      display: block;
+      background: rgba(34, 197, 94, 0.14);
+      color: #bbf7d0;
+      border: 1px solid rgba(34, 197, 94, 0.35);
+    }
+
+    .message.error {
+      display: block;
+      background: rgba(239, 68, 68, 0.14);
+      color: #fecaca;
+      border: 1px solid rgba(239, 68, 68, 0.35);
     }
 
     .otp-box {
       display: none;
-      margin-top: 16px;
-      padding: 16px;
+      margin-top: 18px;
+      padding: 18px;
       border-radius: 22px;
-      border: 1px solid rgba(39,245,169,0.25);
-      background: rgba(39,245,169,0.07);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
     }
 
-    .otp-box.show { display: block; }
-
-    .verified-pill {
-      display: inline-flex;
-      gap: 8px;
-      align-items: center;
-      padding: 10px 13px;
-      border-radius: 999px;
-      margin-bottom: 16px;
-      color: #d9fff1;
-      background: rgba(39,245,169,0.10);
-      border: 1px solid rgba(39,245,169,0.28);
-      font-weight: 800;
-      font-size: 0.86rem;
+    .otp-box.show {
+      display: block;
     }
 
-    .message {
-      min-height: 0;
+    .demo-otp {
+      margin-top: 12px;
+      padding: 13px;
+      border-radius: 14px;
+      color: #fef3c7;
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      font-weight: 900;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+
+    .verified-badge {
+      display: none;
       margin-top: 14px;
-      padding: 0;
-      border-radius: 16px;
-      font-size: 0.9rem;
-      line-height: 1.55;
-      color: var(--muted);
+      padding: 13px;
+      border-radius: 14px;
+      color: #bbf7d0;
+      background: rgba(34, 197, 94, 0.14);
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      font-weight: 900;
+      text-align: center;
     }
 
-    .message.error, .message.success, .message.info {
-      padding: 12px 13px;
-      border: 1px solid var(--border);
+    .verified-badge.show {
+      display: block;
     }
 
-    .message.error { color: #ffd6dc; background: rgba(255,107,122,0.10); border-color: rgba(255,107,122,0.28); }
-    .message.success { color: #d9fff1; background: rgba(39,245,169,0.10); border-color: rgba(39,245,169,0.28); }
-    .message.info { color: #d9f8ff; background: rgba(48,231,255,0.09); border-color: rgba(48,231,255,0.24); }
-
-    .divider {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: var(--muted);
-      margin: 18px 0;
-      font-size: 0.86rem;
-      font-weight: 700;
+    .mini {
+      color: #9ca3af;
+      margin-top: 18px;
+      font-size: 14px;
+      line-height: 1.5;
+      text-align: center;
     }
 
-    .divider::before, .divider::after {
-      content: "";
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
+    @media (max-width: 600px) {
+      .box {
+        padding: 24px;
+      }
 
-    .google-wrap {
-      display: flex;
-      justify-content: center;
-      padding: 8px;
-      border-radius: 18px;
-      background: rgba(255,255,255,0.06);
-      border: 1px dashed var(--border);
-    }
+      .brand h1 {
+        font-size: 28px;
+      }
 
-    .mini-note {
-      margin: 16px 0 0;
-      color: var(--muted);
-      font-size: 0.78rem;
-      line-height: 1.55;
-    }
-
-    @media (max-width: 930px) {
-      .page { grid-template-columns: 1fr; padding-top: 110px; }
-      .auth-card { justify-self: stretch; max-width: none; }
-      .hero { text-align: center; }
-      .hero p { margin-left: auto; margin-right: auto; }
-      .feature-row { justify-content: center; }
-    }
-
-    @media (max-width: 540px) {
-      .brand { top: 12px; }
-      .secure-pill { display: none; }
-      .page { width: min(100% - 20px, 1180px); padding-top: 92px; }
-      .auth-card { padding: 20px; border-radius: 26px; }
-      .stepper { grid-template-columns: 1fr; }
-      .hero h1 { font-size: 2.45rem; }
+      h2 {
+        font-size: 25px;
+      }
     }
   </style>
 </head>
+
 <body>
-  <div class="orb one"></div>
-  <div class="orb two"></div>
-  <div class="orb three"></div>
-
-  <header class="brand">
-    <div class="logo">
-      <div class="logo-icon">✍️</div>
-      <div>AI.CREATIVE</div>
+  <div class="box">
+    <div class="brand">
+      <h1>AI.CREATIVE</h1>
+      <p>Secure username login with mobile OTP verification</p>
     </div>
-    <div class="secure-pill">🔐 Email OTP + username login</div>
-  </header>
 
-  <main class="page">
-    <section class="hero">
-      <h1><span>Write smarter.</span><span>Login safer.</span></h1>
-      <p>
-        A polished authentication system for your AI writing platform. First verify email with OTP,
-        then create a unique username and password for secure login.
+    <div class="tabs">
+      <button class="tab active" onclick="showPanel('login')">Login</button>
+      <button class="tab" onclick="showPanel('signup')">Create Account</button>
+    </div>
+
+    <div id="loginPanel" class="panel active">
+      <h2>Welcome back</h2>
+      <p class="sub">Login using your username and password.</p>
+
+      <div class="row">
+        <label>Username</label>
+        <input id="loginId" type="text" placeholder="Enter username" />
+      </div>
+
+      <div class="row">
+        <label>Password</label>
+        <input id="loginPassword" type="password" placeholder="Enter password" />
+      </div>
+
+      <button class="btn" onclick="loginUser()">Login</button>
+
+      <div id="loginMessage" class="message"></div>
+    </div>
+
+    <div id="signupPanel" class="panel">
+      <h2>Create verified account</h2>
+      <p class="sub">Enter details, verify mobile OTP, then create your account.</p>
+
+      <div class="row">
+        <label>Username <span class="hint">For login</span></label>
+        <input id="signupUsername" type="text" placeholder="Example: anubhav123" />
+      </div>
+
+      <div class="row">
+        <label>Email <span class="hint">Gmail / Outlook / GLA</span></label>
+        <input id="signupEmail" type="email" placeholder="example@gmail.com" />
+      </div>
+
+      <div class="row">
+        <label>Mobile Number <span class="hint">10 digits</span></label>
+        <input id="signupPhone" type="tel" placeholder="9876543210" maxlength="10" />
+      </div>
+
+      <button class="btn secondary" onclick="sendMobileOtp()">Send Mobile OTP</button>
+
+      <div id="otpBox" class="otp-box">
+        <div class="row">
+          <label>Enter OTP</label>
+          <input id="signupOtp" type="text" placeholder="Enter 6-digit OTP" maxlength="6" />
+        </div>
+
+        <button class="btn" onclick="verifyMobileOtp()">Verify OTP</button>
+
+        <div id="demoOtp" class="demo-otp"></div>
+      </div>
+
+      <div id="verifiedBadge" class="verified-badge">
+        Mobile number verified successfully ✅
+      </div>
+
+      <div class="row" style="margin-top: 18px;">
+        <label>Password</label>
+        <input id="signupPassword" type="password" placeholder="Create password" />
+      </div>
+
+      <div class="row">
+        <label>Recheck Password</label>
+        <input id="signupConfirmPassword" type="password" placeholder="Re-enter password" />
+      </div>
+
+      <button id="createAccountBtn" class="btn" onclick="createAccount()" disabled>
+        Create Account
+      </button>
+
+      <div id="signupMessage" class="message"></div>
+
+      <p class="mini">
+        Demo note: OTP is shown on screen and printed in Render logs. Real SMS can be added later using Twilio/Fast2SMS.
       </p>
-      <div class="feature-row">
-        <div class="chip">Email OTP Verification</div>
-        <div class="chip">Username Login</div>
-        <div class="chip">Hashed Passwords</div>
-        <div class="chip">PostgreSQL Connected</div>
-      </div>
-    </section>
-
-    <section class="auth-card">
-      <div class="tabs">
-        <button class="tab active" id="loginTab" onclick="switchMode('login')">Login</button>
-        <button class="tab" id="signupTab" onclick="switchMode('signup')">Create Account</button>
-      </div>
-
-      <form class="form active" id="loginForm" onsubmit="loginUser(event)">
-        <h2 class="auth-title">Welcome back</h2>
-        <p class="auth-subtitle">Login using the username and password you created after OTP verification.</p>
-
-        <div class="field">
-          <label for="loginId">Username</label>
-          <input id="loginId" type="text" placeholder="example: anubhav_ai" autocomplete="username" />
-        </div>
-
-        <div class="field">
-          <label for="loginPassword">Password</label>
-          <input id="loginPassword" type="password" placeholder="Enter your password" autocomplete="current-password" />
-        </div>
-
-        <button class="button" id="loginBtn" type="submit">Login to Dashboard</button>
-
-        <div class="divider">or</div>
-        <div id="g_id_onload"
-             data-client_id="{{ google_client_id }}"
-             data-callback="handleCredentialResponse"
-             data-auto_prompt="false">
-        </div>
-        <div class="google-wrap">
-          <div class="g_id_signin"
-               data-type="standard"
-               data-size="large"
-               data-theme="outline"
-               data-text="signin_with"
-               data-shape="pill">
-          </div>
-        </div>
-
-        <div id="loginMessage" class="message"></div>
-      </form>
-
-      <form class="form" id="signupForm" onsubmit="completeSignup(event)">
-        <h2 class="auth-title">Create verified account</h2>
-        <p class="auth-subtitle">Step 1: verify email by OTP. Step 2: create username and password.</p>
-
-        <div class="stepper">
-          <div class="step active" id="stepEmail">1. Verify Email</div>
-          <div class="step" id="stepAccount">2. Create Login</div>
-        </div>
-
-        <div class="signup-step active" id="emailStep">
-          <div class="field">
-            <label for="signupEmail">Email <span>Gmail / Outlook / GLA</span></label>
-            <input id="signupEmail" type="email" placeholder="yourname@gmail.com" autocomplete="email" />
-          </div>
-
-          <button class="button secondary" id="sendOtpBtn" type="button" onclick="sendOtp()">Send OTP to Email</button>
-
-          <div class="otp-box" id="otpBox">
-            <div class="field" style="margin-top: 0;">
-              <label for="otp">Enter OTP</label>
-              <input id="otp" type="text" placeholder="6-digit OTP" maxlength="6" inputmode="numeric" />
-            </div>
-            <button class="button" id="verifyOtpBtn" type="button" onclick="verifyEmailOtp()">Verify OTP</button>
-          </div>
-        </div>
-
-        <div class="signup-step" id="accountStep">
-          <div class="verified-pill">✅ Verified email: <span id="verifiedEmailText"></span></div>
-
-          <div class="field">
-            <label for="name">Full Name</label>
-            <input id="name" type="text" placeholder="Your full name" autocomplete="name" />
-          </div>
-
-          <div class="field">
-            <label for="username">Create Username <span>3–30 letters/numbers/_</span></label>
-            <input id="username" type="text" placeholder="example: anubhav_ai" autocomplete="username" />
-          </div>
-
-          <div class="field">
-            <label for="phone">Mobile Number <span>optional</span></label>
-            <input id="phone" type="text" placeholder="Optional mobile number" autocomplete="tel" />
-          </div>
-
-          <div class="field">
-            <label for="password">Create Password</label>
-            <input id="password" type="password" placeholder="Minimum 6 characters" autocomplete="new-password" />
-          </div>
-
-          <div class="field">
-            <label for="confirmPassword">Confirm Password</label>
-            <input id="confirmPassword" type="password" placeholder="Re-enter password" autocomplete="new-password" />
-          </div>
-
-          <button class="button" id="createAccountBtn" type="submit">Create Account</button>
-          <button class="button ghost" id="changeEmailBtn" type="button" onclick="resetSignupFlow()">Change Email</button>
-        </div>
-
-        <div id="signupMessage" class="message"></div>
-        <p class="mini-note">
-          Gmail OTP needs <b>MAIL_USERNAME</b> and <b>MAIL_PASSWORD</b> in Render Environment Variables.
-          If not set, OTP appears in Render logs for demo testing.
-        </p>
-      </form>
-    </section>
-  </main>
+    </div>
+  </div>
 
   <script>
-    let mode = "login";
-    let verifiedEmail = "";
+    let mobileVerified = false;
 
-    function switchMode(nextMode) {
-      mode = nextMode;
-      document.getElementById("loginForm").classList.toggle("active", mode === "login");
-      document.getElementById("signupForm").classList.toggle("active", mode === "signup");
-      document.getElementById("loginTab").classList.toggle("active", mode === "login");
-      document.getElementById("signupTab").classList.toggle("active", mode === "signup");
-      clearMessage("loginMessage");
-      clearMessage("signupMessage");
+    function showPanel(type) {
+      document.querySelectorAll(".tab").forEach(btn => btn.classList.remove("active"));
+      document.querySelectorAll(".panel").forEach(panel => panel.classList.remove("active"));
+
+      if (type === "login") {
+        document.querySelector(".tab:nth-child(1)").classList.add("active");
+        document.getElementById("loginPanel").classList.add("active");
+      } else {
+        document.querySelector(".tab:nth-child(2)").classList.add("active");
+        document.getElementById("signupPanel").classList.add("active");
+      }
     }
 
-    function setMessage(id, text, type) {
-      const el = document.getElementById(id);
-      el.textContent = text || "";
-      el.className = "message " + (type || "");
+    function setMessage(id, message, type) {
+      const box = document.getElementById(id);
+      box.className = "message " + type;
+      box.textContent = message;
     }
 
     function clearMessage(id) {
-      setMessage(id, "", "");
+      const box = document.getElementById(id);
+      box.className = "message";
+      box.textContent = "";
     }
 
-    function setButtonLoading(id, isLoading, text) {
-      const btn = document.getElementById(id);
-      btn.disabled = isLoading;
-      if (!btn.dataset.original) btn.dataset.original = btn.textContent;
-      btn.textContent = isLoading ? text : btn.dataset.original;
-    }
-
-    function getEmail() {
-      return document.getElementById("signupEmail").value.trim().toLowerCase();
-    }
-
-    function isAllowedEmail(email) {
-      return email.endsWith("@gmail.com") || email.endsWith("@outlook.com") || email.endsWith("@gla.ac.in");
-    }
-
-    async function sendOtp() {
-      const email = getEmail();
-
-      if (!email || !isAllowedEmail(email)) {
-        setMessage("signupMessage", "Enter a valid Gmail, Outlook, or GLA email.", "error");
-        return;
-      }
-
-      setButtonLoading("sendOtpBtn", true, "Sending OTP...");
-      setMessage("signupMessage", "Sending OTP to your email...", "info");
-
-      try {
-        const res = await fetch("/send-otp", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: email })
-        });
-
-        const data = await res.json();
-
-        if (data.status === "success") {
-          document.getElementById("otpBox").classList.add("show");
-          setMessage("signupMessage", data.message, data.message.includes("logs") ? "info" : "success");
-        } else {
-          setMessage("signupMessage", data.message || "OTP sending failed.", "error");
-        }
-      } catch (error) {
-        setMessage("signupMessage", "Server error while sending OTP.", "error");
-      } finally {
-        setButtonLoading("sendOtpBtn", false);
-      }
-    }
-
-    async function verifyEmailOtp() {
-      const email = getEmail();
-      const otp = document.getElementById("otp").value.trim();
-
-      if (!email || !otp) {
-        setMessage("signupMessage", "Enter email and OTP first.", "error");
-        return;
-      }
-
-      setButtonLoading("verifyOtpBtn", true, "Verifying OTP...");
-      setMessage("signupMessage", "Verifying email OTP...", "info");
-
-      try {
-        const res = await fetch("/verify-otp", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: email, otp: otp })
-        });
-
-        const data = await res.json();
-
-        if (data.status === "success") {
-          verifiedEmail = data.email || email;
-          document.getElementById("verifiedEmailText").textContent = verifiedEmail;
-          document.getElementById("emailStep").classList.remove("active");
-          document.getElementById("accountStep").classList.add("active");
-          document.getElementById("stepEmail").classList.remove("active");
-          document.getElementById("stepAccount").classList.add("active");
-          setMessage("signupMessage", data.message, "success");
-        } else {
-          setMessage("signupMessage", data.message || "OTP verification failed.", "error");
-        }
-      } catch (error) {
-        setMessage("signupMessage", "Server error while verifying OTP.", "error");
-      } finally {
-        setButtonLoading("verifyOtpBtn", false);
-      }
-    }
-
-    function validateAccountForm() {
-      const name = document.getElementById("name").value.trim();
-      const username = document.getElementById("username").value.trim();
-      const password = document.getElementById("password").value;
-      const confirmPassword = document.getElementById("confirmPassword").value;
-
-      if (!verifiedEmail) {
-        setMessage("signupMessage", "Please verify email first.", "error");
-        return false;
-      }
-
-      if (!name || !username || !password) {
-        setMessage("signupMessage", "Fill full name, username and password.", "error");
-        return false;
-      }
-
-      if (username.length < 3 || username.length > 30) {
-        setMessage("signupMessage", "Username must be 3 to 30 characters.", "error");
-        return false;
-      }
-
-      if (password.length < 6) {
-        setMessage("signupMessage", "Password must be at least 6 characters.", "error");
-        return false;
-      }
-
-      if (password !== confirmPassword) {
-        setMessage("signupMessage", "Password and confirm password do not match.", "error");
-        return false;
-      }
-
-      return true;
-    }
-
-    async function completeSignup(event) {
-      event.preventDefault();
-      if (!validateAccountForm()) return;
-
-      const data = {
-        name: document.getElementById("name").value.trim(),
-        username: document.getElementById("username").value.trim(),
-        phone: document.getElementById("phone").value.trim(),
-        password: document.getElementById("password").value
-      };
-
-      setButtonLoading("createAccountBtn", true, "Creating account...");
-      setMessage("signupMessage", "Saving verified account securely...", "info");
-
-      try {
-        const res = await fetch("/complete-signup", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data)
-        });
-
-        const result = await res.json();
-
-        if (result.status === "success") {
-          setMessage("signupMessage", result.message, "success");
-          document.getElementById("loginId").value = result.username || data.username;
-          document.getElementById("loginPassword").value = "";
-          setTimeout(() => switchMode("login"), 900);
-        } else {
-          setMessage("signupMessage", result.message || "Signup failed.", "error");
-        }
-      } catch (error) {
-        setMessage("signupMessage", "Server error while creating account.", "error");
-      } finally {
-        setButtonLoading("createAccountBtn", false);
-      }
-    }
-
-    function resetSignupFlow() {
-      verifiedEmail = "";
-      document.getElementById("emailStep").classList.add("active");
-      document.getElementById("accountStep").classList.remove("active");
-      document.getElementById("stepEmail").classList.add("active");
-      document.getElementById("stepAccount").classList.remove("active");
-      document.getElementById("otpBox").classList.remove("show");
-      document.getElementById("otp").value = "";
-      setMessage("signupMessage", "Enter a different email and send OTP again.", "info");
-    }
-
-    async function loginUser(event) {
-      event.preventDefault();
+    async function loginUser() {
+      clearMessage("loginMessage");
 
       const loginId = document.getElementById("loginId").value.trim();
       const password = document.getElementById("loginPassword").value;
@@ -778,53 +378,158 @@
         return;
       }
 
-      setButtonLoading("loginBtn", true, "Logging in...");
-      setMessage("loginMessage", "Checking credentials...", "info");
-
       try {
         const res = await fetch("/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ login_id: loginId, password: password })
+          body: JSON.stringify({
+            login_id: loginId,
+            password: password
+          })
         });
 
         const data = await res.json();
 
         if (data.status === "success") {
-          setMessage("loginMessage", "Login successful. Opening dashboard...", "success");
-          window.location.href = "/index";
+          setMessage("loginMessage", "Login successful. Redirecting...", "success");
+          setTimeout(() => {
+            window.location.href = "/index";
+          }, 600);
         } else {
           setMessage("loginMessage", data.message || "Login failed.", "error");
         }
       } catch (error) {
         setMessage("loginMessage", "Server error during login.", "error");
-      } finally {
-        setButtonLoading("loginBtn", false);
       }
     }
 
-    async function handleCredentialResponse(response) {
-      setMessage("loginMessage", "Verifying Google account...", "info");
+    async function sendMobileOtp() {
+      clearMessage("signupMessage");
+
+      const phone = document.getElementById("signupPhone").value.trim();
+
+      if (!phone || phone.length !== 10) {
+        setMessage("signupMessage", "Enter valid 10-digit mobile number.", "error");
+        return;
+      }
+
+      mobileVerified = false;
+      document.getElementById("createAccountBtn").disabled = true;
+      document.getElementById("verifiedBadge").classList.remove("show");
 
       try {
-        const res = await fetch("/google-login", {
+        const res = await fetch("/send-otp", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token: response.credential })
+          body: JSON.stringify({ phone: phone })
         });
 
         const data = await res.json();
 
         if (data.status === "success") {
-          setMessage("loginMessage", "Google login successful. Opening dashboard...", "success");
-          window.location.href = "/index";
+          document.getElementById("otpBox").classList.add("show");
+
+          if (data.demo_otp) {
+            document.getElementById("demoOtp").textContent = "Demo OTP: " + data.demo_otp;
+          }
+
+          setMessage("signupMessage", data.message || "OTP generated successfully.", "success");
         } else {
-          setMessage("loginMessage", data.message || "Google login failed.", "error");
+          setMessage("signupMessage", data.message || "OTP sending failed.", "error");
         }
-      }  catch (error) {
-  setMessage("signupMessage", "Server error while sending OTP: " + error.message, "error");
-  console.error("OTP error:", error);
-}
+      } catch (error) {
+        setMessage("signupMessage", "Server error while sending OTP: " + error.message, "error");
+      }
+    }
+
+    async function verifyMobileOtp() {
+      clearMessage("signupMessage");
+
+      const phone = document.getElementById("signupPhone").value.trim();
+      const otp = document.getElementById("signupOtp").value.trim();
+
+      if (!otp) {
+        setMessage("signupMessage", "Enter OTP first.", "error");
+        return;
+      }
+
+      try {
+        const res = await fetch("/verify-otp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            phone: phone,
+            otp: otp
+          })
+        });
+
+        const data = await res.json();
+
+        if (data.status === "success") {
+          mobileVerified = true;
+          document.getElementById("verifiedBadge").classList.add("show");
+          document.getElementById("createAccountBtn").disabled = false;
+          setMessage("signupMessage", data.message || "Mobile verified.", "success");
+        } else {
+          setMessage("signupMessage", data.message || "OTP verification failed.", "error");
+        }
+      } catch (error) {
+        setMessage("signupMessage", "Server error while verifying OTP: " + error.message, "error");
+      }
+    }
+
+    async function createAccount() {
+      clearMessage("signupMessage");
+
+      const username = document.getElementById("signupUsername").value.trim();
+      const email = document.getElementById("signupEmail").value.trim();
+      const phone = document.getElementById("signupPhone").value.trim();
+      const password = document.getElementById("signupPassword").value;
+      const confirmPassword = document.getElementById("signupConfirmPassword").value;
+
+      if (!mobileVerified) {
+        setMessage("signupMessage", "Please verify mobile OTP first.", "error");
+        return;
+      }
+
+      if (!username || !email || !phone || !password || !confirmPassword) {
+        setMessage("signupMessage", "Fill all signup fields.", "error");
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        setMessage("signupMessage", "Password and recheck password do not match.", "error");
+        return;
+      }
+
+      try {
+        const res = await fetch("/complete-signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: username,
+            email: email,
+            phone: phone,
+            password: password,
+            confirm_password: confirmPassword
+          })
+        });
+
+        const data = await res.json();
+
+        if (data.status === "success") {
+          setMessage("signupMessage", data.message || "Account created successfully.", "success");
+
+          setTimeout(() => {
+            showPanel("login");
+            document.getElementById("loginId").value = username;
+          }, 900);
+        } else {
+          setMessage("signupMessage", data.message || "Signup failed.", "error");
+        }
+      } catch (error) {
+        setMessage("signupMessage", "Server error while creating account: " + error.message, "error");
+      }
     }
   </script>
 </body>
