@@ -1,9 +1,11 @@
 let activeWorkspace = "topic";
 
+const CURRENT_USER_ID = window.CURRENT_USER_ID || "guest";
+
 const STORAGE_KEYS = {
   theme: "aiWriterTheme",
-  actions: "aiWriterActions",
-  recents: "aiWriterRecentOutputs"
+  actions: `aiWriterActions_${CURRENT_USER_ID}`,
+  recents: `aiWriterRecentOutputs_${CURRENT_USER_ID}`
 };
 
 document.addEventListener("DOMContentLoaded", function () {
