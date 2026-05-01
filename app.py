@@ -430,7 +430,6 @@ def send_otp():
         print("Send OTP error:", e)
         return jsonify({"status": "fail", "message": "OTP failed. Check database/mail settings."})
 
-
 @app.route("/verify-otp", methods=["POST"])
 def verify_otp():
     data = request.get_json(silent=True) or {}
@@ -444,10 +443,10 @@ def verify_otp():
         return jsonify({"status": "fail", "message": "OTP is required"})
 
     pending_email = session.get("pending_signup_email")
-    otp_hash = session.get("pending_signup_otp_hash")
+    saved_otp = session.get("pending_signup_otp")
     pending_time = session.get("pending_signup_time")
 
-    if not pending_email or not otp_hash or not pending_time:
+    if not pending_email or not saved_otp or not pending_time:
         return jsonify({"status": "fail", "message": "Please send OTP first"})
 
     if pending_email != email:
@@ -455,16 +454,16 @@ def verify_otp():
 
     if time.time() - float(pending_time) > OTP_EXPIRY_SECONDS:
         session.pop("pending_signup_email", None)
-        session.pop("pending_signup_otp_hash", None)
+        session.pop("pending_signup_otp", None)
         session.pop("pending_signup_time", None)
         session.pop("verified_signup_email", None)
         return jsonify({"status": "fail", "message": "OTP expired. Send a new OTP."})
 
-    if not bcrypt.checkpw(otp.encode("utf-8"), otp_hash.encode("utf-8")):
+    if otp != saved_otp:
         return jsonify({"status": "fail", "message": "Invalid OTP"})
 
     session["verified_signup_email"] = email
-    session.pop("pending_signup_otp_hash", None)
+    session.pop("pending_signup_otp", None)
 
     return jsonify({
         "status": "success",
@@ -524,7 +523,7 @@ def complete_signup():
         conn.close()
 
         session.pop("pending_signup_email", None)
-        session.pop("pending_signup_otp_hash", None)
+        session.pop("pending_signup_otp", None)
         session.pop("pending_signup_time", None)
         session.pop("verified_signup_email", None)
 
