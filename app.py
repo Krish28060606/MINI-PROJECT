@@ -413,10 +413,9 @@ def send_otp():
             })
 
         otp = str(random.randint(100000, 999999))
-        otp_hash = bcrypt.hashpw(otp.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
         session["pending_signup_email"] = email
-        session["pending_signup_otp_hash"] = otp_hash
+        session["pending_signup_otp"] = otp
         session["pending_signup_time"] = time.time()
         session.pop("verified_signup_email", None)
 
