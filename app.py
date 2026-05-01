@@ -114,6 +114,42 @@ def valid_email(email):
     return bool(email) and email.endswith(ALLOWED_DOMAINS)
 
 
+def validate_email_only(email):
+    email = (email or "").strip().lower()
+
+    if not valid_email(email):
+        return None, "Use Gmail, Outlook, or GLA email only"
+
+    return email, None
+
+
+def validate_complete_signup_payload(data, verified_email):
+    name = (data.get("name") or "").strip()
+    username = clean_username(data.get("username"))
+    phone = (data.get("phone") or "").strip()
+    password = data.get("password") or ""
+
+    if not verified_email:
+        return None, "Please verify your email first"
+
+    if not name:
+        return None, "Full name is required"
+
+    if len(username) < 3 or len(username) > 30:
+        return None, "Username must be 3 to 30 characters"
+
+    if len(password) < 6:
+        return None, "Password must be at least 6 characters"
+
+    return {
+        "name": name,
+        "username": username,
+        "email": verified_email,
+        "phone": phone,
+        "password": password,
+    }, None
+
+
 def clean_username(username):
     return re.sub(r"[^a-zA-Z0-9_]", "", (username or "").strip().lower())
 
@@ -355,7 +391,7 @@ def index():
 @app.route("/send-otp", methods=["POST"])
 def send_otp():
     data = request.get_json(silent=True) or {}
-    payload, error = validate_signup_payload(data)
+    email, error = validate_email_only(data.get("email"))
 
     if error:
         return jsonify({"status": "fail", "message": error})
@@ -364,10 +400,7 @@ def send_otp():
         conn = get_connection()
         cur = conn.cursor()
 
-        cur.execute(
-            "SELECT id FROM users WHERE email = %s OR username = %s",
-            (payload["email"], payload["username"])
-        )
+        cur.execute("SELECT id FROM users WHERE email = %s", (email,))
         existing_user = cur.fetchone()
 
         cur.close()
@@ -376,17 +409,18 @@ def send_otp():
         if existing_user:
             return jsonify({
                 "status": "fail",
-                "message": "Email or username already exists. Please login."
+                "message": "This email is already registered. Please login with your username."
             })
 
         otp = str(random.randint(100000, 999999))
         otp_hash = bcrypt.hashpw(otp.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
-        session["pending_signup_email"] = payload["email"]
+        session["pending_signup_email"] = email
         session["pending_signup_otp_hash"] = otp_hash
         session["pending_signup_time"] = time.time()
+        session.pop("verified_signup_email", None)
 
-        sent, message = send_otp_email(payload["email"], otp)
+        sent, message = send_otp_email(email, otp)
 
         if not sent:
             return jsonify({"status": "fail", "message": message})
@@ -401,7 +435,7 @@ def send_otp():
 @app.route("/verify-otp", methods=["POST"])
 def verify_otp():
     data = request.get_json(silent=True) or {}
-    payload, error = validate_signup_payload(data)
+    email, error = validate_email_only(data.get("email"))
     otp = (data.get("otp") or "").strip()
 
     if error:
@@ -417,17 +451,37 @@ def verify_otp():
     if not pending_email or not otp_hash or not pending_time:
         return jsonify({"status": "fail", "message": "Please send OTP first"})
 
-    if pending_email != payload["email"]:
+    if pending_email != email:
         return jsonify({"status": "fail", "message": "Email changed. Please send OTP again."})
 
     if time.time() - float(pending_time) > OTP_EXPIRY_SECONDS:
         session.pop("pending_signup_email", None)
         session.pop("pending_signup_otp_hash", None)
         session.pop("pending_signup_time", None)
+        session.pop("verified_signup_email", None)
         return jsonify({"status": "fail", "message": "OTP expired. Send a new OTP."})
 
     if not bcrypt.checkpw(otp.encode("utf-8"), otp_hash.encode("utf-8")):
         return jsonify({"status": "fail", "message": "Invalid OTP"})
+
+    session["verified_signup_email"] = email
+    session.pop("pending_signup_otp_hash", None)
+
+    return jsonify({
+        "status": "success",
+        "message": "Email verified. Now create your username and password.",
+        "email": email
+    })
+
+
+@app.route("/complete-signup", methods=["POST"])
+def complete_signup():
+    data = request.get_json(silent=True) or {}
+    verified_email = session.get("verified_signup_email")
+    payload, error = validate_complete_signup_payload(data, verified_email)
+
+    if error:
+        return jsonify({"status": "fail", "message": error})
 
     try:
         conn = get_connection()
@@ -444,7 +498,7 @@ def verify_otp():
             conn.close()
             return jsonify({
                 "status": "fail",
-                "message": "Email or username already exists. Please login."
+                "message": "Email or username already exists. Please choose another username or login."
             })
 
         hashed_password = bcrypt.hashpw(
@@ -473,23 +527,22 @@ def verify_otp():
         session.pop("pending_signup_email", None)
         session.pop("pending_signup_otp_hash", None)
         session.pop("pending_signup_time", None)
+        session.pop("verified_signup_email", None)
 
         return jsonify({
             "status": "success",
-            "message": "Email verified and account created. Please login."
+            "message": "Account created successfully. Login with your username.",
+            "username": payload["username"]
         })
 
     except Exception as e:
-        print("Verify OTP / signup error:", e)
+        print("Complete signup error:", e)
         return jsonify({"status": "fail", "message": "Signup failed. Check database connection."})
 
 
 @app.route("/signup", methods=["POST"])
 def signup():
-    return jsonify({
-        "status": "fail",
-        "message": "Please verify OTP first to create your account."
-    })
+    return complete_signup()
 
 
 @app.route("/login", methods=["POST"])
