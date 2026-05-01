@@ -1,362 +1,708 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI.CREATIVE — Secure Login</title>
 
-<script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
-<title>AI.CREATIVE — Ultimate AI Writing</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #060815;
+      --bg2: #0b1024;
+      --card: rgba(255, 255, 255, 0.08);
+      --card2: rgba(255, 255, 255, 0.13);
+      --border: rgba(255, 255, 255, 0.16);
+      --text: #f8fbff;
+      --muted: #a9b6cf;
+      --primary: #6c7cff;
+      --cyan: #30e7ff;
+      --pink: #ff4fd8;
+      --green: #27f5a9;
+      --danger: #ff6b7a;
+      --warning: #ffd166;
+      --shadow: 0 30px 90px rgba(0, 0, 0, 0.42);
+    }
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    * { box-sizing: border-box; }
 
-<style>
-:root{
-    --bg:#0a0a1a;
-    --primary:#667eea;
-    --secondary:#764ba2;
-    --accent:#f5a623;
-    --glow:#667eea;
-    --glass-bg:rgba(255,255,255,0.06);
-    --glass-border:rgba(255,255,255,0.12);
-    --ink:#e6f3ff;
-    --muted:#a6b2c2;
-}
+    html, body { min-height: 100%; }
 
-/* Base */
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-    margin:0;
-    background:radial-gradient(1200px 800px at 10% -10%, rgba(96,247,255,0.10), transparent 60%),
-               radial-gradient(900px 600px at 100% 110%, rgba(122,92,255,0.08), transparent 55%),
-               linear-gradient(180deg,#04060b 0%, #090c16 100%);
-    color:var(--ink);
-    font-family:'Inter','Poppins',system-ui,-apple-system,Segoe UI,Roboto,Arial,Helvetica,sans-serif;
-    overflow-x:hidden;
-}
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 12%, rgba(48, 231, 255, 0.18), transparent 28%),
+        radial-gradient(circle at 88% 10%, rgba(255, 79, 216, 0.14), transparent 30%),
+        radial-gradient(circle at 70% 92%, rgba(39, 245, 169, 0.13), transparent 32%),
+        linear-gradient(135deg, var(--bg), var(--bg2));
+      overflow-x: hidden;
+    }
 
-/* Subtle grain */
-body::before{
-    content:"";
-    position:fixed;inset:0;pointer-events:none;z-index:0;
-    background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope="0.05"/></feComponentTransfer></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.35"/></svg>');
-    mix-blend-mode:soft-light;opacity:.35
-}
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+      background-size: 52px 52px;
+      mask-image: radial-gradient(circle at center, black, transparent 78%);
+    }
 
-/* Background orbs and grid */
-.bg-orbs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.5;animation:orb-float 22s ease-in-out infinite}
-.orb-1{width:520px;height:520px;background:radial-gradient(circle, rgba(102,126,234,.45), transparent 70%);top:-140px;left:-120px;animation-delay:0s}
-.orb-2{width:420px;height:420px;background:radial-gradient(circle, rgba(118,75,162,.38), transparent 70%);bottom:-120px;right:-120px;animation-delay:-8s}
-.orb-3{width:320px;height:320px;background:radial-gradient(circle, rgba(245,166,35,.30), transparent 70%);top:45%;left:55%;transform:translate(-50%,-50%);animation-delay:-14s;opacity:.35}
-@keyframes orb-float{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(28px,-26px) scale(1.05)}50%{transform:translate(-18px,18px) scale(.96)}75%{transform:translate(18px,8px) scale(1.02)}}
-.grid-overlay{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);background-size:46px 46px;mix-blend-mode:overlay;opacity:.25}
+    .orb {
+      position: fixed;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.75;
+      pointer-events: none;
+      animation: float 16s ease-in-out infinite;
+    }
 
-/* Navigation */
-nav{
-    position:fixed;top:0;left:0;right:0;z-index:10;
-    padding:18px 7vw;display:flex;align-items:center;justify-content:space-between;
-    background:linear-gradient(180deg, rgba(5,8,14,0.85), rgba(5,8,14,0.55) 60%, transparent 100%);
-    backdrop-filter:blur(10px);
-    border-bottom:1px solid rgba(255,255,255,0.06)
-}
-.logo{
-    font-weight:900;letter-spacing:-.6px;font-size:1.5rem;
-    background:conic-gradient(from 120deg at 50% 50%, var(--primary), var(--secondary), var(--accent), var(--primary));
-    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent
-}
+    .orb.one { left: -110px; top: 120px; background: rgba(108, 124, 255, 0.45); }
+    .orb.two { right: -120px; top: -90px; background: rgba(255, 79, 216, 0.35); animation-delay: -5s; }
+    .orb.three { left: 52%; bottom: -150px; background: rgba(39, 245, 169, 0.28); animation-delay: -9s; }
 
-/* Layout */
-.hero{min-height:100svh;display:grid;place-items:center;padding:120px 20px 60px;position:relative;z-index:1}
+    @keyframes float {
+      0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+      50% { transform: translate3d(28px, -24px, 0) scale(1.08); }
+    }
 
-/* Floating decor lines */
-.hero::before,.hero::after{
-    content:"";position:absolute;inset:auto;pointer-events:none;filter:blur(14px);opacity:.3
-}
-.hero::before{top:12%;left:8%;width:40vw;max-width:620px;height:2px;background:linear-gradient(90deg,transparent, var(--primary), transparent)}
-.hero::after{bottom:10%;right:10%;width:36vw;max-width:560px;height:2px;background:linear-gradient(90deg,transparent, var(--accent), transparent)}
+    .page {
+      position: relative;
+      z-index: 2;
+      width: min(1180px, calc(100% - 32px));
+      min-height: 100vh;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      align-items: center;
+      gap: 44px;
+      padding: 28px 0;
+    }
 
-/* Card */
-.auth-box{
-    position:relative;isolation:isolate;
-    width:100%;max-width:440px;padding:48px 42px;border-radius:22px;text-align:center;
-    background:linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.06) 100%);
-    border:1px solid var(--glass-border);
-    box-shadow:0 20px 60px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.12);
-    transform:translateY(14px);opacity:0;animation:card-in .8s cubic-bezier(.2,.8,.2,1) .1s forwards
-}
-@keyframes card-in{to{opacity:1;transform:translateY(0)}}
+    .brand {
+      position: fixed;
+      top: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(1180px, calc(100% - 32px));
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(8, 12, 28, 0.58);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 16px 45px rgba(0,0,0,0.20);
+    }
 
-/* Edge glow */
-.auth-box::after{
-    content:"";position:absolute;inset:-1px;border-radius:22px;pointer-events:none;
-    background:linear-gradient(120deg, rgba(96,247,255,.25), rgba(122,92,255,.18) 45%, rgba(255,91,214,.15) 65%, transparent 80%);
-    -webkit-mask:linear-gradient(#000,#000) content-box, linear-gradient(#000,#000);
-    -webkit-mask-composite:xor;mask-composite:exclude;padding:1px
-}
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+    }
 
-/* Title */
-.auth-box h2{
-    margin:0 0 26px;font-size:2.05rem;line-height:1.2;font-weight:800;letter-spacing:-.4px;
-    background:linear-gradient(180deg,#fff 0%, #cfe8ff 100%);
-    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent
-}
+    .logo-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 15px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--cyan), var(--primary), var(--pink));
+      box-shadow: 0 12px 35px rgba(108,124,255,0.35);
+    }
 
-/* Inputs */
-.input-group{position:relative;margin:18px 0;text-align:left}
-.input-group input{
-    width:100%;padding:16px 16px 16px 48px;border-radius:14px;border:1px solid var(--glass-border);
-    background:linear-gradient(180deg, rgba(5,8,14,.65) 0%, rgba(5,8,14,.45) 100%);
-    color:var(--ink);font-size:.98rem;font-weight:500;outline:none;transition:border .2s, box-shadow .2s, transform .2s
-}
-.input-group input::placeholder{color:rgba(230,243,255,.45)}
-.input-group input:focus{border-color:rgba(102,126,234,.6);box-shadow:0 0 0 6px rgba(102,126,234,.12), 0 10px 34px -10px rgba(102,126,234,.28);transform:translateY(-1px)}
+    .secure-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 0.86rem;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.06);
+    }
 
-/* Input icons */
-.input-group::before{
-    content:"";position:absolute;left:14px;top:50%;width:20px;height:20px;transform:translateY(-50%);
-    opacity:.7;filter:drop-shadow(0 0 6px rgba(96,247,255,.3))
-}
-.input-group:nth-of-type(1)::before{background:conic-gradient(from 90deg, var(--primary), transparent 60%) border-box;border-radius:50%}
-.input-group:nth-of-type(2)::before{background:conic-gradient(from 90deg, var(--secondary), transparent 60%) border-box;border-radius:50%}
-.input-group:nth-of-type(3)::before{background:conic-gradient(from 90deg, var(--accent), transparent 60%) border-box;border-radius:50%}
+    .hero h1 {
+      margin: 0 0 18px;
+      font-size: clamp(2.5rem, 6vw, 5.35rem);
+      line-height: 0.92;
+      letter-spacing: -0.075em;
+    }
 
-/* Button */
-.auth-btn{
-    width:100%;padding:16px 18px;margin-top:14px;border:none;border-radius:14px;cursor:pointer;
-    font-weight:800;letter-spacing:.2px;color:#ffffff;
-    background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    background-size:220% 220%;
-    transition:transform .18s ease, box-shadow .25s ease, background-position .8s ease;
-    box-shadow:0 12px 30px rgba(102,126,234,.35), 0 8px 18px rgba(118,75,162,.30)
-}
-.auth-btn:hover{transform:translateY(-2px);background-position:100% 50%;box-shadow:0 18px 40px rgba(102,126,234,.45), 0 10px 24px rgba(118,75,162,.38)}
-.auth-btn:active{transform:translateY(0)}
-.auth-btn .btn-text{position:relative;z-index:1}
-.auth-btn.loading .btn-text{opacity:0}
-.spinner{display:none;width:18px;height:18px;border:2px solid rgba(255,255,255,.25);border-top-color:#ffffff;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto}
-.auth-btn.loading .spinner{display:block;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
-@keyframes spin{to{transform:rotate(360deg)}}
+    .hero h1 span {
+      display: block;
+      background: linear-gradient(120deg, #ffffff, #c9f8ff, #e8d7ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
 
-/* Google */
-.g_id_signin{margin-top:22px !important;display:flex !important;justify-content:center}
-.g_id_signin iframe{border-radius:12px !important}
+    .hero p {
+      max-width: 620px;
+      margin: 0 0 24px;
+      color: var(--muted);
+      font-size: 1.06rem;
+      line-height: 1.8;
+    }
 
-/* Switch */
-.switch{margin-top:24px;display:inline-flex;gap:8px;align-items:center;padding:8px 14px;border-radius:10px;cursor:pointer;color:var(--muted);transition:background .2s, color .2s}
-.switch:hover{color:var(--ink);background:rgba(255,255,255,.06)}
-.switch span{background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
+    .feature-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 30px;
+    }
 
-/* Error */
-#errorMsg{min-height:22px;margin-top:12px;font-size:.88rem;color:#ff6b7a;opacity:0;transform:translateY(-8px);transition:opacity .2s, transform .2s}
-#errorMsg.show{opacity:1;transform:translateY(0)}
+    .chip {
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.07);
+      color: #dbe7ff;
+      font-weight: 700;
+      font-size: 0.9rem;
+      backdrop-filter: blur(18px);
+    }
 
-/* Mode-specific theming */
-body[data-mode="signup"] .auth-box h2{background:linear-gradient(180deg,#fff 0%, #e6d5ff 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-body[data-mode="signup"] .auth-btn{background:linear-gradient(135deg,#e6d5ff 0%, #b5a0e6 45%, #f5d98a 100%);color:#1a0a2e}
-body[data-mode="signup"] .auth-btn:hover{box-shadow:0 18px 40px rgba(181,160,230,.35), 0 10px 24px rgba(245,217,138,.28)}
-body[data-mode="signup"] .input-group input:focus{border-color:rgba(181,160,230,.65);box-shadow:0 0 0 6px rgba(181,160,230,.14), 0 10px 34px -10px rgba(181,160,230,.28)}
+    .auth-card {
+      width: 100%;
+      max-width: 480px;
+      justify-self: end;
+      padding: 28px;
+      border: 1px solid var(--border);
+      border-radius: 34px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.06)),
+        rgba(10, 14, 31, 0.72);
+      backdrop-filter: blur(28px);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
 
-/* Signup background accents */
-body[data-mode="signup"] .orb-1{background:radial-gradient(circle, rgba(181,160,230,.40), transparent 70%)}
-body[data-mode="signup"] .orb-2{background:radial-gradient(circle, rgba(245,217,138,.34), transparent 70%)}
-body[data-mode="signup"] .orb-3{background:radial-gradient(circle, rgba(245,166,35,.32), transparent 70%)}
-body[data-mode="signup"] .hero::before{background:linear-gradient(90deg,transparent, #b5a0e6, transparent)}
-body[data-mode="signup"] .hero::after{background:linear-gradient(90deg,transparent, #f5d98a, transparent)}
+    .auth-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(48,231,255,0.7), rgba(108,124,255,0.35), rgba(255,79,216,0.48));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
 
-/* Responsive */
-@media (max-width:480px){
-  .auth-box{padding:38px 26px;margin:0 14px}
-  .auth-box h2{font-size:1.7rem}
-  nav{padding:14px 5vw}
-  .logo{font-size:1.28rem}
-}
-</style>
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 8px;
+      border-radius: 22px;
+      background: rgba(0,0,0,0.18);
+      border: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+
+    .tab {
+      border: 0;
+      padding: 12px;
+      border-radius: 16px;
+      color: var(--muted);
+      background: transparent;
+      cursor: pointer;
+      font-weight: 900;
+      transition: 0.22s ease;
+    }
+
+    .tab.active {
+      color: white;
+      background: linear-gradient(135deg, var(--primary), #8d5cff);
+      box-shadow: 0 16px 34px rgba(108,124,255,0.28);
+    }
+
+    .auth-title {
+      margin: 0 0 6px;
+      font-size: 1.72rem;
+      letter-spacing: -0.04em;
+    }
+
+    .auth-subtitle {
+      margin: 0 0 22px;
+      color: var(--muted);
+      font-size: 0.94rem;
+      line-height: 1.55;
+    }
+
+    .form { display: none; }
+    .form.active { display: block; animation: fadeUp 0.28s ease; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .field { margin: 13px 0; }
+
+    .field label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0 0 8px;
+      color: #dce7ff;
+      font-size: 0.84rem;
+      font-weight: 800;
+    }
+
+    .field input {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      outline: none;
+      padding: 15px 16px;
+      color: white;
+      background: rgba(255,255,255,0.07);
+      transition: 0.22s ease;
+    }
+
+    .field input::placeholder { color: rgba(226,235,255,0.42); }
+
+    .field input:focus {
+      border-color: rgba(48,231,255,0.58);
+      box-shadow: 0 0 0 5px rgba(48,231,255,0.10);
+      background: rgba(255,255,255,0.10);
+    }
+
+    .otp-box {
+      display: none;
+      margin: 16px 0;
+      padding: 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(39,245,169,0.28);
+      background: rgba(39,245,169,0.08);
+    }
+
+    .otp-box.show { display: block; }
+
+    .button {
+      width: 100%;
+      border: 0;
+      border-radius: 18px;
+      padding: 15px 16px;
+      color: white;
+      background: linear-gradient(135deg, var(--cyan), var(--primary), #8d5cff);
+      font-weight: 950;
+      letter-spacing: -0.015em;
+      cursor: pointer;
+      box-shadow: 0 18px 45px rgba(108,124,255,0.28);
+      transition: 0.22s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .button:hover { transform: translateY(-2px); box-shadow: 0 24px 56px rgba(108,124,255,0.38); }
+    .button:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
+
+    .button.secondary {
+      margin-top: 10px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid var(--border);
+      box-shadow: none;
+    }
+
+    .google-wrap {
+      margin-top: 18px;
+      display: grid;
+      place-items: center;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 22px 0 6px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .divider::before, .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .message {
+      min-height: 22px;
+      margin: 14px 0 0;
+      font-size: 0.9rem;
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .message.success { color: var(--green); }
+    .message.error { color: var(--danger); }
+    .message.info { color: var(--warning); }
+
+    .mini-note {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.55;
+    }
+
+    @media (max-width: 920px) {
+      .page {
+        grid-template-columns: 1fr;
+        padding-top: 112px;
+        gap: 24px;
+      }
+
+      .auth-card { justify-self: stretch; max-width: none; }
+      .hero h1 { font-size: clamp(2.35rem, 12vw, 4.5rem); }
+      .secure-pill { display: none; }
+    }
+
+    @media (max-width: 520px) {
+      .brand { top: 12px; }
+      .auth-card { padding: 20px; border-radius: 28px; }
+      .page { width: min(100% - 24px, 1180px); }
+    }
+  </style>
 </head>
 
 <body>
+  <div class="orb one"></div>
+  <div class="orb two"></div>
+  <div class="orb three"></div>
 
-<!-- ANIMATED BACKGROUND -->
-<div class="bg-orbs">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-</div>
-<div class="grid-overlay"></div>
+  <header class="brand">
+    <div class="logo">
+      <div class="logo-icon">✍️</div>
+      <div>
+        <div>AI.CREATIVE</div>
+        <small style="color: var(--muted); font-weight: 700; letter-spacing: 0;">Secure AI Writing Studio</small>
+      </div>
+    </div>
+    <div class="secure-pill">🔐 OTP + Google verified access</div>
+  </header>
 
-<nav>
-    <div class="logo">AI.CREATIVE</div>
-</nav>
+  <main class="page">
+    <section class="hero">
+      <h1><span>Write smarter.</span><span>Login safer.</span></h1>
+      <p>
+        A polished authentication experience for your AI writing platform with username login,
+        email OTP verification, secure password hashing, and Google sign-in support.
+      </p>
+      <div class="feature-row">
+        <div class="chip">✅ Username / Email Login</div>
+        <div class="chip">📩 OTP Verification</div>
+        <div class="chip">🔒 Hashed Passwords</div>
+        <div class="chip">⚡ Flask + PostgreSQL</div>
+      </div>
+    </section>
 
-<div class="hero">
+    <section class="auth-card">
+      <div class="tabs">
+        <button class="tab active" id="loginTab" onclick="switchMode('login')">Login</button>
+        <button class="tab" id="signupTab" onclick="switchMode('signup')">Create Account</button>
+      </div>
 
-<div class="auth-box">
+      <form class="form active" id="loginForm" onsubmit="loginUser(event)">
+        <h2 class="auth-title">Welcome back</h2>
+        <p class="auth-subtitle">Login using your username or email address.</p>
 
-<h2 id="authTitle">Welcome Back</h2>
+        <div class="field">
+          <label for="loginId">Username or Email</label>
+          <input id="loginId" type="text" placeholder="example: anubhav or you@gmail.com" autocomplete="username" />
+        </div>
 
-<div class="input-group">
-    <input id="email" type="email" placeholder="Email Address">
-</div>
+        <div class="field">
+          <label for="loginPassword">Password</label>
+          <input id="loginPassword" type="password" placeholder="Enter your password" autocomplete="current-password" />
+        </div>
 
-<div class="input-group">
-    <input id="mobile" type="text" placeholder="Mobile Number">
-</div>
+        <button class="button" id="loginBtn" type="submit">Login to Dashboard</button>
 
-<div class="input-group">
-    <input id="password" type="password" placeholder="Password">
-</div>
+        <div class="divider">or</div>
+        <div id="g_id_onload"
+             data-client_id="{{ google_client_id }}"
+             data-callback="handleCredentialResponse"
+             data-auto_prompt="false">
+        </div>
+        <div class="google-wrap">
+          <div class="g_id_signin"
+               data-type="standard"
+               data-size="large"
+               data-theme="outline"
+               data-text="signin_with"
+               data-shape="pill">
+          </div>
+        </div>
 
-<div id="errorMsg"></div>
+        <div id="loginMessage" class="message"></div>
+      </form>
 
-<button class="auth-btn" onclick="submitAuth()">
-    <span class="btn-text">Continue</span>
-    <div class="spinner"></div>
-</button>
+      <form class="form" id="signupForm" onsubmit="verifyOtpAndSignup(event)">
+        <h2 class="auth-title">Create verified account</h2>
+        <p class="auth-subtitle">Enter your details, send OTP, verify email, then login with username or email.</p>
 
-<!-- GOOGLE LOGIN -->
-<div id="g_id_onload"
-data-client_id="293196604777-a7jgop08pdsb6pgg3k98190k7q2u747k.apps.googleusercontent.com"
-data-callback="handleCredentialResponse">
-</div>
+        <div class="field">
+          <label for="name">Full Name</label>
+          <input id="name" type="text" placeholder="Your full name" autocomplete="name" />
+        </div>
 
-<div class="g_id_signin"
-data-type="standard"
-data-size="large"
-data-theme="outline"
-data-text="signin_with"
-data-shape="rectangular">
-</div>
+        <div class="field">
+          <label for="username">Username <span>3–30 letters/numbers/_</span></label>
+          <input id="username" type="text" placeholder="example: anubhav_ai" autocomplete="username" />
+        </div>
 
-<div class="switch" onclick="toggleMode()">
-    <span id="switchText">Create Account</span>
-</div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" type="email" placeholder="Gmail / Outlook / GLA email" autocomplete="email" />
+        </div>
 
-</div>
+        <div class="field">
+          <label for="phone">Mobile Number</label>
+          <input id="phone" type="text" placeholder="Optional mobile number" autocomplete="tel" />
+        </div>
 
-</div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" type="password" placeholder="Minimum 6 characters" autocomplete="new-password" />
+        </div>
 
-<script>
+        <div class="field">
+          <label for="confirmPassword">Confirm Password</label>
+          <input id="confirmPassword" type="password" placeholder="Re-enter password" autocomplete="new-password" />
+        </div>
 
-let mode="login"
-document.body.setAttribute("data-mode", mode)
+        <button class="button secondary" id="sendOtpBtn" type="button" onclick="sendOtp()">Send OTP to Email</button>
 
-function toggleMode(){
+        <div class="otp-box" id="otpBox">
+          <div class="field" style="margin-top: 0;">
+            <label for="otp">Enter OTP</label>
+            <input id="otp" type="text" placeholder="6-digit OTP" maxlength="6" inputmode="numeric" />
+          </div>
+          <button class="button" id="verifyBtn" type="submit">Verify OTP & Create Account</button>
+        </div>
 
-mode = mode==="login"?"signup":"login"
-document.body.setAttribute("data-mode", mode)
+        <div id="signupMessage" class="message"></div>
+        <p class="mini-note">
+          For real Gmail sending on Render, add <b>MAIL_USERNAME</b> and <b>MAIL_PASSWORD</b> as environment variables.
+          Use a Gmail App Password, not your normal Gmail password.
+        </p>
+      </form>
+    </section>
+  </main>
 
-document.getElementById("authTitle").innerText =
-mode==="login"?"Welcome Back":"Create Account"
+  <script>
+    let mode = "login";
 
-document.getElementById("switchText").innerText =
-mode==="login"?"Create Account":"Already have an account?"
+    function switchMode(nextMode) {
+      mode = nextMode;
+      document.getElementById("loginForm").classList.toggle("active", mode === "login");
+      document.getElementById("signupForm").classList.toggle("active", mode === "signup");
+      document.getElementById("loginTab").classList.toggle("active", mode === "login");
+      document.getElementById("signupTab").classList.toggle("active", mode === "signup");
+      clearMessage("loginMessage");
+      clearMessage("signupMessage");
+    }
 
-}
+    function getSignupData() {
+      return {
+        name: document.getElementById("name").value.trim(),
+        username: document.getElementById("username").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+        password: document.getElementById("password").value,
+        otp: document.getElementById("otp").value.trim()
+      };
+    }
 
-function submitAuth(){
+    function setMessage(id, text, type) {
+      const el = document.getElementById(id);
+      el.textContent = text || "";
+      el.className = "message " + (type || "");
+    }
 
-let email=document.getElementById("email").value
-let mobile=document.getElementById("mobile").value
-let password=document.getElementById("password").value
-let errorMsg=document.getElementById("errorMsg")
+    function clearMessage(id) {
+      setMessage(id, "", "");
+    }
 
-if(mode==="signup"){
+    function setButtonLoading(id, isLoading, text) {
+      const btn = document.getElementById(id);
+      btn.disabled = isLoading;
+      if (!btn.dataset.original) btn.dataset.original = btn.textContent;
+      btn.textContent = isLoading ? text : btn.dataset.original;
+    }
 
-fetch("/signup",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-name:"User",
-email:email,
-phone:mobile,
-password:password
-})
-})
+    function validateSignupBeforeOtp() {
+      const data = getSignupData();
+      const confirmPassword = document.getElementById("confirmPassword").value;
 
-.then(res=>res.json())
-.then(data=>{
-alert("Signup successful! Please login.")
-toggleMode()
-})
+      if (!data.name || !data.username || !data.email || !data.password) {
+        setMessage("signupMessage", "Please fill name, username, email and password.", "error");
+        return false;
+      }
 
-}
+      if (data.username.length < 3 || data.username.length > 30) {
+        setMessage("signupMessage", "Username must be 3 to 30 characters.", "error");
+        return false;
+      }
 
-else{
+      if (data.password.length < 6) {
+        setMessage("signupMessage", "Password must be at least 6 characters.", "error");
+        return false;
+      }
 
-fetch("/login",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-email:email,
-mobile:mobile,
-password:password
-})
-})
+      if (data.password !== confirmPassword) {
+        setMessage("signupMessage", "Password and confirm password do not match.", "error");
+        return false;
+      }
 
-.then(res=>res.json())
-.then(data=>{
+      return true;
+    }
 
-if(data.status==="success"){
-window.location.href="/index"
-}
-else{
-errorMsg.innerText=data.message
-errorMsg.classList.add("show")
-setTimeout(()=>{
-errorMsg.classList.remove("show")
-},5000)
-}
+    async function sendOtp() {
+      if (!validateSignupBeforeOtp()) return;
 
-})
+      setButtonLoading("sendOtpBtn", true, "Sending OTP...");
+      setMessage("signupMessage", "Sending OTP to your email...", "info");
 
-}
+      try {
+        const res = await fetch("/send-otp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(getSignupData())
+        });
 
-}
-function handleCredentialResponse(response){
+        const data = await res.json();
 
-fetch("/google-login",{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({
-token:response.credential
-})
-})
+        if (data.status === "success") {
+          document.getElementById("otpBox").classList.add("show");
+          setMessage("signupMessage", data.message, data.message.includes("logs") ? "info" : "success");
+        } else {
+          setMessage("signupMessage", data.message || "OTP sending failed.", "error");
+        }
+      } catch (error) {
+        setMessage("signupMessage", "Server error while sending OTP.", "error");
+      } finally {
+        setButtonLoading("sendOtpBtn", false);
+      }
+    }
 
-.then(res=>res.json())
+    async function verifyOtpAndSignup(event) {
+      event.preventDefault();
+      if (!validateSignupBeforeOtp()) return;
 
-.then(data=>{
+      const data = getSignupData();
+      if (!data.otp) {
+        setMessage("signupMessage", "Please enter OTP first.", "error");
+        return;
+      }
 
-console.log("Google login response:",data)
+      setButtonLoading("verifyBtn", true, "Verifying...");
+      setMessage("signupMessage", "Verifying OTP and creating account...", "info");
 
-if(data.status==="success"){
+      try {
+        const res = await fetch("/verify-otp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
 
-// small delay ensures session is created before redirect
-setTimeout(()=>{
-window.location.href="/index"
-},200)
+        const result = await res.json();
 
-}else{
+        if (result.status === "success") {
+          setMessage("signupMessage", result.message, "success");
+          document.getElementById("loginId").value = data.username;
+          document.getElementById("loginPassword").value = "";
+          setTimeout(() => switchMode("login"), 900);
+        } else {
+          setMessage("signupMessage", result.message || "OTP verification failed.", "error");
+        }
+      } catch (error) {
+        setMessage("signupMessage", "Server error while verifying OTP.", "error");
+      } finally {
+        setButtonLoading("verifyBtn", false);
+      }
+    }
 
-alert("Google login failed")
+    async function loginUser(event) {
+      event.preventDefault();
 
-}
+      const loginId = document.getElementById("loginId").value.trim();
+      const password = document.getElementById("loginPassword").value;
 
-})
+      if (!loginId || !password) {
+        setMessage("loginMessage", "Enter username/email and password.", "error");
+        return;
+      }
 
-.catch(error=>{
-console.error("Google login error:",error)
-})
+      setButtonLoading("loginBtn", true, "Logging in...");
+      setMessage("loginMessage", "Checking credentials...", "info");
 
-}
+      try {
+        const res = await fetch("/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ login_id: loginId, password: password })
+        });
 
-</script>
+        const data = await res.json();
 
+        if (data.status === "success") {
+          setMessage("loginMessage", "Login successful. Opening dashboard...", "success");
+          window.location.href = "/index";
+        } else {
+          setMessage("loginMessage", data.message || "Login failed.", "error");
+        }
+      } catch (error) {
+        setMessage("loginMessage", "Server error during login.", "error");
+      } finally {
+        setButtonLoading("loginBtn", false);
+      }
+    }
+
+    async function handleCredentialResponse(response) {
+      setMessage("loginMessage", "Verifying Google account...", "info");
+
+      try {
+        const res = await fetch("/google-login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token: response.credential })
+        });
+
+        const data = await res.json();
+
+        if (data.status === "success") {
+          setMessage("loginMessage", "Google login successful. Opening dashboard...", "success");
+          window.location.href = "/index";
+        } else {
+          setMessage("loginMessage", data.message || "Google login failed.", "error");
+        }
+      } catch (error) {
+        setMessage("loginMessage", "Google login server error.", "error");
+      }
+    }
+  </script>
 </body>
 </html>
