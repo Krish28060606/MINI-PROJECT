@@ -3,158 +3,295 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI.CREATIVE - Secure Login</title>
-
+  <title>AI.CREATIVE | Landing Page</title>
   <style>
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: Inter, Arial, sans-serif;<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI.CREATIVE - AI Writing Platform</title>
-
-  <style>
-    * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
       font-family: Inter, Arial, sans-serif;
-    }
-
-    html {
       scroll-behavior: smooth;
     }
 
+    :root {
+      --bg: #06111f;
+      --bg2: #0b1831;
+      --glass: rgba(255,255,255,0.10);
+      --glass-2: rgba(255,255,255,0.16);
+      --text: #f8fafc;
+      --muted: #d3deee;
+      --accent: #7dd3fc;
+      --accent2: #a78bfa;
+      --accent3: #34d399;
+      --dark: #0b1220;
+    }
+
     body {
-      min-height: 100vh;
-      color: #f8fafc;
       background:
-        radial-gradient(circle at 8% 8%, rgba(45, 212, 191, 0.28), transparent 26%),
-        radial-gradient(circle at 95% 12%, rgba(168, 85, 247, 0.30), transparent 30%),
-        radial-gradient(circle at 50% 100%, rgba(56, 189, 248, 0.18), transparent 34%),
-        linear-gradient(135deg, #030712, #0f172a 42%, #201237);
+        radial-gradient(circle at 15% 20%, rgba(34, 211, 238, 0.15), transparent 26%),
+        radial-gradient(circle at 85% 12%, rgba(167, 139, 250, 0.18), transparent 24%),
+        radial-gradient(circle at 75% 85%, rgba(52, 211, 153, 0.12), transparent 24%),
+        linear-gradient(135deg, #07111f, #0d1a30 45%, #132746 100%);
+      color: var(--text);
       overflow-x: hidden;
     }
 
-    body::before {
-      content: "";
+    .scene {
       position: fixed;
       inset: 0;
-      opacity: 0.22;
+      overflow: hidden;
       pointer-events: none;
-      background-image:
-        linear-gradient(rgba(255,255,255,.055) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.055) 1px, transparent 1px);
-      background-size: 58px 58px;
-      mask-image: radial-gradient(circle at center, black, transparent 80%);
+      z-index: 0;
+    }
+
+    .scene::before,
+    .scene::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+    }
+
+    .scene::before {
+      background:
+        radial-gradient(circle at 50% 22%, rgba(255,255,255,0.12), transparent 16%),
+        linear-gradient(to top, rgba(7,17,31,0.78), rgba(7,17,31,0.15) 35%, rgba(7,17,31,0.08));
+      filter: blur(1px);
+    }
+
+    .scene::after {
+      background:
+        linear-gradient(to top, rgba(8, 15, 29, 0.95), rgba(8, 15, 29, 0.55) 40%, rgba(8, 15, 29, 0.22)),
+        repeating-linear-gradient(
+          90deg,
+          transparent 0 100px,
+          rgba(255,255,255,0.02) 100px 101px,
+          transparent 101px 180px
+        );
+      opacity: 0.8;
     }
 
     .orb {
-      position: fixed;
-      width: 340px;
-      height: 340px;
+      position: absolute;
       border-radius: 999px;
-      filter: blur(44px);
+      filter: blur(60px);
       opacity: 0.30;
-      pointer-events: none;
-      animation: floatOrb 8s ease-in-out infinite alternate;
+      animation: float 8s ease-in-out infinite alternate;
     }
 
     .orb.one {
-      top: 8%;
-      left: -90px;
-      background: #22d3ee;
+      width: 320px;
+      height: 320px;
+      background: #67e8f9;
+      top: 5%;
+      left: -80px;
     }
 
     .orb.two {
-      right: -90px;
-      top: 27%;
-      background: #c084fc;
-      animation-delay: .8s;
+      width: 280px;
+      height: 280px;
+      background: #a78bfa;
+      right: -70px;
+      top: 18%;
+      animation-delay: .7s;
     }
 
     .orb.three {
-      bottom: -120px;
-      left: 35%;
+      width: 340px;
+      height: 340px;
       background: #34d399;
+      bottom: -120px;
+      left: 30%;
       animation-delay: 1.3s;
     }
 
-    @keyframes floatOrb {
-      from { transform: translate3d(0, 0, 0) scale(1); }
-      to { transform: translate3d(34px, -26px, 0) scale(1.08); }
+    @keyframes float {
+      from { transform: translateY(0px) scale(1); }
+      to { transform: translateY(-28px) scale(1.08); }
     }
 
-    .page {
+    .forest {
+      position: absolute;
+      inset: 0;
+      opacity: 0.32;
+      background:
+        linear-gradient(to top, #06111f 0%, rgba(6,17,31,0.45) 38%, rgba(6,17,31,0.14) 60%, rgba(6,17,31,0.04)),
+        repeating-linear-gradient(90deg,
+          rgba(14, 30, 54, 0.0) 0 35px,
+          rgba(10, 24, 44, 0.95) 35px 45px,
+          rgba(14, 30, 54, 0.0) 45px 92px,
+          rgba(15, 34, 60, 0.92) 92px 102px,
+          rgba(14, 30, 54, 0.0) 102px 155px
+        );
+      transform: scale(1.12);
+      transform-origin: bottom center;
+      mask-image: linear-gradient(to top, black 78%, transparent 100%);
+    }
+
+    .forest-2 {
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 42%;
+      background:
+        radial-gradient(circle at 50% 100%, rgba(125,211,252,0.10), transparent 40%),
+        repeating-linear-gradient(90deg,
+          rgba(3, 12, 25, 0.0) 0 50px,
+          rgba(4, 13, 26, 0.98) 50px 66px,
+          rgba(3, 12, 25, 0.0) 66px 126px,
+          rgba(7, 18, 33, 0.98) 126px 144px,
+          rgba(3, 12, 25, 0.0) 144px 220px
+        );
+      opacity: 0.85;
+    }
+
+    .grass {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 130px;
+      background:
+        linear-gradient(to top, rgba(6,17,31,1), rgba(6,17,31,0.3)),
+        repeating-linear-gradient(
+          100deg,
+          rgba(15, 36, 58, 1) 0 3px,
+          transparent 3px 12px,
+          rgba(17, 41, 63, 0.9) 12px 14px,
+          transparent 14px 22px
+        );
+      mask-image: linear-gradient(to top, black 72%, transparent 100%);
+      opacity: 0.9;
+    }
+
+    .deer {
+      position: absolute;
+      left: 13%;
+      bottom: 110px;
+      width: 160px;
+      height: 220px;
+      opacity: 0.38;
+      transform: scale(1.15);
+    }
+
+    .deer .body {
+      position: absolute;
+      bottom: 45px;
+      left: 22px;
+      width: 92px;
+      height: 92px;
+      background: rgba(6,17,31,0.96);
+      border-radius: 48% 45% 42% 45%;
+    }
+
+    .deer .neck {
+      position: absolute;
+      bottom: 112px;
+      left: 82px;
+      width: 22px;
+      height: 55px;
+      background: rgba(6,17,31,0.96);
+      border-radius: 15px;
+      transform: rotate(-16deg);
+      transform-origin: bottom center;
+    }
+
+    .deer .head {
+      position: absolute;
+      bottom: 150px;
+      left: 88px;
+      width: 40px;
+      height: 28px;
+      background: rgba(6,17,31,0.96);
+      border-radius: 45% 55% 50% 50%;
+      transform: rotate(-7deg);
+    }
+
+    .deer .leg {
+      position: absolute;
+      width: 8px;
+      height: 72px;
+      background: rgba(6,17,31,0.96);
+      bottom: 0;
+      border-radius: 10px;
+    }
+
+    .deer .leg.l1 { left: 42px; }
+    .deer .leg.l2 { left: 68px; height: 78px; }
+    .deer .leg.l3 { left: 95px; }
+    .deer .leg.l4 { left: 116px; height: 76px; }
+
+    .deer .antler {
+      position: absolute;
+      width: 4px;
+      background: rgba(6,17,31,0.96);
+      border-radius: 3px;
+      transform-origin: bottom center;
+    }
+
+    .deer .a1 { left: 100px; bottom: 176px; height: 42px; transform: rotate(-18deg); }
+    .deer .a2 { left: 110px; bottom: 178px; height: 48px; transform: rotate(12deg); }
+    .deer .a3 { left: 96px; bottom: 201px; height: 20px; transform: rotate(-54deg); }
+    .deer .a4 { left: 104px; bottom: 198px; height: 20px; transform: rotate(-8deg); }
+    .deer .a5 { left: 114px; bottom: 203px; height: 20px; transform: rotate(36deg); }
+    .deer .a6 { left: 119px; bottom: 190px; height: 18px; transform: rotate(58deg); }
+
+    .wrapper {
       position: relative;
-      z-index: 1;
-      width: min(1200px, calc(100% - 34px));
-      margin: 0 auto;
+      z-index: 2;
     }
 
-    .nav {
+    nav {
       position: sticky;
-      top: 14px;
-      z-index: 50;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(12px);
+      background: rgba(4, 10, 20, 0.48);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .nav-inner {
+      width: min(1180px, 92%);
+      margin: auto;
+      min-height: 80px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-top: 14px;
-      padding: 14px 16px;
-      border-radius: 28px;
-      background: rgba(8, 13, 30, 0.72);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      backdrop-filter: blur(18px);
-      box-shadow: 0 22px 60px rgba(0, 0, 0, 0.26);
+      gap: 16px;
     }
 
     .logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 950;
-      letter-spacing: -0.5px;
-      font-size: 22px;
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      color: #ffffff;
       text-decoration: none;
-      color: #f8fafc;
     }
 
-    .logo-mark {
-      width: 46px;
-      height: 46px;
-      border-radius: 17px;
-      display: grid;
-      place-items: center;
-      background: linear-gradient(135deg, #34d399, #22d3ee, #a78bfa);
-      box-shadow: 0 16px 40px rgba(56, 189, 248, 0.25);
-      color: #07111f;
-      font-weight: 950;
+    .logo span {
+      color: var(--accent);
     }
 
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 26px;
       flex-wrap: wrap;
-      justify-content: flex-end;
     }
 
-    .nav-link {
-      color: #cbd5e1;
+    .nav-links a {
+      color: rgba(255,255,255,0.88);
       text-decoration: none;
-      font-weight: 850;
-      padding: 12px 14px;
-      border-radius: 999px;
-      transition: 0.2s ease;
+      font-weight: 700;
+      font-size: 15px;
+      transition: .2s ease;
     }
 
-    .nav-link:hover {
-      color: white;
-      background: rgba(255, 255, 255, 0.09);
+    .nav-links a:hover {
+      color: #ffffff;
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 12px;
     }
 
     .btn {
@@ -162,1558 +299,654 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      min-height: 48px;
-      padding: 0 20px;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.14);
       text-decoration: none;
-      color: white;
-      font-weight: 950;
+      font-weight: 800;
       cursor: pointer;
-      transition: 0.22s ease;
-      background: rgba(255, 255, 255, 0.08);
-      white-space: nowrap;
+      transition: .2s ease;
+      min-height: 48px;
+      padding: 0 18px;
     }
 
-    .btn:hover {
+    .btn-outline {
+      color: white;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-outline:hover {
       transform: translateY(-2px);
-      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25);
+      background: rgba(255,255,255,0.14);
     }
 
     .btn-primary {
-      border: 0;
-      color: #07111f;
-      background: linear-gradient(135deg, #34d399, #22d3ee, #a78bfa);
-      box-shadow: 0 18px 45px rgba(34, 211, 238, 0.23);
+      color: #04111e;
+      background: linear-gradient(135deg, #67e8f9, #34d399);
+      box-shadow: 0 16px 40px rgba(52,211,153,0.18);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
     }
 
     .hero {
+      min-height: calc(100vh - 80px);
+      width: min(1180px, 92%);
+      margin: 0 auto;
       display: grid;
-      grid-template-columns: 1.06fr 0.94fr;
-      gap: 34px;
+      grid-template-columns: 1.1fr 0.9fr;
       align-items: center;
-      min-height: calc(100vh - 95px);
-      padding: 54px 0 76px;
+      gap: 28px;
+      padding: 40px 0 80px;
     }
 
-    .badge {
-      width: fit-content;
-      padding: 11px 15px;
-      border: 1px solid rgba(255, 255, 255, 0.16);
+    .hero-content {
+      max-width: 680px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 15px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.08);
-      color: #dbeafe;
-      font-weight: 900;
-      margin-bottom: 20px;
-      box-shadow: inset 0 0 18px rgba(255, 255, 255, 0.04);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #c7d2fe;
+      font-weight: 800;
+      margin-bottom: 22px;
+      backdrop-filter: blur(12px);
     }
 
     .hero h1 {
-      font-size: clamp(43px, 6.2vw, 84px);
-      line-height: 0.96;
-      letter-spacing: -3.5px;
-      margin-bottom: 22px;
+      font-size: clamp(48px, 7vw, 86px);
+      line-height: 0.94;
+      letter-spacing: -3px;
+      margin-bottom: 18px;
+      text-shadow: 0 10px 30px rgba(0,0,0,0.25);
     }
 
-    .gradient-text {
-      background: linear-gradient(135deg, #5eead4, #38bdf8, #c084fc);
+    .hero h1 span {
+      background: linear-gradient(135deg, #ffffff, #7dd3fc, #c4b5fd);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
     }
 
     .hero p {
-      color: #cbd5e1;
       font-size: 18px;
+      color: var(--muted);
       line-height: 1.75;
-      max-width: 690px;
+      max-width: 620px;
       margin-bottom: 28px;
     }
 
-    .hero-actions {
+    .cta-row {
       display: flex;
       flex-wrap: wrap;
       gap: 14px;
-      margin-bottom: 28px;
-    }
-
-    .trust-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      color: #aebbd0;
-      font-weight: 850;
-    }
-
-    .trust-chip {
-      padding: 10px 13px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.075);
-      border: 1px solid rgba(255, 255, 255, 0.13);
-    }
-
-    .hero-panel {
-      position: relative;
-    }
-
-    .preview-card {
-      position: relative;
-      padding: 20px;
-      border-radius: 34px;
-      background:
-        linear-gradient(145deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.055));
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.42);
-      backdrop-filter: blur(18px);
-      overflow: hidden;
-    }
-
-    .preview-card::before {
-      content: "";
-      position: absolute;
-      inset: -2px;
-      background:
-        radial-gradient(circle at 22% 0%, rgba(45, 212, 191, 0.24), transparent 34%),
-        radial-gradient(circle at 85% 30%, rgba(192, 132, 252, 0.24), transparent 34%);
-      pointer-events: none;
-    }
-
-    .floating-stat {
-      position: absolute;
-      z-index: 4;
-      right: -18px;
-      bottom: 32px;
-      padding: 15px 17px;
-      border-radius: 22px;
-      background: rgba(15, 23, 42, 0.80);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      backdrop-filter: blur(18px);
-      box-shadow: 0 22px 60px rgba(0, 0, 0, 0.35);
-      animation: hoverCard 3.4s ease-in-out infinite alternate;
-    }
-
-    .floating-stat strong {
-      display: block;
-      font-size: 24px;
-      color: #67e8f9;
-    }
-
-    .floating-stat span {
-      color: #cbd5e1;
-      font-weight: 850;
-      font-size: 13px;
-    }
-
-    @keyframes hoverCard {
-      from { transform: translateY(0); }
-      to { transform: translateY(-12px); }
-    }
-
-    .mock-window {
-      position: relative;
-      z-index: 1;
-      border-radius: 24px;
-      background: rgba(2, 6, 23, 0.74);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      overflow: hidden;
-    }
-
-    .mock-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 16px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .dots {
-      display: flex;
-      gap: 7px;
-    }
-
-    .dot {
-      width: 11px;
-      height: 11px;
-      border-radius: 50%;
-      background: #f87171;
-    }
-
-    .dot:nth-child(2) { background: #fbbf24; }
-    .dot:nth-child(3) { background: #34d399; }
-
-    .status-pill {
-      padding: 8px 11px;
-      border-radius: 999px;
-      background: rgba(52, 211, 153, 0.15);
-      color: #bbf7d0;
-      font-size: 12px;
-      font-weight: 950;
-      border: 1px solid rgba(52, 211, 153, 0.25);
-    }
-
-    .mock-body {
-      padding: 18px;
-    }
-
-    .tool-card {
-      padding: 16px;
-      border-radius: 20px;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      margin-bottom: 14px;
-    }
-
-    .tool-card h3 {
-      font-size: 16px;
-      margin-bottom: 8px;
-    }
-
-    .tool-card p {
-      font-size: 14px;
-      line-height: 1.6;
-      color: #cbd5e1;
-      margin: 0;
-    }
-
-    .typing-line {
-      height: 11px;
-      border-radius: 999px;
-      background: linear-gradient(90deg, #2dd4bf, #38bdf8, #a78bfa);
-      margin-top: 10px;
-      animation: pulseWidth 2s ease-in-out infinite alternate;
-    }
-
-    @keyframes pulseWidth {
-      from { width: 58%; opacity: 0.78; }
-      to { width: 92%; opacity: 1; }
+      margin-bottom: 30px;
     }
 
     .stats {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      margin: -22px 0 74px;
+      grid-template-columns: repeat(3, minmax(120px, 1fr));
+      gap: 14px;
+      max-width: 620px;
     }
 
     .stat {
-      padding: 20px;
-      border-radius: 25px;
-      background: rgba(255, 255, 255, 0.075);
-      border: 1px solid rgba(255, 255, 255, 0.13);
-      box-shadow: 0 20px 55px rgba(0, 0, 0, 0.18);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 22px;
+      padding: 18px;
+      backdrop-filter: blur(14px);
     }
 
     .stat strong {
       display: block;
-      font-size: 30px;
-      color: #f8fafc;
+      font-size: 28px;
       margin-bottom: 4px;
+      color: white;
     }
 
     .stat span {
-      color: #cbd5e1;
-      font-weight: 800;
+      color: #c7d2fe;
+      font-size: 14px;
+      font-weight: 700;
     }
 
-    .section {
-      padding: 0 0 82px;
-    }
-
-    .section-head {
+    .hero-card {
+      position: relative;
       display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 20px;
-      margin-bottom: 24px;
+      justify-content: center;
     }
 
-    .section-head h2 {
-      font-size: clamp(30px, 4vw, 48px);
-      letter-spacing: -1.8px;
-    }
-
-    .section-head p {
-      color: #cbd5e1;
-      line-height: 1.65;
-      max-width: 550px;
-    }
-
-    .about-card {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-      padding: 28px;
-      border-radius: 34px;
-      background: rgba(255, 255, 255, 0.075);
-      border: 1px solid rgba(255, 255, 255, 0.13);
-      box-shadow: 0 26px 80px rgba(0, 0, 0, 0.22);
-    }
-
-    .about-card h3 {
-      font-size: 28px;
-      letter-spacing: -1px;
-      margin-bottom: 12px;
-    }
-
-    .about-card p {
-      color: #cbd5e1;
-      line-height: 1.75;
-      font-size: 16px;
-    }
-
-    .about-list {
-      display: grid;
-      gap: 12px;
-    }
-
-    .about-item {
-      padding: 16px;
-      border-radius: 22px;
-      background: rgba(2, 6, 23, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      color: #dbeafe;
-      font-weight: 850;
-    }
-
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-    }
-
-    .feature {
+    .glass-login {
+      width: min(430px, 100%);
+      background: rgba(225, 239, 255, 0.14);
+      border: 1px solid rgba(255,255,255,0.20);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.35);
+      backdrop-filter: blur(22px);
+      border-radius: 28px;
+      padding: 26px;
       position: relative;
       overflow: hidden;
-      padding: 24px;
-      min-height: 196px;
-      border-radius: 28px;
-      background: rgba(255, 255, 255, 0.075);
-      border: 1px solid rgba(255, 255, 255, 0.13);
-      box-shadow: 0 20px 55px rgba(0, 0, 0, 0.18);
-      transition: 0.22s ease;
     }
 
-    .feature::after {
+    .glass-login::before {
       content: "";
       position: absolute;
-      inset: auto -40px -60px auto;
-      width: 130px;
-      height: 130px;
-      border-radius: 50%;
-      background: rgba(56, 189, 248, 0.13);
-      filter: blur(6px);
+      inset: 0;
+      background:
+        radial-gradient(circle at top right, rgba(255,255,255,0.22), transparent 28%),
+        radial-gradient(circle at bottom left, rgba(125, 211, 252, 0.20), transparent 28%);
+      pointer-events: none;
     }
 
-    .feature:hover {
-      transform: translateY(-6px);
-      background: rgba(255, 255, 255, 0.105);
+    .card-top {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
     }
 
-    .icon {
-      width: 48px;
-      height: 48px;
+    .card-top h3 {
+      font-size: 32px;
+      letter-spacing: -1px;
+    }
+
+    .close-dot {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
       display: grid;
       place-items: center;
-      border-radius: 18px;
-      margin-bottom: 18px;
-      background: linear-gradient(135deg, rgba(45, 212, 191, 0.25), rgba(168, 85, 247, 0.25));
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      font-size: 23px;
+      background: rgba(0,0,0,0.20);
+      border: 1px solid rgba(255,255,255,0.16);
+      color: white;
+      font-weight: 900;
     }
 
-    .feature h3 {
-      font-size: 19px;
-      margin-bottom: 10px;
-    }
-
-    .feature p {
-      color: #cbd5e1;
-      line-height: 1.65;
+    .card-sub {
+      position: relative;
+      z-index: 1;
+      color: #e5eefc;
       font-size: 15px;
+      margin-bottom: 18px;
+      line-height: 1.6;
+    }
+
+    .mini-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
       position: relative;
       z-index: 1;
     }
 
-    .workflow {
-      padding: 32px;
-      border-radius: 34px;
-      background: rgba(255, 255, 255, 0.07);
-      border: 1px solid rgba(255, 255, 255, 0.13);
-      margin-bottom: 74px;
+    .mini-tabs a {
+      text-decoration: none;
+      padding: 11px 15px;
+      border-radius: 12px;
+      font-weight: 800;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.10);
+      color: white;
+      transition: .2s ease;
     }
 
-    .workflow h2 {
-      font-size: clamp(30px, 4vw, 46px);
-      letter-spacing: -1.4px;
-      margin-bottom: 22px;
+    .mini-tabs a.active,
+    .mini-tabs a:hover {
+      background: linear-gradient(135deg, #67e8f9, #34d399);
+      color: #03111f;
     }
 
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
+    .field {
+      position: relative;
+      z-index: 1;
+      margin-bottom: 15px;
     }
 
-    .step {
-      padding: 18px;
-      border-radius: 24px;
-      background: rgba(2, 6, 23, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-    }
-
-    .step-num {
-      width: 38px;
-      height: 38px;
-      display: grid;
-      place-items: center;
-      border-radius: 14px;
-      margin-bottom: 12px;
-      color: #07111f;
-      background: linear-gradient(135deg, #34d399, #22d3ee);
-      font-weight: 950;
-    }
-
-    .step h3 {
+    .field label {
+      display: block;
+      font-size: 14px;
       margin-bottom: 8px;
-      font-size: 16px;
+      color: #eef5ff;
+      font-weight: 800;
     }
 
-    .step p {
-      color: #cbd5e1;
-      line-height: 1.6;
+    .field input {
+      width: 100%;
+      min-height: 52px;
+      border: 1px solid rgba(255,255,255,0.20);
+      background: rgba(255,255,255,0.12);
+      color: white;
+      border-radius: 14px;
+      padding: 0 16px;
+      outline: none;
+      font-size: 15px;
+    }
+
+    .field input::placeholder {
+      color: rgba(255,255,255,0.68);
+    }
+
+    .field input:focus {
+      box-shadow: 0 0 0 4px rgba(125,211,252,0.14);
+      border-color: rgba(125,211,252,0.46);
+    }
+
+    .row-inline {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 13px;
+      color: #e8f1ff;
+      margin: 8px 0 18px;
+      flex-wrap: wrap;
+    }
+
+    .row-inline label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+    }
+
+    .row-inline input {
+      accent-color: #67e8f9;
+    }
+
+    .row-inline a {
+      color: #c4b5fd;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .big-login {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      min-height: 52px;
+      border: none;
+      border-radius: 14px;
+      color: #04111e;
+      font-size: 16px;
+      font-weight: 900;
+      background: linear-gradient(135deg, #67e8f9, #34d399);
+      box-shadow: 0 14px 34px rgba(52,211,153,0.18);
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .big-login:hover {
+      transform: translateY(-2px);
+    }
+
+    .register-line {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      margin-top: 16px;
+      color: #eff6ff;
       font-size: 14px;
     }
 
-    .cta {
-      margin: 0 0 72px;
-      padding: 34px;
-      border-radius: 34px;
-      background:
-        linear-gradient(135deg, rgba(45, 212, 191, 0.18), rgba(56, 189, 248, 0.10), rgba(168, 85, 247, 0.20));
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 22px;
-      box-shadow: 0 26px 80px rgba(0,0,0,.22);
+    .register-line a {
+      color: #c4b5fd;
+      font-weight: 800;
+      text-decoration: none;
     }
 
-    .cta h2 {
-      font-size: clamp(28px, 4vw, 44px);
-      letter-spacing: -1.5px;
-      margin-bottom: 8px;
+    .floating-badge {
+      position: absolute;
+      padding: 13px 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.14);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 16px 35px rgba(0,0,0,0.2);
+      font-weight: 800;
+      color: white;
     }
 
-    .cta p {
-      color: #cbd5e1;
-      line-height: 1.6;
+    .badge-a {
+      right: -16px;
+      top: 20px;
     }
 
-    @media (max-width: 980px) {
-      .hero,
-      .about-card {
+    .badge-b {
+      left: -24px;
+      bottom: 26px;
+    }
+
+    .section {
+      width: min(1180px, 92%);
+      margin: 0 auto;
+      padding: 20px 0 100px;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 34px;
+    }
+
+    .section-title h2 {
+      font-size: clamp(34px, 5vw, 50px);
+      letter-spacing: -2px;
+      margin-bottom: 10px;
+    }
+
+    .section-title p {
+      color: var(--muted);
+      max-width: 780px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .feature {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.11);
+      border-radius: 24px;
+      padding: 22px;
+      backdrop-filter: blur(14px);
+      transition: .2s ease;
+    }
+
+    .feature:hover {
+      transform: translateY(-4px);
+      background: rgba(255,255,255,0.10);
+    }
+
+    .feature .icon {
+      width: 52px;
+      height: 52px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(103,232,249,0.22), rgba(167,139,250,0.25));
+      font-size: 22px;
+      margin-bottom: 16px;
+    }
+
+    .feature h3 {
+      margin-bottom: 10px;
+      font-size: 20px;
+    }
+
+    .feature p {
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 15px;
+    }
+
+    footer {
+      width: min(1180px, 92%);
+      margin: 0 auto;
+      padding: 0 0 45px;
+      color: #b9c9de;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    @media (max-width: 1020px) {
+      .hero {
         grid-template-columns: 1fr;
+        gap: 38px;
       }
 
-      .feature-grid,
-      .stats {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .steps {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .cta {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .floating-stat {
-        right: 14px;
-      }
-    }
-
-    @media (max-width: 700px) {
-      .nav {
-        align-items: flex-start;
-        gap: 16px;
-        flex-direction: column;
-      }
-
-      .nav-links {
-        width: 100%;
+      .hero-card {
         justify-content: flex-start;
       }
 
-      .hero {
-        padding-top: 34px;
+      .feature-grid {
+        grid-template-columns: repeat(2, 1fr);
       }
 
-      .hero-actions {
+      .badge-a {
+        right: 10px;
+      }
+
+      .badge-b {
+        left: 10px;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .nav-inner {
         flex-direction: column;
+        padding: 16px 0;
       }
 
-      .btn {
-        width: 100%;
+      .nav-links {
+        justify-content: center;
       }
 
-      .feature-grid,
+      .hero {
+        padding-top: 28px;
+      }
+
       .stats,
-      .steps {
+      .feature-grid {
         grid-template-columns: 1fr;
       }
 
-      .hero h1 {
-        letter-spacing: -2px;
+      .glass-login {
+        padding: 22px;
+      }
+
+      .floating-badge {
+        position: static;
+        margin-top: 12px;
+      }
+
+      .deer {
+        left: 6%;
+        transform: scale(0.95);
       }
     }
   </style>
 </head>
 
 <body>
-  <div class="orb one"></div>
-  <div class="orb two"></div>
-  <div class="orb three"></div>
+  <div class="scene">
+    <div class="orb one"></div>
+    <div class="orb two"></div>
+    <div class="orb three"></div>
+    <div class="forest"></div>
+    <div class="forest-2"></div>
+    <div class="grass"></div>
 
-  <main class="page">
-    <nav class="nav">
-      <a class="logo" href="#home">
-        <div class="logo-mark">AI</div>
-        <span>AI.CREATIVE</span>
-      </a>
+    <div class="deer">
+      <div class="body"></div>
+      <div class="neck"></div>
+      <div class="head"></div>
+      <div class="leg l1"></div>
+      <div class="leg l2"></div>
+      <div class="leg l3"></div>
+      <div class="leg l4"></div>
+      <div class="antler a1"></div>
+      <div class="antler a2"></div>
+      <div class="antler a3"></div>
+      <div class="antler a4"></div>
+      <div class="antler a5"></div>
+      <div class="antler a6"></div>
+    </div>
+  </div>
 
-      <div class="nav-links">
-        <a class="nav-link" href="#home">Home</a>
-        <a class="nav-link" href="#about">About</a>
-        <a class="nav-link" href="#features">Features</a>
-        <a class="nav-link" href="#workflow">Workflow</a>
-        <a class="btn" href="/auth?mode=login">Login</a>
-        <a class="btn btn-primary" href="/auth?mode=signup">Sign Up</a>
+  <div class="wrapper">
+    <nav>
+      <div class="nav-inner">
+        <a href="/" class="logo">AI<span>.CREATIVE</span></a>
+
+        <div class="nav-links">
+          <a href="#home">Home</a>
+          <a href="#about">About</a>
+          <a href="#features">Features</a>
+          <a href="#contact">Contact</a>
+        </div>
+
+        <div class="nav-actions">
+          <a class="btn btn-outline" href="/auth">Login</a>
+          <a class="btn btn-primary" href="/auth?mode=signup">Sign Up</a>
+        </div>
       </div>
     </nav>
 
-    <section id="home" class="hero">
-      <div>
-        <div class="badge">✨ Secure AI writing assistant for students & creators</div>
+    <section class="hero" id="home">
+      <div class="hero-content">
+        <div class="eyebrow">✨ Smart writing platform for students, creators, and dreamers</div>
 
         <h1>
-          Your ideas,
-          <span class="gradient-text">polished by AI</span>
-          in seconds.
+          Make your <span>first impression</span> unforgettable.
         </h1>
 
         <p>
-          AI.CREATIVE helps users generate ideas, correct grammar, enhance text, check professionalism,
-          and build better content while keeping creativity in the user's control.
+          AI.CREATIVE helps you generate, improve, and polish writing with a premium
+          experience, secure signup, and a modern creative dashboard that feels as
+          powerful as your ideas.
         </p>
 
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="/auth?mode=signup">Start Writing Free</a>
-          <a class="btn" href="#about">Explore Website</a>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="/auth?mode=signup">Create Verified Account</a>
+          <a class="btn btn-outline" href="/auth">Open Login</a>
         </div>
 
-        <div class="trust-row">
-          <div class="trust-chip">🔐 Postmark Email OTP</div>
-          <div class="trust-chip">🧠 Groq AI Integration</div>
-          <div class="trust-chip">🗄️ PostgreSQL Storage</div>
+        <div class="stats">
+          <div class="stat">
+            <strong>OTP</strong>
+            <span>Verified signup flow</span>
+          </div>
+          <div class="stat">
+            <strong>AI</strong>
+            <span>Generate, correct & enhance</span>
+          </div>
+          <div class="stat">
+            <strong>DB</strong>
+            <span>Secure saved history</span>
+          </div>
         </div>
       </div>
 
-      <div class="hero-panel">
-        <div class="preview-card">
-          <div class="mock-window">
-            <div class="mock-top">
-              <div class="dots">
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-              </div>
-              <div class="status-pill">Verified Signup Active</div>
-            </div>
+      <div class="hero-card">
+        <div class="glass-login">
+          <div class="card-top">
+            <h3>Login</h3>
+            <div class="close-dot">×</div>
+          </div>
 
-            <div class="mock-body">
-              <div class="tool-card">
-                <h3>Prompt: “Write a short description about AI creativity.”</h3>
-                <p>AI is preparing a clear, original, and presentation-ready response...</p>
-                <div class="typing-line"></div>
-              </div>
+          <p class="card-sub">
+            Secure access to your AI writing workspace with username/email login.
+          </p>
 
-              <div class="tool-card">
-                <h3>Correction + Enhancement</h3>
-                <p>Fix grammar, improve tone, and make writing more natural without changing meaning.</p>
-                <div class="typing-line" style="animation-delay: .4s;"></div>
-              </div>
+          <div class="mini-tabs">
+            <a href="/auth" class="active">Login</a>
+            <a href="/auth?mode=signup">Register</a>
+          </div>
 
-              <div class="tool-card">
-                <h3>Dashboard Insights</h3>
-                <p>Track word count, professionalism score, originality risk, and previous actions.</p>
-                <div class="typing-line" style="animation-delay: .8s;"></div>
-              </div>
-            </div>
+          <div class="field">
+            <label>Email / Username</label>
+            <input type="text" placeholder="Enter username or email" />
+          </div>
+
+          <div class="field">
+            <label>Password</label>
+            <input type="password" placeholder="Enter password" />
+          </div>
+
+          <div class="row-inline">
+            <label><input type="checkbox" checked /> Remember me</label>
+            <a href="/auth">Forgot Password?</a>
+          </div>
+
+          <button class="big-login" onclick="window.location.href='/auth'">Login</button>
+
+          <div class="register-line">
+            Don't have an account?
+            <a href="/auth?mode=signup">Register</a>
           </div>
         </div>
 
-        <div class="floating-stat">
-          <strong>10/10</strong>
-          <span>Presentation impact</span>
-        </div>
+        <div class="floating-badge badge-a">⚡ Premium UI</div>
+        <div class="floating-badge badge-b">🔐 Verified Access</div>
       </div>
     </section>
 
-    <section class="stats">
-      <div class="stat">
-        <strong>OTP</strong>
-        <span>Email verification</span>
-      </div>
-      <div class="stat">
-        <strong>AI</strong>
-        <span>Writing enhancement</span>
-      </div>
-      <div class="stat">
-        <strong>DB</strong>
-        <span>Secure history storage</span>
-      </div>
-      <div class="stat">
-        <strong>UI</strong>
-        <span>Modern dashboard feel</span>
-      </div>
-    </section>
-
-    <section id="about" class="section">
-      <div class="section-head">
-        <h2>About AI.CREATIVE</h2>
+    <section class="section" id="about">
+      <div class="section-title">
+        <h2>About the platform</h2>
         <p>
-          A student mini-project designed to make writing support smarter, secure, and more practical.
+          This project is built to enhance creativity, not replace it. From rough drafts to refined content,
+          AI.CREATIVE gives users a secure and beautiful environment to write better and present better.
         </p>
       </div>
-
-      <div class="about-card">
-        <div>
-          <h3>What does this website do?</h3>
-          <p>
-            AI.CREATIVE is an AI-enhanced creative writing platform. It helps users convert rough ideas
-            into polished writing, correct mistakes, improve sentence quality, and make content
-            presentation-ready. The platform supports creativity instead of replacing it.
-          </p>
-        </div>
-
-        <div class="about-list">
-          <div class="about-item">✅ Secure account creation with email OTP</div>
-          <div class="about-item">✅ Username/password based login</div>
-          <div class="about-item">✅ AI generation, correction, and enhancement</div>
-          <div class="about-item">✅ PostgreSQL-based user and history storage</div>
-        </div>
-      </div>
     </section>
 
-    <section id="features" class="section">
-      <div class="section-head">
-        <h2>Features that make it powerful.</h2>
+    <section class="section" id="features">
+      <div class="section-title">
+        <h2>Why this feels different</h2>
         <p>
-          A clean landing page, secure authentication, practical AI tools, and a real deployment-ready flow
-          make this project feel complete.
+          Your landing page should feel premium from the first second. So this design combines an immersive
+          background, glassmorphism UI, and strong calls-to-action to make the project look impressive instantly.
         </p>
       </div>
 
       <div class="feature-grid">
         <div class="feature">
-          <div class="icon">🔐</div>
-          <h3>Verified Signup</h3>
-          <p>Email OTP verification using Postmark API before account creation.</p>
-        </div>
-
-        <div class="feature">
           <div class="icon">✍️</div>
-          <h3>Creative Generation</h3>
-          <p>Generate clear and original writing from topics or rough ideas.</p>
+          <h3>Generate</h3>
+          <p>Create fresh content ideas, descriptions, and drafts with the help of AI.</p>
         </div>
 
         <div class="feature">
-          <div class="icon">🛠️</div>
-          <h3>Grammar Correction</h3>
-          <p>Correct spelling, grammar, punctuation, and sentence flow quickly.</p>
+          <div class="icon">🪄</div>
+          <h3>Enhance</h3>
+          <p>Transform normal writing into polished, improved, and more expressive content.</p>
         </div>
 
         <div class="feature">
-          <div class="icon">🚀</div>
-          <h3>AI Enhancement</h3>
-          <p>Improve text and make it more polished, expressive, and professional.</p>
+          <div class="icon">🛡️</div>
+          <h3>Secure Access</h3>
+          <p>Email OTP verification, hashed passwords, and protected sessions keep it reliable.</p>
         </div>
 
         <div class="feature">
-          <div class="icon">📊</div>
-          <h3>Writing Insights</h3>
-          <p>Check word count, professionalism, and originality-risk estimate.</p>
-        </div>
-
-        <div class="feature">
-          <div class="icon">🧾</div>
-          <h3>History Tracking</h3>
-          <p>Store user actions in PostgreSQL so the project looks real and practical.</p>
+          <div class="icon">📜</div>
+          <h3>History</h3>
+          <p>Users can keep track of previous work and revisit saved AI outputs easily.</p>
         </div>
       </div>
     </section>
 
-    <section id="workflow" class="workflow">
-      <h2>How the platform works</h2>
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">1</div>
-          <h3>Verify Email</h3>
-          <p>User receives OTP and verifies ownership before signup.</p>
-        </div>
+    <section class="section" id="contact">
+      <div class="section-title">
+        <h2>Ready to enter?</h2>
+        <p>
+          Start with a verified account and experience a creative workspace that looks presentation-ready from the first click.
+        </p>
+      </div>
 
-        <div class="step">
-          <div class="step-num">2</div>
-          <h3>Create Account</h3>
-          <p>User creates username, password, and enters dashboard securely.</p>
-        </div>
-
-        <div class="step">
-          <div class="step-num">3</div>
-          <h3>Use AI Tools</h3>
-          <p>Generate, correct, enhance, and analyze writing inside one dashboard.</p>
-        </div>
-
-        <div class="step">
-          <div class="step-num">4</div>
-          <h3>Save History</h3>
-          <p>Actions are stored to make the project practical and database-driven.</p>
-        </div>
+      <div class="cta-row" style="justify-content:center;">
+        <a class="btn btn-primary" href="/auth?mode=signup">Start Now</a>
+        <a class="btn btn-outline" href="/auth">Login</a>
       </div>
     </section>
 
-    <section class="cta">
-      <div>
-        <h2>Ready to create better content?</h2>
-        <p>Start with secure email OTP signup and enter your AI writing dashboard.</p>
-      </div>
-
-      <a class="btn btn-primary" href="/auth?mode=signup">Create Account</a>
-    </section>
-  </main>
-</body>
-</html>
-
-    }
-
-    body {
-      min-height: 100vh;
-      background:
-        radial-gradient(circle at top left, rgba(48, 231, 255, 0.22), transparent 30%),
-        radial-gradient(circle at bottom right, rgba(255, 77, 216, 0.24), transparent 35%),
-        linear-gradient(135deg, #060815, #111827 45%, #1e1233);
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 28px;
-      overflow-x: hidden;
-    }
-
-    .aurora {
-      position: fixed;
-      inset: -20%;
-      pointer-events: none;
-      background:
-        radial-gradient(circle at 20% 20%, rgba(34, 211, 238, 0.18), transparent 28%),
-        radial-gradient(circle at 80% 30%, rgba(168, 85, 247, 0.16), transparent 26%),
-        radial-gradient(circle at 45% 80%, rgba(52, 211, 153, 0.12), transparent 25%);
-      filter: blur(18px);
-      animation: floatGlow 9s ease-in-out infinite alternate;
-    }
-
-    @keyframes floatGlow {
-      from { transform: translate3d(-2%, -1%, 0) scale(1); }
-      to { transform: translate3d(2%, 1%, 0) scale(1.04); }
-    }
-
-
-    .home-link {
-      position: fixed;
-      top: 22px;
-      left: 22px;
-      z-index: 20;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      min-height: 44px;
-      padding: 0 15px;
-      border-radius: 999px;
-      color: #e5e7eb;
-      text-decoration: none;
-      font-weight: 900;
-      background: rgba(255, 255, 255, 0.09);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.24);
-      backdrop-filter: blur(16px);
-      transition: 0.2s ease;
-    }
-
-    .home-link:hover {
-      transform: translateY(-2px);
-      color: white;
-      background: rgba(255, 255, 255, 0.14);
-    }
-
-    .box {
-      position: relative;
-      width: 100%;
-      max-width: 680px;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      border-radius: 32px;
-      padding: 34px;
-      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.45);
-      backdrop-filter: blur(20px);
-    }
-
-    .badge {
-      width: fit-content;
-      margin: 0 auto 18px;
-      padding: 10px 16px;
-      border-radius: 999px;
-      color: #c7d2fe;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      font-weight: 800;
-      font-size: 14px;
-    }
-
-    .brand {
-      text-align: center;
-      margin-bottom: 26px;
-    }
-
-    .brand h1 {
-      font-size: 38px;
-      letter-spacing: -1.5px;
-      line-height: 1.1;
-    }
-
-    .brand p {
-      color: #b8c4d9;
-      margin-top: 10px;
-      line-height: 1.6;
-    }
-
-    .tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      background: rgba(255, 255, 255, 0.07);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      padding: 8px;
-      border-radius: 22px;
-      margin-bottom: 26px;
-    }
-
-    .tab {
-      border: 0;
-      padding: 15px;
-      border-radius: 16px;
-      background: transparent;
-      color: #c8d1e2;
-      font-weight: 900;
-      font-size: 16px;
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
-
-    .tab.active {
-      color: white;
-      background: linear-gradient(135deg, #2dd4bf, #38bdf8, #6366f1);
-      box-shadow: 0 12px 35px rgba(56, 189, 248, 0.25);
-    }
-
-    .panel {
-      display: none;
-    }
-
-    .panel.active {
-      display: block;
-      animation: fadeUp 0.25s ease;
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    h2 {
-      font-size: 30px;
-      margin-bottom: 10px;
-      letter-spacing: -0.8px;
-    }
-
-    .sub {
-      color: #b8c4d9;
-      margin-bottom: 24px;
-      line-height: 1.6;
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
-    .row {
-      margin-bottom: 16px;
-    }
-
-    .row label {
-      display: flex;
-      justify-content: space-between;
-      color: #e5e7eb;
-      font-weight: 800;
-      margin-bottom: 8px;
-      gap: 10px;
-    }
-
-    .hint {
-      color: #9ca3af;
-      font-size: 13px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .field-wrap {
-      position: relative;
-    }
-
-    input {
-      width: 100%;
-      padding: 17px 18px;
-      border-radius: 18px;
-      outline: none;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      background: rgba(255, 255, 255, 0.12);
-      color: white;
-      font-size: 16px;
-    }
-
-    input::placeholder {
-      color: rgba(226, 232, 240, 0.56);
-    }
-
-    input:focus {
-      border-color: #38bdf8;
-      box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.12);
-    }
-
-    .toggle-pass {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      border: 0;
-      background: rgba(255, 255, 255, 0.10);
-      color: #e5e7eb;
-      border-radius: 12px;
-      padding: 7px 10px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .password-input {
-      padding-right: 78px;
-    }
-
-    .strength {
-      height: 8px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.10);
-      overflow: hidden;
-      margin-top: 10px;
-    }
-
-    .strength span {
-      display: block;
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #ef4444, #f59e0b, #22c55e);
-      transition: 0.2s ease;
-    }
-
-    .terms {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      margin: 12px 0 4px;
-      color: #cbd5e1;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .terms input {
-      width: 18px;
-      height: 18px;
-      margin-top: 2px;
-      accent-color: #22d3ee;
-    }
-
-    .btn {
-      width: 100%;
-      border: 0;
-      padding: 17px 20px;
-      border-radius: 18px;
-      font-size: 17px;
-      font-weight: 900;
-      cursor: pointer;
-      margin-top: 8px;
-      color: #031018;
-      background: linear-gradient(135deg, #34d399, #22d3ee);
-      transition: 0.2s;
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 14px 35px rgba(34, 211, 238, 0.25);
-    }
-
-    .btn.secondary {
-      background: linear-gradient(135deg, #818cf8, #c084fc);
-      color: white;
-    }
-
-    .btn:disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-
-    .loading {
-      opacity: 0.75;
-      pointer-events: none;
-    }
-
-    .message {
-      display: none;
-      margin-top: 18px;
-      padding: 14px 16px;
-      border-radius: 16px;
-      font-weight: 700;
-      line-height: 1.5;
-    }
-
-    .message.success {
-      display: block;
-      background: rgba(34, 197, 94, 0.14);
-      color: #bbf7d0;
-      border: 1px solid rgba(34, 197, 94, 0.35);
-    }
-
-    .message.error {
-      display: block;
-      background: rgba(239, 68, 68, 0.14);
-      color: #fecaca;
-      border: 1px solid rgba(239, 68, 68, 0.35);
-    }
-
-    .otp-box {
-      display: none;
-      margin-top: 18px;
-      padding: 18px;
-      border-radius: 22px;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-    }
-
-    .otp-box.show {
-      display: block;
-    }
-
-    .demo-otp {
-      display: none;
-      margin-top: 12px;
-      padding: 13px;
-      border-radius: 14px;
-      color: #fef3c7;
-      background: rgba(245, 158, 11, 0.15);
-      border: 1px solid rgba(245, 158, 11, 0.35);
-      font-weight: 900;
-      text-align: center;
-      letter-spacing: 1px;
-    }
-
-    .demo-otp.show {
-      display: block;
-    }
-
-    .verified-badge {
-      display: none;
-      margin-top: 14px;
-      padding: 13px;
-      border-radius: 14px;
-      color: #bbf7d0;
-      background: rgba(34, 197, 94, 0.14);
-      border: 1px solid rgba(34, 197, 94, 0.35);
-      font-weight: 900;
-      text-align: center;
-    }
-
-    .verified-badge.show {
-      display: block;
-    }
-
-    .mini {
-      color: #9ca3af;
-      margin-top: 18px;
-      font-size: 14px;
-      line-height: 1.5;
-      text-align: center;
-    }
-
-    .security-strip {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .security-strip div {
-      border-radius: 16px;
-      padding: 12px;
-      background: rgba(255, 255, 255, 0.07);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      color: #cbd5e1;
-      font-weight: 800;
-      font-size: 13px;
-      text-align: center;
-    }
-
-    @media (max-width: 650px) {
-  
-    .home-link {
-      position: fixed;
-      top: 22px;
-      left: 22px;
-      z-index: 20;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      min-height: 44px;
-      padding: 0 15px;
-      border-radius: 999px;
-      color: #e5e7eb;
-      text-decoration: none;
-      font-weight: 900;
-      background: rgba(255, 255, 255, 0.09);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.24);
-      backdrop-filter: blur(16px);
-      transition: 0.2s ease;
-    }
-
-    .home-link:hover {
-      transform: translateY(-2px);
-      color: white;
-      background: rgba(255, 255, 255, 0.14);
-    }
-
-    .box {
-        padding: 24px;
-      }
-
-      .brand h1 {
-        font-size: 30px;
-      }
-
-      h2 {
-        font-size: 25px;
-      }
-
-      .grid-2,
-      .security-strip {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
-</head>
-
-<body>
-  <a class="home-link" href="/">← Back to Home</a>
-  <div class="aurora"></div>
-
-  <div class="box">
-    <div class="badge">🔐 Email OTP + username login</div>
-
-    <div class="brand">
-      <h1>AI.CREATIVE</h1>
-      <p>Secure writing workspace with verified signup, hashed password storage, and protected dashboard access.</p>
-    </div>
-
-    <div class="tabs">
-      <button class="tab active" onclick="showPanel('login')">Login</button>
-      <button class="tab" onclick="showPanel('signup')">Create Account</button>
-    </div>
-
-    <div id="loginPanel" class="panel active">
-      <h2>Welcome back</h2>
-      <p class="sub">Login using your username or email and password.</p>
-
-      <div class="row">
-        <label>Username / Email</label>
-        <input id="loginId" type="text" placeholder="Enter username or email" />
-      </div>
-
-      <div class="row">
-        <label>Password <span class="hint">Protected</span></label>
-        <div class="field-wrap">
-          <input id="loginPassword" class="password-input" type="password" placeholder="Enter password" />
-          <button class="toggle-pass" type="button" onclick="togglePassword('loginPassword', this)">Show</button>
-        </div>
-      </div>
-
-      <button id="loginBtn" class="btn" onclick="loginUser()">Login</button>
-
-      <div id="loginMessage" class="message"></div>
-
-      <div class="security-strip">
-        <div>OTP Verified Signup</div>
-        <div>Hashed Passwords</div>
-        <div>Secure Session</div>
-      </div>
-    </div>
-
-    <div id="signupPanel" class="panel">
-      <h2>Create verified account</h2>
-      <p class="sub">Step 1: enter your email and verify OTP. Step 2: create username and password.</p>
-
-      <div class="row">
-        <label>Email <span class="hint">Gmail / Outlook / GLA</span></label>
-        <input id="signupEmail" type="email" placeholder="example@gmail.com" />
-      </div>
-
-      <button id="sendOtpBtn" class="btn secondary" onclick="sendEmailOtp()">Send Email OTP</button>
-
-      <div id="otpBox" class="otp-box">
-        <div class="row">
-          <label>Enter OTP <span class="hint">Valid for 10 minutes</span></label>
-          <input id="signupOtp" type="text" placeholder="Enter 6-digit OTP" maxlength="6" />
-        </div>
-
-        <button id="verifyOtpBtn" class="btn" onclick="verifyEmailOtp()">Verify OTP</button>
-
-        <div id="demoOtp" class="demo-otp"></div>
-      </div>
-
-      <div id="verifiedBadge" class="verified-badge">
-        Email verified successfully ✅
-      </div>
-
-      <div class="grid-2" style="margin-top: 18px;">
-        <div class="row">
-          <label>Username <span class="hint">For login</span></label>
-          <input id="signupUsername" type="text" placeholder="Example: krishdubey24" />
-        </div>
-
-        <div class="row">
-          <label>Mobile Number <span class="hint">Optional</span></label>
-          <input id="signupPhone" type="tel" placeholder="9876543210" maxlength="10" />
-        </div>
-      </div>
-
-      <div class="grid-2">
-        <div class="row">
-          <label>Password</label>
-          <div class="field-wrap">
-            <input id="signupPassword" class="password-input" type="password" placeholder="Create password" oninput="updateStrength()" />
-            <button class="toggle-pass" type="button" onclick="togglePassword('signupPassword', this)">Show</button>
-          </div>
-          <div class="strength"><span id="strengthBar"></span></div>
-        </div>
-
-        <div class="row">
-          <label>Recheck Password</label>
-          <div class="field-wrap">
-            <input id="signupConfirmPassword" class="password-input" type="password" placeholder="Re-enter password" />
-            <button class="toggle-pass" type="button" onclick="togglePassword('signupConfirmPassword', this)">Show</button>
-          </div>
-        </div>
-      </div>
-
-      <label class="terms">
-        <input id="termsCheck" type="checkbox" />
-        <span>I confirm this is my email and agree to use this account responsibly.</span>
-      </label>
-
-      <button id="createAccountBtn" class="btn" onclick="createAccount()" disabled>
-        Create Account
-      </button>
-
-      <div id="signupMessage" class="message"></div>
-
-      <p class="mini">
-        Student-friendly verification: email OTP is sent using Postmark API, which works on Render Free. If Postmark credentials are missing, OTP appears in Render logs for demo testing.
-      </p>
-    </div>
+    <footer>
+      © 2026 AI.CREATIVE • Designed for a strong first impression by Krish Dubey
+    </footer>
   </div>
-
-  <script>
-    let emailVerified = false;
-
-    function showPanel(type) {
-      document.querySelectorAll(".tab").forEach(btn => btn.classList.remove("active"));
-      document.querySelectorAll(".panel").forEach(panel => panel.classList.remove("active"));
-
-      if (type === "login") {
-        document.querySelector(".tab:nth-child(1)").classList.add("active");
-        document.getElementById("loginPanel").classList.add("active");
-      } else {
-        document.querySelector(".tab:nth-child(2)").classList.add("active");
-        document.getElementById("signupPanel").classList.add("active");
-      }
-    }
-
-    function setMessage(id, message, type) {
-      const box = document.getElementById(id);
-      box.className = "message " + type;
-      box.textContent = message;
-    }
-
-    function clearMessage(id) {
-      const box = document.getElementById(id);
-      box.className = "message";
-      box.textContent = "";
-    }
-
-    function setLoading(buttonId, isLoading, textWhenLoading, normalText) {
-      const btn = document.getElementById(buttonId);
-      btn.disabled = isLoading;
-      btn.classList.toggle("loading", isLoading);
-      btn.textContent = isLoading ? textWhenLoading : normalText;
-    }
-
-    function togglePassword(inputId, btn) {
-      const input = document.getElementById(inputId);
-      input.type = input.type === "password" ? "text" : "password";
-      btn.textContent = input.type === "password" ? "Show" : "Hide";
-    }
-
-    function updateStrength() {
-      const password = document.getElementById("signupPassword").value;
-      let score = 0;
-
-      if (password.length >= 6) score += 25;
-      if (password.length >= 10) score += 20;
-      if (/[A-Z]/.test(password)) score += 20;
-      if (/[0-9]/.test(password)) score += 20;
-      if (/[^A-Za-z0-9]/.test(password)) score += 15;
-
-      document.getElementById("strengthBar").style.width = Math.min(score, 100) + "%";
-    }
-
-    function resetVerificationState() {
-      emailVerified = false;
-      document.getElementById("createAccountBtn").disabled = true;
-      document.getElementById("verifiedBadge").classList.remove("show");
-    }
-
-    async function loginUser() {
-      clearMessage("loginMessage");
-
-      const loginId = document.getElementById("loginId").value.trim();
-      const password = document.getElementById("loginPassword").value;
-
-      if (!loginId || !password) {
-        setMessage("loginMessage", "Enter username/email and password.", "error");
-        return;
-      }
-
-      try {
-        setLoading("loginBtn", true, "Logging in...", "Login");
-
-        const res = await fetch("/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            login_id: loginId,
-            password: password
-          })
-        });
-
-        const data = await res.json();
-
-        if (data.status === "success") {
-          setMessage("loginMessage", "Login successful. Redirecting...", "success");
-          setTimeout(() => {
-            window.location.href = "/index";
-          }, 600);
-        } else {
-          setMessage("loginMessage", data.message || "Login failed.", "error");
-        }
-      } catch (error) {
-        setMessage("loginMessage", "Server error during login: " + error.message, "error");
-      } finally {
-        setLoading("loginBtn", false, "Logging in...", "Login");
-      }
-    }
-
-    async function sendEmailOtp() {
-      clearMessage("signupMessage");
-
-      const email = document.getElementById("signupEmail").value.trim();
-
-      if (!email) {
-        setMessage("signupMessage", "Enter email first.", "error");
-        return;
-      }
-
-      resetVerificationState();
-      document.getElementById("demoOtp").classList.remove("show");
-      document.getElementById("demoOtp").textContent = "";
-
-      try {
-        setLoading("sendOtpBtn", true, "Sending OTP...", "Send Email OTP");
-
-        const res = await fetch("/send-otp", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: email })
-        });
-
-        const data = await res.json();
-
-        if (data.status === "success") {
-          document.getElementById("otpBox").classList.add("show");
-
-          if (data.demo_otp) {
-            const demoBox = document.getElementById("demoOtp");
-            demoBox.textContent = "Demo OTP: " + data.demo_otp;
-            demoBox.classList.add("show");
-          }
-
-          setMessage("signupMessage", data.message || "OTP sent successfully.", "success");
-        } else {
-          setMessage("signupMessage", data.message || "OTP sending failed.", "error");
-        }
-      } catch (error) {
-        setMessage("signupMessage", "Server error while sending OTP: " + error.message, "error");
-      } finally {
-        setLoading("sendOtpBtn", false, "Sending OTP...", "Send Email OTP");
-      }
-    }
-
-    async function verifyEmailOtp() {
-      clearMessage("signupMessage");
-
-      const email = document.getElementById("signupEmail").value.trim();
-      const otp = document.getElementById("signupOtp").value.trim();
-
-      if (!otp) {
-        setMessage("signupMessage", "Enter OTP first.", "error");
-        return;
-      }
-
-      try {
-        setLoading("verifyOtpBtn", true, "Verifying...", "Verify OTP");
-
-        const res = await fetch("/verify-otp", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: email,
-            otp: otp
-          })
-        });
-
-        const data = await res.json();
-
-        if (data.status === "success") {
-          emailVerified = true;
-          document.getElementById("verifiedBadge").classList.add("show");
-          document.getElementById("createAccountBtn").disabled = false;
-          setMessage("signupMessage", data.message || "Email verified.", "success");
-        } else {
-          setMessage("signupMessage", data.message || "OTP verification failed.", "error");
-        }
-      } catch (error) {
-        setMessage("signupMessage", "Server error while verifying OTP: " + error.message, "error");
-      } finally {
-        setLoading("verifyOtpBtn", false, "Verifying...", "Verify OTP");
-      }
-    }
-
-    async function createAccount() {
-      clearMessage("signupMessage");
-
-      const username = document.getElementById("signupUsername").value.trim();
-      const email = document.getElementById("signupEmail").value.trim();
-      const phone = document.getElementById("signupPhone").value.trim();
-      const password = document.getElementById("signupPassword").value;
-      const confirmPassword = document.getElementById("signupConfirmPassword").value;
-      const acceptedTerms = document.getElementById("termsCheck").checked;
-
-      if (!emailVerified) {
-        setMessage("signupMessage", "Please verify email OTP first.", "error");
-        return;
-      }
-
-      if (!username || !email || !password || !confirmPassword) {
-        setMessage("signupMessage", "Fill username, email, password, and recheck password.", "error");
-        return;
-      }
-
-      if (password !== confirmPassword) {
-        setMessage("signupMessage", "Password and recheck password do not match.", "error");
-        return;
-      }
-
-      if (!acceptedTerms) {
-        setMessage("signupMessage", "Please accept Terms & Privacy to continue.", "error");
-        return;
-      }
-
-      try {
-        setLoading("createAccountBtn", true, "Creating Account...", "Create Account");
-
-        const res = await fetch("/complete-signup", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            username: username,
-            email: email,
-            phone: phone,
-            password: password,
-            confirm_password: confirmPassword,
-            accepted_terms: acceptedTerms
-          })
-        });
-
-        const data = await res.json();
-
-        if (data.status === "success") {
-          setMessage("signupMessage", data.message || "Account created successfully.", "success");
-
-          setTimeout(() => {
-            showPanel("login");
-            document.getElementById("loginId").value = username;
-          }, 900);
-        } else {
-          setMessage("signupMessage", data.message || "Signup failed.", "error");
-        }
-      } catch (error) { 
-        setMessage("signupMessage", "Server error while creating account: " + error.message, "error");
-      } finally {
-        setLoading("createAccountBtn", false, "Creating Account...", "Create Account");
-        if (emailVerified) {
-          document.getElementById("createAccountBtn").disabled = false;
-        }
-      }
-    }
-
-    const authParams = new URLSearchParams(window.location.search);
-    const authMode = authParams.get("mode");
-    if (authMode === "signup") {
-      showPanel("signup");
-    } else {
-      showPanel("login");
-    }
-
-    document.getElementById("signupEmail").addEventListener("input", resetVerificationState);
-  </script>
 </body>
 </html>
