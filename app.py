@@ -205,57 +205,69 @@ def generate_unique_username(cur, email):
 
 
 def send_otp_email(receiver_email, otp):
-    sender_email = (
-        os.environ.get("MAIL_USERNAME")
-        or os.environ.get("EMAIL_USER")
-        or os.environ.get("GMAIL_USER")
-        or ""
-    ).strip()
+    """
+    Sends OTP using Resend Email API over HTTPS.
+    This works on Render Free because it does not use blocked SMTP ports.
+    Required Render Environment Variable:
+        RESEND_API_KEY
+    Optional:
+        RESEND_FROM_EMAIL
+    """
 
-    sender_password = (
-        os.environ.get("MAIL_PASSWORD")
-        or os.environ.get("EMAIL_PASS")
-        or os.environ.get("GMAIL_APP_PASSWORD")
-        or ""
-    ).replace(" ", "").strip()
+    resend_api_key = os.environ.get("RESEND_API_KEY", "").strip()
+    from_email = os.environ.get("RESEND_FROM_EMAIL", "AI.CREATIVE <onboarding@resend.dev>").strip()
 
     subject = "Your AI.CREATIVE verification OTP"
     body = f"""
 Hello,
 
-Your AI.CREATIVE account verification OTP is: {otp}
+Your OTP for AI.CREATIVE account verification is: {otp}
 
-This OTP is valid for 10 minutes.
-Do not share this OTP with anyone.
+This OTP is valid for 10 minutes. Do not share it with anyone.
 
 Regards,
 AI.CREATIVE Team
 """.strip()
 
-    if not sender_email or not sender_password:
-        print(f"Email OTP for {receiver_email}: {otp}")
-        return True, "OTP generated. Mail credentials are not set, so check Render logs for demo OTP.", True
+    if not resend_api_key:
+        print(f"OTP for {receiver_email}: {otp}")
+        return True, "OTP generated. RESEND_API_KEY is missing, so check Render logs for demo OTP."
 
     try:
-        msg = MIMEText(body)
-        msg["Subject"] = subject
-        msg["From"] = sender_email
-        msg["To"] = receiver_email
+        response = requests.post(
+            "https://api.resend.com/emails",
+            headers={
+                "Authorization": f"Bearer {resend_api_key}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "from": from_email,
+                "to": [receiver_email],
+                "subject": subject,
+                "text": body,
+            },
+            timeout=20,
+        )
 
-        with smtplib.SMTP("smtp.gmail.com", 587, timeout=20) as server:
-            server.starttls()
-            server.login(sender_email, sender_password)
-            server.sendmail(sender_email, [receiver_email], msg.as_string())
+        try:
+            data = response.json()
+        except Exception:
+            data = {"raw": response.text[:300]}
 
-        return True, "OTP sent successfully. Check your email inbox.", False
+        print("Resend API response:", response.status_code, data)
 
-    except smtplib.SMTPAuthenticationError as e:
-        print("OTP email authentication error:", e)
-        return False, "Email login failed. Check MAIL_USERNAME and Gmail App Password.", False
+        if response.status_code in (200, 201):
+            return True, "OTP sent successfully. Check your email inbox."
+
+        error_message = data.get("message") or data.get("error") or str(data)
+        return False, f"OTP email failed: {error_message}"
+
+    except requests.exceptions.Timeout:
+        return False, "OTP email request timed out. Try again."
 
     except Exception as e:
-        print("OTP email error:", e)
-        return False, "OTP email failed. Check MAIL_USERNAME, MAIL_PASSWORD, and Render logs.", False
+        print("Resend OTP email error:", e)
+        return False, "OTP email failed. Check RESEND_API_KEY and Render logs."
 
 
 def demo_ai_response(prompt, mode="generate"):
