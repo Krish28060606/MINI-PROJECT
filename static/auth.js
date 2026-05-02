@@ -28,6 +28,7 @@ function clearMessage(id) {
 
 function togglePassword(inputId, button) {
   const input = document.getElementById(inputId);
+
   if (input.type === "password") {
     input.type = "text";
     button.textContent = "Hide";
@@ -56,6 +57,9 @@ function setLoading(buttonId, isLoading, text) {
 function updateStrength() {
   const password = document.getElementById("signupPassword").value;
   const bar = document.getElementById("strengthBar");
+
+  if (!bar) return;
+
   let score = 0;
 
   if (password.length >= 6) score += 25;
@@ -70,7 +74,11 @@ function updateStrength() {
 function resetVerificationState() {
   emailVerified = false;
   verifiedEmail = "";
-  document.getElementById("verifiedBadge").classList.remove("show");
+
+  const badge = document.getElementById("verifiedBadge");
+  if (badge) {
+    badge.classList.remove("show");
+  }
 }
 
 async function sendEmailOtp() {
@@ -96,7 +104,8 @@ async function sendEmailOtp() {
     const data = await res.json();
 
     if (data.status === "success") {
-      document.getElementById("otpArea").style.display = "block";
+      const otpArea = document.getElementById("otpArea");
+      if (otpArea) otpArea.style.display = "block";
       setMessage("signupMessage", data.message || "OTP sent successfully.", "success");
     } else {
       setMessage("signupMessage", data.message || "OTP failed.", "error");
@@ -133,7 +142,10 @@ async function verifyEmailOtp() {
     if (data.status === "success") {
       emailVerified = true;
       verifiedEmail = email;
-      document.getElementById("verifiedBadge").classList.add("show");
+
+      const badge = document.getElementById("verifiedBadge");
+      if (badge) badge.classList.add("show");
+
       setMessage("signupMessage", data.message || "Email verified.", "success");
     } else {
       setMessage("signupMessage", data.message || "OTP verification failed.", "error");
@@ -161,6 +173,16 @@ async function createAccount() {
 
   if (!username || !email || !password || !confirmPassword) {
     setMessage("signupMessage", "Fill username, email, password and recheck password.", "error");
+    return;
+  }
+
+  if (username.length < 3) {
+    setMessage("signupMessage", "Username must be at least 3 characters.", "error");
+    return;
+  }
+
+  if (password.length < 6) {
+    setMessage("signupMessage", "Password must be at least 6 characters.", "error");
     return;
   }
 
@@ -230,6 +252,7 @@ async function loginUser() {
 
     if (data.status === "success") {
       setMessage("loginMessage", "Login successful. Redirecting...", "success");
+
       setTimeout(() => {
         window.location.href = "/index";
       }, 650);
@@ -251,6 +274,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const authParams = new URLSearchParams(window.location.search);
   const authMode = authParams.get("mode");
+
   if (authMode === "signup") {
     showPanel("signup");
   } else {
