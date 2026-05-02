@@ -151,7 +151,6 @@ def validate_email_signup_payload(data, verified_email):
     phone = clean_phone(data.get("phone"))
     password = data.get("password") or ""
     confirm_password = data.get("confirm_password") or data.get("recheck_password") or ""
-    accepted_terms = bool(data.get("accepted_terms"))
 
     if not verified_email:
         return None, "Please verify your email OTP first"
@@ -173,9 +172,6 @@ def validate_email_signup_payload(data, verified_email):
 
     if password != confirm_password:
         return None, "Password and recheck password do not match"
-
-    if not accepted_terms:
-        return None, "Please accept Terms & Privacy to continue"
 
     return {
         "name": username,
