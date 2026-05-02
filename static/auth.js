@@ -153,7 +153,6 @@ async function createAccount() {
   const phone = document.getElementById("signupPhone").value.trim();
   const password = document.getElementById("signupPassword").value;
   const confirmPassword = document.getElementById("signupConfirmPassword").value;
-  const terms = document.getElementById("termsCheck").checked;
 
   if (!emailVerified || verifiedEmail !== email) {
     setMessage("signupMessage", "Please verify email OTP first.", "error");
@@ -167,11 +166,6 @@ async function createAccount() {
 
   if (password !== confirmPassword) {
     setMessage("signupMessage", "Password and recheck password do not match.", "error");
-    return;
-  }
-
-  if (!terms) {
-    setMessage("signupMessage", "Please accept the confirmation checkbox.", "error");
     return;
   }
 
