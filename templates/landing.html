@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI.CREATIVE | Landing Page</title>
+  <title>AI.CREATIVE | AI Writing Platform</title>
+
   <style>
     * {
       margin: 0;
@@ -14,133 +15,58 @@
     }
 
     :root {
-      --bg: #06111f;
-      --bg2: #0b1831;
-      --glass: rgba(255,255,255,0.10);
-      --glass-2: rgba(255,255,255,0.16);
       --text: #f8fafc;
-      --muted: #d3deee;
-      --accent: #7dd3fc;
-      --accent2: #a78bfa;
-      --accent3: #34d399;
-      --dark: #0b1220;
+      --muted: #cbd5e1;
+      --soft: rgba(255,255,255,0.10);
+      --border: rgba(255,255,255,0.16);
+      --cyan: #67e8f9;
+      --green: #34d399;
+      --violet: #a78bfa;
+      --dark: #06111f;
     }
 
     body {
-      background:
-        radial-gradient(circle at 15% 20%, rgba(34, 211, 238, 0.15), transparent 26%),
-        radial-gradient(circle at 85% 12%, rgba(167, 139, 250, 0.18), transparent 24%),
-        radial-gradient(circle at 75% 85%, rgba(52, 211, 153, 0.12), transparent 24%),
-        linear-gradient(135deg, #07111f, #0d1a30 45%, #132746 100%);
+      min-height: 100vh;
       color: var(--text);
+      background:
+        radial-gradient(circle at 16% 18%, rgba(34, 211, 238, 0.18), transparent 28%),
+        radial-gradient(circle at 84% 12%, rgba(167, 139, 250, 0.20), transparent 26%),
+        linear-gradient(135deg, #06111f, #0b1831 45%, #162b4d 100%);
       overflow-x: hidden;
     }
 
     .scene {
       position: fixed;
       inset: 0;
+      z-index: 0;
       overflow: hidden;
       pointer-events: none;
-      z-index: 0;
-    }
-
-    .scene::before,
-    .scene::after {
-      content: "";
-      position: absolute;
-      inset: 0;
     }
 
     .scene::before {
-      background:
-        radial-gradient(circle at 50% 22%, rgba(255,255,255,0.12), transparent 16%),
-        linear-gradient(to top, rgba(7,17,31,0.78), rgba(7,17,31,0.15) 35%, rgba(7,17,31,0.08));
-      filter: blur(1px);
-    }
-
-    .scene::after {
-      background:
-        linear-gradient(to top, rgba(8, 15, 29, 0.95), rgba(8, 15, 29, 0.55) 40%, rgba(8, 15, 29, 0.22)),
-        repeating-linear-gradient(
-          90deg,
-          transparent 0 100px,
-          rgba(255,255,255,0.02) 100px 101px,
-          transparent 101px 180px
-        );
-      opacity: 0.8;
-    }
-
-    .orb {
+      content: "";
       position: absolute;
-      border-radius: 999px;
-      filter: blur(60px);
-      opacity: 0.30;
-      animation: float 8s ease-in-out infinite alternate;
-    }
-
-    .orb.one {
-      width: 320px;
-      height: 320px;
-      background: #67e8f9;
-      top: 5%;
-      left: -80px;
-    }
-
-    .orb.two {
-      width: 280px;
-      height: 280px;
-      background: #a78bfa;
-      right: -70px;
-      top: 18%;
-      animation-delay: .7s;
-    }
-
-    .orb.three {
-      width: 340px;
-      height: 340px;
-      background: #34d399;
-      bottom: -120px;
-      left: 30%;
-      animation-delay: 1.3s;
-    }
-
-    @keyframes float {
-      from { transform: translateY(0px) scale(1); }
-      to { transform: translateY(-28px) scale(1.08); }
+      inset: 0;
+      background:
+        radial-gradient(circle at 50% 24%, rgba(255,255,255,0.13), transparent 15%),
+        linear-gradient(to top, rgba(6,17,31,0.92), rgba(6,17,31,0.50) 42%, rgba(6,17,31,0.10));
     }
 
     .forest {
       position: absolute;
       inset: 0;
-      opacity: 0.32;
+      opacity: 0.34;
       background:
-        linear-gradient(to top, #06111f 0%, rgba(6,17,31,0.45) 38%, rgba(6,17,31,0.14) 60%, rgba(6,17,31,0.04)),
+        linear-gradient(to top, rgba(6,17,31,1), rgba(6,17,31,0.42) 40%, transparent),
         repeating-linear-gradient(90deg,
-          rgba(14, 30, 54, 0.0) 0 35px,
-          rgba(10, 24, 44, 0.95) 35px 45px,
-          rgba(14, 30, 54, 0.0) 45px 92px,
-          rgba(15, 34, 60, 0.92) 92px 102px,
-          rgba(14, 30, 54, 0.0) 102px 155px
+          transparent 0 42px,
+          rgba(6,17,31,0.95) 42px 55px,
+          transparent 55px 110px,
+          rgba(11,28,51,0.96) 110px 124px,
+          transparent 124px 190px
         );
-      transform: scale(1.12);
-      transform-origin: bottom center;
+      transform: scale(1.08);
       mask-image: linear-gradient(to top, black 78%, transparent 100%);
-    }
-
-    .forest-2 {
-      position: absolute;
-      inset: auto 0 0 0;
-      height: 42%;
-      background:
-        radial-gradient(circle at 50% 100%, rgba(125,211,252,0.10), transparent 40%),
-        repeating-linear-gradient(90deg,
-          rgba(3, 12, 25, 0.0) 0 50px,
-          rgba(4, 13, 26, 0.98) 50px 66px,
-          rgba(3, 12, 25, 0.0) 66px 126px,
-          rgba(7, 18, 33, 0.98) 126px 144px,
-          rgba(3, 12, 25, 0.0) 144px 220px
-        );
-      opacity: 0.85;
     }
 
     .grass {
@@ -150,79 +76,116 @@
       bottom: 0;
       height: 130px;
       background:
-        linear-gradient(to top, rgba(6,17,31,1), rgba(6,17,31,0.3)),
-        repeating-linear-gradient(
-          100deg,
+        linear-gradient(to top, rgba(6,17,31,1), rgba(6,17,31,0.2)),
+        repeating-linear-gradient(100deg,
           rgba(15, 36, 58, 1) 0 3px,
           transparent 3px 12px,
           rgba(17, 41, 63, 0.9) 12px 14px,
           transparent 14px 22px
         );
-      mask-image: linear-gradient(to top, black 72%, transparent 100%);
-      opacity: 0.9;
+      opacity: 0.90;
+      mask-image: linear-gradient(to top, black 70%, transparent 100%);
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(60px);
+      opacity: 0.28;
+      animation: float 8s ease-in-out infinite alternate;
+    }
+
+    .orb.one {
+      width: 330px;
+      height: 330px;
+      background: var(--cyan);
+      top: 5%;
+      left: -80px;
+    }
+
+    .orb.two {
+      width: 310px;
+      height: 310px;
+      background: var(--violet);
+      top: 15%;
+      right: -90px;
+      animation-delay: .8s;
+    }
+
+    .orb.three {
+      width: 340px;
+      height: 340px;
+      background: var(--green);
+      bottom: -120px;
+      left: 32%;
+      animation-delay: 1.3s;
+    }
+
+    @keyframes float {
+      from { transform: translateY(0) scale(1); }
+      to { transform: translateY(-28px) scale(1.08); }
     }
 
     .deer {
       position: absolute;
-      left: 13%;
-      bottom: 110px;
+      left: 10%;
+      bottom: 96px;
       width: 160px;
       height: 220px;
-      opacity: 0.38;
-      transform: scale(1.15);
+      opacity: 0.34;
+      transform: scale(1.08);
+    }
+
+    .deer .body,
+    .deer .neck,
+    .deer .head,
+    .deer .leg,
+    .deer .antler {
+      position: absolute;
+      background: rgba(3, 9, 18, 0.96);
     }
 
     .deer .body {
-      position: absolute;
       bottom: 45px;
       left: 22px;
       width: 92px;
       height: 92px;
-      background: rgba(6,17,31,0.96);
       border-radius: 48% 45% 42% 45%;
     }
 
     .deer .neck {
-      position: absolute;
       bottom: 112px;
       left: 82px;
       width: 22px;
       height: 55px;
-      background: rgba(6,17,31,0.96);
       border-radius: 15px;
       transform: rotate(-16deg);
       transform-origin: bottom center;
     }
 
     .deer .head {
-      position: absolute;
       bottom: 150px;
       left: 88px;
       width: 40px;
       height: 28px;
-      background: rgba(6,17,31,0.96);
       border-radius: 45% 55% 50% 50%;
       transform: rotate(-7deg);
     }
 
     .deer .leg {
-      position: absolute;
       width: 8px;
       height: 72px;
-      background: rgba(6,17,31,0.96);
       bottom: 0;
       border-radius: 10px;
     }
 
-    .deer .leg.l1 { left: 42px; }
-    .deer .leg.l2 { left: 68px; height: 78px; }
-    .deer .leg.l3 { left: 95px; }
-    .deer .leg.l4 { left: 116px; height: 76px; }
+    .deer .l1 { left: 42px; }
+    .deer .l2 { left: 68px; height: 78px; }
+    .deer .l3 { left: 95px; }
+    .deer .l4 { left: 116px; height: 76px; }
 
     .deer .antler {
-      position: absolute;
       width: 4px;
-      background: rgba(6,17,31,0.96);
       border-radius: 3px;
       transform-origin: bottom center;
     }
@@ -234,7 +197,7 @@
     .deer .a5 { left: 114px; bottom: 203px; height: 20px; transform: rotate(36deg); }
     .deer .a6 { left: 119px; bottom: 190px; height: 18px; transform: rotate(58deg); }
 
-    .wrapper {
+    .wrap {
       position: relative;
       z-index: 2;
     }
@@ -242,51 +205,51 @@
     nav {
       position: sticky;
       top: 0;
-      z-index: 20;
-      backdrop-filter: blur(12px);
-      background: rgba(4, 10, 20, 0.48);
+      z-index: 10;
+      backdrop-filter: blur(14px);
+      background: rgba(4, 10, 20, 0.52);
       border-bottom: 1px solid rgba(255,255,255,0.08);
     }
 
     .nav-inner {
       width: min(1180px, 92%);
+      min-height: 82px;
       margin: auto;
-      min-height: 80px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
+      gap: 18px;
     }
 
     .logo {
-      font-size: 28px;
-      font-weight: 900;
-      letter-spacing: -1px;
-      color: #ffffff;
+      color: white;
       text-decoration: none;
+      font-weight: 950;
+      font-size: 28px;
+      letter-spacing: -1px;
     }
 
     .logo span {
-      color: var(--accent);
+      color: var(--cyan);
     }
 
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 26px;
+      gap: 24px;
       flex-wrap: wrap;
     }
 
     .nav-links a {
       color: rgba(255,255,255,0.88);
       text-decoration: none;
-      font-weight: 700;
+      font-weight: 800;
       font-size: 15px;
       transition: .2s ease;
     }
 
     .nav-links a:hover {
-      color: #ffffff;
+      color: white;
     }
 
     .nav-actions {
@@ -298,15 +261,14 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.14);
-      text-decoration: none;
-      font-weight: 800;
-      cursor: pointer;
-      transition: .2s ease;
       min-height: 48px;
       padding: 0 18px;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 900;
+      transition: .2s ease;
+      border: 1px solid var(--border);
+      white-space: nowrap;
     }
 
     .btn-outline {
@@ -315,70 +277,60 @@
       backdrop-filter: blur(10px);
     }
 
-    .btn-outline:hover {
-      transform: translateY(-2px);
-      background: rgba(255,255,255,0.14);
-    }
-
     .btn-primary {
       color: #04111e;
-      background: linear-gradient(135deg, #67e8f9, #34d399);
+      background: linear-gradient(135deg, var(--cyan), var(--green));
       box-shadow: 0 16px 40px rgba(52,211,153,0.18);
+      border: 0;
     }
 
-    .btn-primary:hover {
+    .btn:hover {
       transform: translateY(-2px);
     }
 
     .hero {
-      min-height: calc(100vh - 80px);
       width: min(1180px, 92%);
-      margin: 0 auto;
+      min-height: calc(100vh - 82px);
+      margin: auto;
       display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
+      grid-template-columns: 1.05fr 0.95fr;
       align-items: center;
-      gap: 28px;
-      padding: 40px 0 80px;
-    }
-
-    .hero-content {
-      max-width: 680px;
+      gap: 34px;
+      padding: 52px 0 86px;
     }
 
     .eyebrow {
       display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 15px;
+      padding: 11px 15px;
       border-radius: 999px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: #c7d2fe;
-      font-weight: 800;
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.13);
+      color: #dbeafe;
+      font-weight: 900;
       margin-bottom: 22px;
       backdrop-filter: blur(12px);
     }
 
     .hero h1 {
       font-size: clamp(48px, 7vw, 86px);
-      line-height: 0.94;
+      line-height: .94;
       letter-spacing: -3px;
-      margin-bottom: 18px;
-      text-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      margin-bottom: 20px;
+      text-shadow: 0 12px 35px rgba(0,0,0,0.28);
     }
 
     .hero h1 span {
-      background: linear-gradient(135deg, #ffffff, #7dd3fc, #c4b5fd);
+      background: linear-gradient(135deg, #ffffff, var(--cyan), #c4b5fd);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
     }
 
     .hero p {
-      font-size: 18px;
       color: var(--muted);
+      font-size: 18px;
       line-height: 1.75;
-      max-width: 620px;
+      max-width: 650px;
       margin-bottom: 28px;
     }
 
@@ -393,14 +345,14 @@
       display: grid;
       grid-template-columns: repeat(3, minmax(120px, 1fr));
       gap: 14px;
-      max-width: 620px;
+      max-width: 650px;
     }
 
     .stat {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 22px;
       padding: 18px;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.09);
+      border: 1px solid rgba(255,255,255,0.12);
       backdrop-filter: blur(14px);
     }
 
@@ -408,228 +360,145 @@
       display: block;
       font-size: 28px;
       margin-bottom: 4px;
-      color: white;
     }
 
     .stat span {
       color: #c7d2fe;
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 800;
     }
 
-    .hero-card {
+    .showcase {
       position: relative;
-      display: flex;
-      justify-content: center;
     }
 
-    .glass-login {
-      width: min(430px, 100%);
-      background: rgba(225, 239, 255, 0.14);
-      border: 1px solid rgba(255,255,255,0.20);
-      box-shadow: 0 30px 80px rgba(0,0,0,0.35);
-      backdrop-filter: blur(22px);
-      border-radius: 28px;
+    .project-card {
+      position: relative;
+      border-radius: 30px;
       padding: 26px;
-      position: relative;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow: 0 35px 90px rgba(0,0,0,0.35);
+      backdrop-filter: blur(24px);
       overflow: hidden;
     }
 
-    .glass-login::before {
+    .project-card::before {
       content: "";
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(circle at top right, rgba(255,255,255,0.22), transparent 28%),
-        radial-gradient(circle at bottom left, rgba(125, 211, 252, 0.20), transparent 28%);
+        radial-gradient(circle at top right, rgba(255,255,255,0.23), transparent 28%),
+        radial-gradient(circle at bottom left, rgba(125,211,252,0.20), transparent 28%);
       pointer-events: none;
     }
 
-    .card-top {
+    .project-card > * {
       position: relative;
       z-index: 1;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    }
+
+    .creator-pill {
+      width: fit-content;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(103,232,249,0.22), rgba(167,139,250,0.20));
+      border: 1px solid rgba(255,255,255,0.16);
+      font-weight: 950;
       margin-bottom: 18px;
+      color: #e0f2fe;
     }
 
-    .card-top h3 {
-      font-size: 32px;
-      letter-spacing: -1px;
+    .project-card h2 {
+      font-size: clamp(34px, 4vw, 52px);
+      line-height: 1;
+      letter-spacing: -2px;
+      margin-bottom: 14px;
     }
 
-    .close-dot {
-      width: 34px;
-      height: 34px;
-      border-radius: 12px;
+    .project-card h2 span {
+      color: var(--cyan);
+    }
+
+    .project-card p {
+      color: #d8e7f7;
+      line-height: 1.7;
+      margin-bottom: 20px;
+      font-size: 16px;
+    }
+
+    .creator-box {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: center;
+      padding: 16px;
+      border-radius: 22px;
+      background: rgba(2, 6, 23, 0.35);
+      border: 1px solid rgba(255,255,255,0.12);
+      margin-bottom: 16px;
+    }
+
+    .avatar {
+      width: 58px;
+      height: 58px;
+      border-radius: 20px;
       display: grid;
       place-items: center;
-      background: rgba(0,0,0,0.20);
-      border: 1px solid rgba(255,255,255,0.16);
-      color: white;
-      font-weight: 900;
+      background: linear-gradient(135deg, var(--cyan), var(--green), var(--violet));
+      color: #06111f;
+      font-size: 24px;
+      font-weight: 950;
     }
 
-    .card-sub {
-      position: relative;
-      z-index: 1;
-      color: #e5eefc;
-      font-size: 15px;
-      margin-bottom: 18px;
-      line-height: 1.6;
-    }
-
-    .mini-tabs {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 18px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .mini-tabs a {
-      text-decoration: none;
-      padding: 11px 15px;
-      border-radius: 12px;
-      font-weight: 800;
-      border: 1px solid rgba(255,255,255,0.16);
-      background: rgba(255,255,255,0.10);
-      color: white;
-      transition: .2s ease;
-    }
-
-    .mini-tabs a.active,
-    .mini-tabs a:hover {
-      background: linear-gradient(135deg, #67e8f9, #34d399);
-      color: #03111f;
-    }
-
-    .field {
-      position: relative;
-      z-index: 1;
-      margin-bottom: 15px;
-    }
-
-    .field label {
+    .creator-box strong {
       display: block;
-      font-size: 14px;
-      margin-bottom: 8px;
-      color: #eef5ff;
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    .creator-box span {
+      color: #cbd5e1;
       font-weight: 800;
     }
 
-    .field input {
-      width: 100%;
-      min-height: 52px;
-      border: 1px solid rgba(255,255,255,0.20);
-      background: rgba(255,255,255,0.12);
-      color: white;
-      border-radius: 14px;
-      padding: 0 16px;
-      outline: none;
-      font-size: 15px;
+    .preview-list {
+      display: grid;
+      gap: 12px;
     }
 
-    .field input::placeholder {
-      color: rgba(255,255,255,0.68);
-    }
-
-    .field input:focus {
-      box-shadow: 0 0 0 4px rgba(125,211,252,0.14);
-      border-color: rgba(125,211,252,0.46);
-    }
-
-    .row-inline {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      font-size: 13px;
-      color: #e8f1ff;
-      margin: 8px 0 18px;
-      flex-wrap: wrap;
-    }
-
-    .row-inline label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: 700;
-    }
-
-    .row-inline input {
-      accent-color: #67e8f9;
-    }
-
-    .row-inline a {
-      color: #c4b5fd;
-      text-decoration: none;
-      font-weight: 700;
-    }
-
-    .big-login {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      min-height: 52px;
-      border: none;
-      border-radius: 14px;
-      color: #04111e;
-      font-size: 16px;
-      font-weight: 900;
-      background: linear-gradient(135deg, #67e8f9, #34d399);
-      box-shadow: 0 14px 34px rgba(52,211,153,0.18);
-      cursor: pointer;
-      transition: .2s ease;
-    }
-
-    .big-login:hover {
-      transform: translateY(-2px);
-    }
-
-    .register-line {
-      position: relative;
-      z-index: 1;
-      text-align: center;
-      margin-top: 16px;
-      color: #eff6ff;
-      font-size: 14px;
-    }
-
-    .register-line a {
-      color: #c4b5fd;
+    .preview-list div {
+      padding: 14px 15px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.11);
+      color: #e2e8f0;
       font-weight: 800;
-      text-decoration: none;
     }
 
     .floating-badge {
       position: absolute;
-      padding: 13px 16px;
+      right: -18px;
+      top: 24px;
+      padding: 14px 17px;
       border-radius: 18px;
-      background: rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.12);
       border: 1px solid rgba(255,255,255,0.14);
-      backdrop-filter: blur(14px);
-      box-shadow: 0 16px 35px rgba(0,0,0,0.2);
-      font-weight: 800;
-      color: white;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 20px 46px rgba(0,0,0,0.24);
+      font-weight: 950;
+      animation: hoverCard 3s ease-in-out infinite alternate;
     }
 
-    .badge-a {
-      right: -16px;
-      top: 20px;
-    }
-
-    .badge-b {
-      left: -24px;
-      bottom: 26px;
+    @keyframes hoverCard {
+      from { transform: translateY(0); }
+      to { transform: translateY(-12px); }
     }
 
     .section {
       width: min(1180px, 92%);
-      margin: 0 auto;
-      padding: 20px 0 100px;
+      margin: auto;
+      padding: 25px 0 95px;
     }
 
     .section-title {
@@ -638,15 +507,15 @@
     }
 
     .section-title h2 {
-      font-size: clamp(34px, 5vw, 50px);
+      font-size: clamp(34px, 5vw, 52px);
       letter-spacing: -2px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
     .section-title p {
       color: var(--muted);
       max-width: 780px;
-      margin: 0 auto;
+      margin: auto;
       line-height: 1.7;
     }
 
@@ -657,17 +526,17 @@
     }
 
     .feature {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.11);
-      border-radius: 24px;
       padding: 22px;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.09);
+      border: 1px solid rgba(255,255,255,0.12);
       backdrop-filter: blur(14px);
       transition: .2s ease;
     }
 
     .feature:hover {
-      transform: translateY(-4px);
-      background: rgba(255,255,255,0.10);
+      transform: translateY(-5px);
+      background: rgba(255,255,255,0.12);
     }
 
     .feature .icon {
@@ -676,14 +545,14 @@
       display: grid;
       place-items: center;
       border-radius: 16px;
-      background: linear-gradient(135deg, rgba(103,232,249,0.22), rgba(167,139,250,0.25));
-      font-size: 22px;
+      background: linear-gradient(135deg, rgba(103,232,249,0.24), rgba(167,139,250,0.25));
       margin-bottom: 16px;
+      font-size: 23px;
     }
 
     .feature h3 {
-      margin-bottom: 10px;
       font-size: 20px;
+      margin-bottom: 10px;
     }
 
     .feature p {
@@ -694,7 +563,7 @@
 
     footer {
       width: min(1180px, 92%);
-      margin: 0 auto;
+      margin: auto;
       padding: 0 0 45px;
       color: #b9c9de;
       text-align: center;
@@ -704,23 +573,14 @@
     @media (max-width: 1020px) {
       .hero {
         grid-template-columns: 1fr;
-        gap: 38px;
-      }
-
-      .hero-card {
-        justify-content: flex-start;
       }
 
       .feature-grid {
         grid-template-columns: repeat(2, 1fr);
       }
 
-      .badge-a {
-        right: 10px;
-      }
-
-      .badge-b {
-        left: 10px;
+      .floating-badge {
+        right: 16px;
       }
     }
 
@@ -734,8 +594,12 @@
         justify-content: center;
       }
 
-      .hero {
-        padding-top: 28px;
+      .nav-actions {
+        width: 100%;
+      }
+
+      .nav-actions .btn {
+        flex: 1;
       }
 
       .stats,
@@ -743,18 +607,18 @@
         grid-template-columns: 1fr;
       }
 
-      .glass-login {
-        padding: 22px;
+      .hero {
+        padding-top: 32px;
+      }
+
+      .hero h1 {
+        letter-spacing: -2px;
       }
 
       .floating-badge {
         position: static;
-        margin-top: 12px;
-      }
-
-      .deer {
-        left: 6%;
-        transform: scale(0.95);
+        margin-top: 14px;
+        width: fit-content;
       }
     }
   </style>
@@ -766,7 +630,6 @@
     <div class="orb two"></div>
     <div class="orb three"></div>
     <div class="forest"></div>
-    <div class="forest-2"></div>
     <div class="grass"></div>
 
     <div class="deer">
@@ -786,7 +649,7 @@
     </div>
   </div>
 
-  <div class="wrapper">
+  <div class="wrap">
     <nav>
       <div class="nav-inner">
         <a href="/" class="logo">AI<span>.CREATIVE</span></a>
@@ -806,17 +669,17 @@
     </nav>
 
     <section class="hero" id="home">
-      <div class="hero-content">
+      <div>
         <div class="eyebrow">✨ Smart writing platform for students, creators, and dreamers</div>
 
         <h1>
-          Make your <span>first impression</span> unforgettable.
+          Make your first
+          <span>impression unforgettable.</span>
         </h1>
 
         <p>
           AI.CREATIVE helps you generate, improve, and polish writing with a premium
-          experience, secure signup, and a modern creative dashboard that feels as
-          powerful as your ideas.
+          experience, secure signup, and a modern creative dashboard that feels as powerful as your ideas.
         </p>
 
         <div class="cta-row">
@@ -827,7 +690,7 @@
         <div class="stats">
           <div class="stat">
             <strong>OTP</strong>
-            <span>Verified signup flow</span>
+            <span>Email verified signup</span>
           </div>
           <div class="stat">
             <strong>AI</strong>
@@ -840,47 +703,35 @@
         </div>
       </div>
 
-      <div class="hero-card">
-        <div class="glass-login">
-          <div class="card-top">
-            <h3>Login</h3>
-            <div class="close-dot">×</div>
-          </div>
+      <div class="showcase">
+        <div class="project-card">
+          <div class="creator-pill">Project Creator</div>
 
-          <p class="card-sub">
-            Secure access to your AI writing workspace with username/email login.
+          <h2>
+            Designed & developed by <span>Krish Dubey</span>
+          </h2>
+
+          <p>
+            A B.Tech CSE AI-ML mini project focused on creative writing, secure authentication,
+            AI-powered enhancement, and real database-backed user history.
           </p>
 
-          <div class="mini-tabs">
-            <a href="/auth" class="active">Login</a>
-            <a href="/auth?mode=signup">Register</a>
+          <div class="creator-box">
+            <div class="avatar">KD</div>
+            <div>
+              <strong>Krish Dubey</strong>
+              <span>B.Tech CSE AI-ML • GLA University</span>
+            </div>
           </div>
 
-          <div class="field">
-            <label>Email / Username</label>
-            <input type="text" placeholder="Enter username or email" />
-          </div>
-
-          <div class="field">
-            <label>Password</label>
-            <input type="password" placeholder="Enter password" />
-          </div>
-
-          <div class="row-inline">
-            <label><input type="checkbox" checked /> Remember me</label>
-            <a href="/auth">Forgot Password?</a>
-          </div>
-
-          <button class="big-login" onclick="window.location.href='/auth'">Login</button>
-
-          <div class="register-line">
-            Don't have an account?
-            <a href="/auth?mode=signup">Register</a>
+          <div class="preview-list">
+            <div>🔐 Secure Email OTP verification using Postmark API</div>
+            <div>🧠 AI writing generation, correction, and enhancement</div>
+            <div>🗄️ PostgreSQL storage for users and writing history</div>
           </div>
         </div>
 
-        <div class="floating-badge badge-a">⚡ Premium UI</div>
-        <div class="floating-badge badge-b">🔐 Verified Access</div>
+        <div class="floating-badge">⚡ Built for 10/10 presentation impact</div>
       </div>
     </section>
 
@@ -896,10 +747,10 @@
 
     <section class="section" id="features">
       <div class="section-title">
-        <h2>Why this feels different</h2>
+        <h2>Why this project feels different</h2>
         <p>
-          Your landing page should feel premium from the first second. So this design combines an immersive
-          background, glassmorphism UI, and strong calls-to-action to make the project look impressive instantly.
+          It combines an immersive first page, secure OTP signup, AI writing tools, and a real deployed
+          dashboard experience.
         </p>
       </div>
 
@@ -913,7 +764,7 @@
         <div class="feature">
           <div class="icon">🪄</div>
           <h3>Enhance</h3>
-          <p>Transform normal writing into polished, improved, and more expressive content.</p>
+          <p>Transform normal writing into polished, improved, and expressive content.</p>
         </div>
 
         <div class="feature">
@@ -945,7 +796,7 @@
     </section>
 
     <footer>
-      © 2026 AI.CREATIVE • Designed for a strong first impression by Krish Dubey
+      © 2026 AI.CREATIVE • Designed and developed by Krish Dubey
     </footer>
   </div>
 </body>
