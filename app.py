@@ -2,6 +2,8 @@ import os
 import re
 import time
 import random
+import smtplib
+from email.mime.text import MIMEText
 from functools import wraps
 
 import bcrypt
@@ -134,18 +136,28 @@ def clean_phone(phone):
     return phone
 
 
-def validate_mobile_signup_payload(data, verified_phone):
+def validate_email_only(email):
+    email = (email or "").strip().lower()
+
+    if not valid_email(email):
+        return None, "Use Gmail, Outlook, or GLA email only"
+
+    return email, None
+
+
+def validate_email_signup_payload(data, verified_email):
     username = clean_username(data.get("username"))
     email = (data.get("email") or "").strip().lower()
     phone = clean_phone(data.get("phone"))
     password = data.get("password") or ""
     confirm_password = data.get("confirm_password") or data.get("recheck_password") or ""
+    accepted_terms = bool(data.get("accepted_terms"))
 
-    if not verified_phone:
-        return None, "Please verify your mobile number first"
+    if not verified_email:
+        return None, "Please verify your email OTP first"
 
-    if phone != verified_phone:
-        return None, "Mobile number changed. Please verify OTP again."
+    if email != verified_email:
+        return None, "Email changed. Please verify OTP again."
 
     if len(username) < 3 or len(username) > 30:
         return None, "Username must be 3 to 30 characters"
@@ -153,14 +165,17 @@ def validate_mobile_signup_payload(data, verified_phone):
     if not valid_email(email):
         return None, "Use Gmail, Outlook, or GLA email only"
 
-    if len(phone) != 10:
-        return None, "Enter a valid 10-digit mobile number"
+    if phone and len(phone) != 10:
+        return None, "Enter a valid 10-digit mobile number or keep it blank"
 
     if len(password) < 6:
         return None, "Password must be at least 6 characters"
 
     if password != confirm_password:
         return None, "Password and recheck password do not match"
+
+    if not accepted_terms:
+        return None, "Please accept Terms & Privacy to continue"
 
     return {
         "name": username,
@@ -187,6 +202,60 @@ def generate_unique_username(cur, email):
         counter += 1
 
     return username
+
+
+def send_otp_email(receiver_email, otp):
+    sender_email = (
+        os.environ.get("MAIL_USERNAME")
+        or os.environ.get("EMAIL_USER")
+        or os.environ.get("GMAIL_USER")
+        or ""
+    ).strip()
+
+    sender_password = (
+        os.environ.get("MAIL_PASSWORD")
+        or os.environ.get("EMAIL_PASS")
+        or os.environ.get("GMAIL_APP_PASSWORD")
+        or ""
+    ).replace(" ", "").strip()
+
+    subject = "Your AI.CREATIVE verification OTP"
+    body = f"""
+Hello,
+
+Your AI.CREATIVE account verification OTP is: {otp}
+
+This OTP is valid for 10 minutes.
+Do not share this OTP with anyone.
+
+Regards,
+AI.CREATIVE Team
+""".strip()
+
+    if not sender_email or not sender_password:
+        print(f"Email OTP for {receiver_email}: {otp}")
+        return True, "OTP generated. Mail credentials are not set, so check Render logs for demo OTP.", True
+
+    try:
+        msg = MIMEText(body)
+        msg["Subject"] = subject
+        msg["From"] = sender_email
+        msg["To"] = receiver_email
+
+        with smtplib.SMTP("smtp.gmail.com", 587, timeout=20) as server:
+            server.starttls()
+            server.login(sender_email, sender_password)
+            server.sendmail(sender_email, [receiver_email], msg.as_string())
+
+        return True, "OTP sent successfully. Check your email inbox.", False
+
+    except smtplib.SMTPAuthenticationError as e:
+        print("OTP email authentication error:", e)
+        return False, "Email login failed. Check MAIL_USERNAME and Gmail App Password.", False
+
+    except Exception as e:
+        print("OTP email error:", e)
+        return False, "OTP email failed. Check MAIL_USERNAME, MAIL_PASSWORD, and Render logs.", False
 
 
 def demo_ai_response(prompt, mode="generate"):
@@ -332,19 +401,19 @@ def index():
 @app.route("/send-otp", methods=["POST"])
 def send_otp():
     data = request.get_json(silent=True) or {}
-    phone = clean_phone(data.get("phone"))
+    email, error = validate_email_only(data.get("email"))
 
-    if len(phone) != 10:
+    if error:
         return jsonify({
             "status": "fail",
-            "message": "Enter a valid 10-digit mobile number"
+            "message": error
         })
 
     try:
         conn = get_connection()
         cur = conn.cursor()
 
-        cur.execute("SELECT id FROM users WHERE phone = %s", (phone,))
+        cur.execute("SELECT id FROM users WHERE email = %s", (email,))
         existing_user = cur.fetchone()
 
         cur.close()
@@ -353,42 +422,52 @@ def send_otp():
         if existing_user:
             return jsonify({
                 "status": "fail",
-                "message": "This mobile number is already registered. Please login."
+                "message": "This email is already registered. Please login with your username."
             })
 
-        otp = str(random.randint(100000, 999999))
+        otp = str(random.SystemRandom().randint(100000, 999999))
 
-        session["pending_signup_phone"] = phone
+        session["pending_signup_email"] = email
         session["pending_signup_otp"] = otp
         session["pending_signup_time"] = time.time()
-        session.pop("verified_signup_phone", None)
+        session.pop("verified_signup_email", None)
 
-        print(f"Mobile OTP for {phone}: {otp}")
+        sent, message, demo_mode = send_otp_email(email, otp)
 
-        return jsonify({
+        if not sent:
+            return jsonify({
+                "status": "fail",
+                "message": message
+            })
+
+        response = {
             "status": "success",
-            "message": "OTP generated successfully. For demo, OTP is shown below and printed in Render logs.",
-            "demo_otp": otp
-        })
+            "message": message
+        }
+
+        if demo_mode:
+            response["demo_otp"] = otp
+
+        return jsonify(response)
 
     except Exception as e:
-        print("Send mobile OTP error:", e)
+        print("Send email OTP error:", e)
         return jsonify({
             "status": "fail",
-            "message": "OTP failed. Check database settings."
+            "message": "OTP failed. Check database/mail settings."
         })
 
 
 @app.route("/verify-otp", methods=["POST"])
 def verify_otp():
     data = request.get_json(silent=True) or {}
-    phone = clean_phone(data.get("phone"))
+    email, error = validate_email_only(data.get("email"))
     otp = (data.get("otp") or "").strip()
 
-    if len(phone) != 10:
+    if error:
         return jsonify({
             "status": "fail",
-            "message": "Enter a valid 10-digit mobile number"
+            "message": error
         })
 
     if not otp:
@@ -397,27 +476,27 @@ def verify_otp():
             "message": "OTP is required"
         })
 
-    pending_phone = session.get("pending_signup_phone")
+    pending_email = session.get("pending_signup_email")
     saved_otp = session.get("pending_signup_otp")
     pending_time = session.get("pending_signup_time")
 
-    if not pending_phone or not saved_otp or not pending_time:
+    if not pending_email or not saved_otp or not pending_time:
         return jsonify({
             "status": "fail",
             "message": "Please send OTP first"
         })
 
-    if pending_phone != phone:
+    if pending_email != email:
         return jsonify({
             "status": "fail",
-            "message": "Mobile number changed. Please send OTP again."
+            "message": "Email changed. Please send OTP again."
         })
 
     if time.time() - float(pending_time) > OTP_EXPIRY_SECONDS:
-        session.pop("pending_signup_phone", None)
+        session.pop("pending_signup_email", None)
         session.pop("pending_signup_otp", None)
         session.pop("pending_signup_time", None)
-        session.pop("verified_signup_phone", None)
+        session.pop("verified_signup_email", None)
 
         return jsonify({
             "status": "fail",
@@ -430,21 +509,21 @@ def verify_otp():
             "message": "Invalid OTP"
         })
 
-    session["verified_signup_phone"] = phone
+    session["verified_signup_email"] = email
     session.pop("pending_signup_otp", None)
 
     return jsonify({
         "status": "success",
-        "message": "Mobile number verified. Now create your account."
+        "message": "Email verified. Now create your username and password."
     })
 
 
 @app.route("/complete-signup", methods=["POST"])
 def complete_signup():
     data = request.get_json(silent=True) or {}
-    verified_phone = session.get("verified_signup_phone")
+    verified_email = session.get("verified_signup_email")
 
-    payload, error = validate_mobile_signup_payload(data, verified_phone)
+    payload, error = validate_email_signup_payload(data, verified_email)
 
     if error:
         return jsonify({
@@ -456,10 +535,16 @@ def complete_signup():
         conn = get_connection()
         cur = conn.cursor()
 
-        cur.execute(
-            "SELECT id FROM users WHERE email = %s OR username = %s OR phone = %s",
-            (payload["email"], payload["username"], payload["phone"])
-        )
+        if payload["phone"]:
+            cur.execute(
+                "SELECT id FROM users WHERE email = %s OR username = %s OR phone = %s",
+                (payload["email"], payload["username"], payload["phone"])
+            )
+        else:
+            cur.execute(
+                "SELECT id FROM users WHERE email = %s OR username = %s",
+                (payload["email"], payload["username"])
+            )
 
         existing_user = cur.fetchone()
 
@@ -495,10 +580,10 @@ def complete_signup():
         cur.close()
         conn.close()
 
-        session.pop("pending_signup_phone", None)
+        session.pop("pending_signup_email", None)
         session.pop("pending_signup_otp", None)
         session.pop("pending_signup_time", None)
-        session.pop("verified_signup_phone", None)
+        session.pop("verified_signup_email", None)
 
         return jsonify({
             "status": "success",
@@ -507,7 +592,7 @@ def complete_signup():
         })
 
     except Exception as e:
-        print("Complete mobile signup error:", e)
+        print("Complete email signup error:", e)
 
         return jsonify({
             "status": "fail",
@@ -567,13 +652,13 @@ def login():
         if not is_verified:
             return jsonify({
                 "status": "fail",
-                "message": "Please verify your account before login"
+                "message": "Please verify your email before login"
             })
 
         if not stored_password:
             return jsonify({
                 "status": "fail",
-                "message": "Password not found for this account. Please create a normal account."
+                "message": "Password not found for this account. Please create a username-password account."
             })
 
         if bcrypt.checkpw(password.encode("utf-8"), stored_password.encode("utf-8")):
