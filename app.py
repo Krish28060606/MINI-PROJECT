@@ -706,7 +706,7 @@ def login():
 @app.route("/logout")
 def logout():
     session.clear()
-    return redirect(url_for("login_page"))
+    return redirect(url_for("landing_page"))
 
 
 @app.route("/generate", methods=["POST"])
