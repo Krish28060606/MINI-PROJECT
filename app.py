@@ -376,6 +376,14 @@ def save_history(action, input_text, output_text):
 
 
 @app.route("/")
+def landing_page():
+    if "user_id" in session:
+        return redirect(url_for("index"))
+
+    return render_template("landing.html")
+
+
+@app.route("/auth")
 def login_page():
     if "user_id" in session:
         return redirect(url_for("index"))
