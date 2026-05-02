@@ -261,7 +261,7 @@ async function loginUser() {
     }
   } catch (error) {
     setMessage("loginMessage", "Server error during login.", "error");
-  } finally {
+  } finally { 
     setLoading("loginBtn", false);
   }
 }
