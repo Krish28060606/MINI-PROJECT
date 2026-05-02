@@ -465,7 +465,7 @@
       <div class="grid-2" style="margin-top: 18px;">
         <div class="row">
           <label>Username <span class="hint">For login</span></label>
-          <input id="signupUsername" type="text" placeholder="Example: anubhav123" />
+          <input id="signupUsername" type="text" placeholder="Example: krishdubey24" />
         </div>
 
         <div class="row">
@@ -761,6 +761,14 @@
           document.getElementById("createAccountBtn").disabled = false;
         }
       }
+    }
+
+    const authParams = new URLSearchParams(window.location.search);
+    const authMode = authParams.get("mode");
+    if (authMode === "signup") {
+      showPanel("signup");
+    } else {
+      showPanel("login");
     }
 
     document.getElementById("signupEmail").addEventListener("input", resetVerificationState);
