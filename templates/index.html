@@ -4,78 +4,97 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>AI Creative Writing Studio</title>
+  <title>AI.CREATIVE Studio</title>
 
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 </head>
 
 <body>
-
   <div class="page-bg">
     <span class="orb orb-one"></span>
     <span class="orb orb-two"></span>
     <span class="orb orb-three"></span>
+    <span class="grid-glow"></span>
   </div>
 
-  <nav class="navbar">
-
+  <nav class="topbar">
     <button class="brand" onclick="window.scrollTo({top:0,behavior:'smooth'})">
-      <span class="brand-icon">✍️</span>
+      <span class="brand-icon">AI</span>
       <span>
-        <strong>AI Creative Studio</strong>
-        <small>Smart Writing Assistant</small>
+        <strong>AI.CREATIVE Studio</strong>
+        <small>Created by Krish Dubey</small>
       </span>
     </button>
+
+    <div class="topbar-center">
+      <a href="#workspace">Workspace</a>
+      <a href="#recent">History</a>
+      <a href="#insights">Insights</a>
+    </div>
 
     <div class="nav-actions">
       <button id="themeToggle" class="ghost-btn" onclick="toggleTheme()">☀️ Light</button>
       <button class="ghost-btn" onclick="downloadCurrentResult()">⬇ Download</button>
       <button class="logout-btn" onclick="logoutUser()">Logout</button>
     </div>
-
   </nav>
 
   <main class="app-shell">
 
-    <!-- HERO SECTION -->
     <section class="hero-card">
-
       <div class="hero-content">
         <p class="eyebrow">AI-powered creative writing dashboard</p>
 
         <h1>
           Welcome{% if user_name %}, {{ user_name }}{% endif %} 👋
+          <span>Let’s create something brilliant.</span>
         </h1>
 
         <p class="hero-subtitle">
-          Generate creative descriptions, improve your writing, check professionalism,
-          analyze originality, and download polished results from one premium dashboard.
+          Generate fresh ideas, correct grammar, enhance writing, analyze professionalism,
+          estimate originality risk, and download polished content from one premium studio.
         </p>
 
         <div class="hero-actions">
-          <button class="primary-btn" onclick="showTopic()">Generate Topic</button>
-          <button class="secondary-btn" onclick="showImprove()">Improve Text</button>
+          <button class="primary-btn" onclick="showTopic()">✨ Generate Topic</button>
+          <button class="secondary-btn" onclick="showImprove()">🚀 Improve Text</button>
+          <button class="ghost-btn" onclick="document.getElementById('recent').scrollIntoView({behavior:'smooth'})">📜 View History</button>
         </div>
       </div>
 
       <div class="hero-panel">
-        <div class="pulse-dot"></div>
-        <h3>Live AI Studio</h3>
-        <p>Backend + Database Connected</p>
+        <div class="live-pill"><span></span> Live AI Studio</div>
 
-        <div class="mini-bars">
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
+        <div class="creator-card">
+          <div class="creator-avatar">KD</div>
+          <div>
+            <strong>Krish Dubey</strong>
+            <p>B.Tech CSE AI-ML • GLA University</p>
+          </div>
+        </div>
+
+        <div class="system-stack">
+          <div>
+            <b>Frontend</b>
+            <span>HTML • CSS • JS</span>
+          </div>
+          <div>
+            <b>Backend</b>
+            <span>Flask API</span>
+          </div>
+          <div>
+            <b>Database</b>
+            <span>PostgreSQL</span>
+          </div>
+          <div>
+            <b>AI Model</b>
+            <span>Groq LLaMA</span>
+          </div>
         </div>
       </div>
-
     </section>
 
-    <!-- STATS -->
-    <section class="stats-grid">
-
+    <section id="insights" class="stats-grid">
       <article class="stat-card">
         <span>🧠</span>
         <p>Total Actions</p>
@@ -99,12 +118,22 @@
         <p>Professional Score</p>
         <strong id="professionalScore">--</strong>
       </article>
-
     </section>
 
-    <!-- WORKSPACE -->
-    <section class="workspace-card">
+    <section class="quick-start-card">
+      <div>
+        <p class="eyebrow">Quick start</p>
+        <h2>Pick a sample or start with your own idea.</h2>
+      </div>
 
+      <div class="prompt-chips">
+        <button onclick="document.getElementById('topicInput').value='Artificial Intelligence in Education'; showTopic(); document.getElementById('workspace').scrollIntoView({behavior:'smooth'});">AI in Education</button>
+        <button onclick="document.getElementById('topicInput').value='Future of Data Engineering'; showTopic(); document.getElementById('workspace').scrollIntoView({behavior:'smooth'});">Data Engineering</button>
+        <button onclick="document.getElementById('userText').value='ai is changing the way students write and learn it helps them think better'; updateWordCount(); showImprove(); document.getElementById('workspace').scrollIntoView({behavior:'smooth'});">Improve Sample</button>
+      </div>
+    </section>
+
+    <section id="workspace" class="workspace-card">
       <div class="workspace-header">
         <div>
           <p class="eyebrow">Choose your AI tool</p>
@@ -112,18 +141,12 @@
         </div>
 
         <div class="tool-switch">
-          <button id="topicTab" class="switch-btn active" onclick="showTopic()">
-            Topic Generator
-          </button>
-
-          <button id="improveTab" class="switch-btn" onclick="showImprove()">
-            Text Improver
-          </button>
+          <button id="topicTab" class="switch-btn active" onclick="showTopic()">Topic Generator</button>
+          <button id="improveTab" class="switch-btn" onclick="showImprove()">Text Improver</button>
         </div>
       </div>
 
       <div class="feature-row">
-
         <div class="feature-card">
           <span>⚡</span>
           <strong>Fast AI Output</strong>
@@ -141,16 +164,11 @@
           <strong>Download Ready</strong>
           <small>Export output as text file</small>
         </div>
-
       </div>
 
-      <!-- TOPIC GENERATOR -->
       <div id="topicSection" class="section active-section">
-
         <div class="section-grid">
-
           <div class="input-card">
-
             <div class="card-title">
               <span>💡</span>
               <div>
@@ -160,11 +178,7 @@
             </div>
 
             <label for="topicInput">Topic</label>
-            <input 
-              type="text" 
-              id="topicInput" 
-              placeholder="Example: Artificial Intelligence in Education"
-            />
+            <input type="text" id="topicInput" placeholder="Example: Artificial Intelligence in Education" />
 
             <label for="lengthSelect">Length</label>
             <select id="lengthSelect">
@@ -173,27 +187,16 @@
               <option value="long">Long</option>
             </select>
 
-            <button class="primary-btn full-btn" onclick="generateTopic()">
-              ✨ Generate Description
-            </button>
+            <button class="primary-btn full-btn" onclick="generateTopic()">✨ Generate Description</button>
 
             <div class="feedback-box">
               <label for="topicFeedback">Want changes?</label>
-
-              <textarea 
-                id="topicFeedback" 
-                placeholder="Example: Make it more professional and presentation-friendly..."
-              ></textarea>
-
-              <button class="secondary-btn full-btn" onclick="regenerateTopic()">
-                🔁 Regenerate With Feedback
-              </button>
+              <textarea id="topicFeedback" placeholder="Example: Make it more professional and presentation-friendly..."></textarea>
+              <button class="secondary-btn full-btn" onclick="regenerateTopic()">🔁 Regenerate With Feedback</button>
             </div>
-
           </div>
 
           <div class="result-card">
-
             <div class="result-top">
               <h3>AI Description</h3>
               <span class="status-pill" id="topicStatus">Ready</span>
@@ -201,29 +204,20 @@
 
             <div id="loaderTopic" class="loader"></div>
 
-            <p id="topicOutput" class="output-text empty-state">
-              Your generated description will appear here.
-            </p>
+            <p id="topicOutput" class="output-text empty-state">Your generated description will appear here.</p>
 
             <div class="result-actions">
               <button class="ghost-btn" onclick="copyText('topicOutput')">📋 Copy</button>
               <button class="ghost-btn" onclick="downloadText('topicOutput','ai-topic-description.txt')">⬇ Download</button>
               <button class="ghost-btn danger-lite" onclick="clearOutput('topicOutput')">Clear</button>
             </div>
-
           </div>
-
         </div>
-
       </div>
 
-      <!-- TEXT IMPROVER -->
       <div id="improveSection" class="section">
-
         <div class="section-grid wide-left">
-
           <div class="input-card">
-
             <div class="card-title">
               <span>🚀</span>
               <div>
@@ -233,12 +227,7 @@
             </div>
 
             <label for="userText">Your Text</label>
-
-            <textarea 
-              id="userText" 
-              placeholder="Write or paste your text here..."
-              oninput="updateWordCount()"
-            ></textarea>
+            <textarea id="userText" placeholder="Write or paste your text here..." oninput="updateWordCount()"></textarea>
 
             <div class="btn-group">
               <button onclick="wordCount()">Word Count</button>
@@ -250,7 +239,6 @@
             </div>
 
             <div class="analysis-panel">
-
               <div class="analysis-card">
                 <span>📊</span>
                 <h4>Writing Stats</h4>
@@ -263,13 +251,10 @@
                 <h4>Plagiarism Analysis</h4>
                 <p id="plagiarismResult">No analysis yet</p>
               </div>
-
             </div>
-
           </div>
 
           <div class="result-card">
-
             <div class="result-top">
               <h3>AI Result</h3>
               <span class="status-pill" id="textStatus">Ready</span>
@@ -277,27 +262,19 @@
 
             <div id="loaderText" class="loader"></div>
 
-            <p id="textOutput" class="output-text empty-state">
-              Your AI improved text will appear here.
-            </p>
+            <p id="textOutput" class="output-text empty-state">Your AI improved text will appear here.</p>
 
             <div class="result-actions">
               <button class="ghost-btn" onclick="copyText('textOutput')">📋 Copy</button>
               <button class="ghost-btn" onclick="downloadText('textOutput','ai-writing-result.txt')">⬇ Download</button>
               <button class="ghost-btn danger-lite" onclick="clearOutput('textOutput')">Clear</button>
             </div>
-
           </div>
-
         </div>
-
       </div>
-
     </section>
 
-    <!-- RECENT OUTPUTS -->
-    <section class="recent-card">
-
+    <section id="recent" class="recent-card">
       <div class="workspace-header compact">
         <div>
           <p class="eyebrow">Saved in browser</p>
@@ -310,7 +287,6 @@
       <div id="recentList" class="recent-list">
         <p class="empty-recent">No recent outputs yet. Generate something to show it here.</p>
       </div>
-
     </section>
 
   </main>
@@ -318,12 +294,8 @@
   <div id="toast" class="toast">Done</div>
 
   <script>
-  window.CURRENT_USER_ID = "{{ user_id }}";
-</script>
-<script>
-  window.CURRENT_USER_ID = "{{ user_id }}";
-</script>
-<script src="{{ url_for('static', filename='script.js') }}"></script>
-
+    window.CURRENT_USER_ID = "{{ user_id }}";
+  </script>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
