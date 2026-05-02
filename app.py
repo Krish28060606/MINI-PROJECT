@@ -230,7 +230,7 @@ AI.CREATIVE Team
 
     if not postmark_token or not from_email:
         print(f"OTP for {receiver_email}: {otp}")
-        return True, "OTP generated. POSTMARK_SERVER_TOKEN or POSTMARK_FROM_EMAIL is missing, so check Render logs for demo OTP."
+        return True, "OTP generated. POSTMARK_SERVER_TOKEN or POSTMARK_FROM_EMAIL is missing, so check Render logs for demo OTP.", True
 
     try:
         response = requests.post(
@@ -258,17 +258,17 @@ AI.CREATIVE Team
         print("Postmark API response:", response.status_code, data)
 
         if response.status_code == 200 and data.get("ErrorCode", 0) == 0:
-            return True, "OTP sent successfully. Check your email inbox."
+            return True, "OTP sent successfully. Check your email inbox.", False
 
         error_message = data.get("Message") or data.get("message") or str(data)
-        return False, f"OTP email failed: {error_message}"
+        return False, f"OTP email failed: {error_message}", False
 
     except requests.exceptions.Timeout:
-        return False, "OTP email request timed out. Try again."
+        return False, "OTP email request timed out. Try again.", False
 
     except Exception as e:
         print("Postmark OTP email error:", e)
-        return False, "OTP email failed. Check POSTMARK_SERVER_TOKEN, POSTMARK_FROM_EMAIL, and Render logs."
+        return False, "OTP email failed. Check POSTMARK_SERVER_TOKEN, POSTMARK_FROM_EMAIL, and Render logs.", False
 
 
 def demo_ai_response(prompt, mode="generate"):
@@ -467,7 +467,7 @@ def send_otp():
         print("Send email OTP error:", e)
         return jsonify({
             "status": "fail",
-            "message": "OTP failed. Check database/mail settings."
+            "message": "OTP failed. Check database/Postmark settings."
         })
 
 
