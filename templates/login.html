@@ -24,11 +24,30 @@
       justify-content: center;
       align-items: center;
       padding: 28px;
+      overflow-x: hidden;
+    }
+
+    .aurora {
+      position: fixed;
+      inset: -20%;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(34, 211, 238, 0.18), transparent 28%),
+        radial-gradient(circle at 80% 30%, rgba(168, 85, 247, 0.16), transparent 26%),
+        radial-gradient(circle at 45% 80%, rgba(52, 211, 153, 0.12), transparent 25%);
+      filter: blur(18px);
+      animation: floatGlow 9s ease-in-out infinite alternate;
+    }
+
+    @keyframes floatGlow {
+      from { transform: translate3d(-2%, -1%, 0) scale(1); }
+      to { transform: translate3d(2%, 1%, 0) scale(1.04); }
     }
 
     .box {
+      position: relative;
       width: 100%;
-      max-width: 620px;
+      max-width: 680px;
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.18);
       border-radius: 32px;
@@ -37,19 +56,33 @@
       backdrop-filter: blur(20px);
     }
 
+    .badge {
+      width: fit-content;
+      margin: 0 auto 18px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      color: #c7d2fe;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      font-weight: 800;
+      font-size: 14px;
+    }
+
     .brand {
       text-align: center;
       margin-bottom: 26px;
     }
 
     .brand h1 {
-      font-size: 34px;
-      letter-spacing: -1px;
+      font-size: 38px;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
     }
 
     .brand p {
       color: #b8c4d9;
-      margin-top: 8px;
+      margin-top: 10px;
+      line-height: 1.6;
     }
 
     .tabs {
@@ -68,9 +101,10 @@
       border-radius: 16px;
       background: transparent;
       color: #c8d1e2;
-      font-weight: 800;
+      font-weight: 900;
       font-size: 16px;
       cursor: pointer;
+      transition: 0.2s ease;
     }
 
     .tab.active {
@@ -85,17 +119,30 @@
 
     .panel.active {
       display: block;
+      animation: fadeUp 0.25s ease;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     h2 {
       font-size: 30px;
       margin-bottom: 10px;
+      letter-spacing: -0.8px;
     }
 
     .sub {
       color: #b8c4d9;
       margin-bottom: 24px;
       line-height: 1.6;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
     }
 
     .row {
@@ -108,11 +155,18 @@
       color: #e5e7eb;
       font-weight: 800;
       margin-bottom: 8px;
+      gap: 10px;
     }
 
     .hint {
       color: #9ca3af;
       font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .field-wrap {
+      position: relative;
     }
 
     input {
@@ -126,9 +180,64 @@
       font-size: 16px;
     }
 
+    input::placeholder {
+      color: rgba(226, 232, 240, 0.56);
+    }
+
     input:focus {
       border-color: #38bdf8;
       box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.12);
+    }
+
+    .toggle-pass {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: 0;
+      background: rgba(255, 255, 255, 0.10);
+      color: #e5e7eb;
+      border-radius: 12px;
+      padding: 7px 10px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .password-input {
+      padding-right: 78px;
+    }
+
+    .strength {
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.10);
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .strength span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ef4444, #f59e0b, #22c55e);
+      transition: 0.2s ease;
+    }
+
+    .terms {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin: 12px 0 4px;
+      color: #cbd5e1;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .terms input {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      accent-color: #22d3ee;
     }
 
     .btn {
@@ -160,6 +269,11 @@
       cursor: not-allowed;
       transform: none;
       box-shadow: none;
+    }
+
+    .loading {
+      opacity: 0.75;
+      pointer-events: none;
     }
 
     .message {
@@ -199,6 +313,7 @@
     }
 
     .demo-otp {
+      display: none;
       margin-top: 12px;
       padding: 13px;
       border-radius: 14px;
@@ -208,6 +323,10 @@
       font-weight: 900;
       text-align: center;
       letter-spacing: 1px;
+    }
+
+    .demo-otp.show {
+      display: block;
     }
 
     .verified-badge {
@@ -234,27 +353,54 @@
       text-align: center;
     }
 
-    @media (max-width: 600px) {
+    .security-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .security-strip div {
+      border-radius: 16px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #cbd5e1;
+      font-weight: 800;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    @media (max-width: 650px) {
       .box {
         padding: 24px;
       }
 
       .brand h1 {
-        font-size: 28px;
+        font-size: 30px;
       }
 
       h2 {
         font-size: 25px;
+      }
+
+      .grid-2,
+      .security-strip {
+        grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 
 <body>
+  <div class="aurora"></div>
+
   <div class="box">
+    <div class="badge">🔐 Email OTP + username login</div>
+
     <div class="brand">
       <h1>AI.CREATIVE</h1>
-      <p>Secure username login with mobile OTP verification</p>
+      <p>Secure writing workspace with verified signup, hashed password storage, and protected dashboard access.</p>
     </div>
 
     <div class="tabs">
@@ -264,68 +410,93 @@
 
     <div id="loginPanel" class="panel active">
       <h2>Welcome back</h2>
-      <p class="sub">Login using your username and password.</p>
+      <p class="sub">Login using your username or email and password.</p>
 
       <div class="row">
-        <label>Username</label>
-        <input id="loginId" type="text" placeholder="Enter username" />
+        <label>Username / Email</label>
+        <input id="loginId" type="text" placeholder="Enter username or email" />
       </div>
 
       <div class="row">
-        <label>Password</label>
-        <input id="loginPassword" type="password" placeholder="Enter password" />
+        <label>Password <span class="hint">Protected</span></label>
+        <div class="field-wrap">
+          <input id="loginPassword" class="password-input" type="password" placeholder="Enter password" />
+          <button class="toggle-pass" type="button" onclick="togglePassword('loginPassword', this)">Show</button>
+        </div>
       </div>
 
-      <button class="btn" onclick="loginUser()">Login</button>
+      <button id="loginBtn" class="btn" onclick="loginUser()">Login</button>
 
       <div id="loginMessage" class="message"></div>
+
+      <div class="security-strip">
+        <div>OTP Verified Signup</div>
+        <div>Hashed Passwords</div>
+        <div>Secure Session</div>
+      </div>
     </div>
 
     <div id="signupPanel" class="panel">
       <h2>Create verified account</h2>
-      <p class="sub">Enter details, verify mobile OTP, then create your account.</p>
-
-      <div class="row">
-        <label>Username <span class="hint">For login</span></label>
-        <input id="signupUsername" type="text" placeholder="Example: anubhav123" />
-      </div>
+      <p class="sub">Step 1: enter your email and verify OTP. Step 2: create username and password.</p>
 
       <div class="row">
         <label>Email <span class="hint">Gmail / Outlook / GLA</span></label>
         <input id="signupEmail" type="email" placeholder="example@gmail.com" />
       </div>
 
-      <div class="row">
-        <label>Mobile Number <span class="hint">10 digits</span></label>
-        <input id="signupPhone" type="tel" placeholder="9876543210" maxlength="10" />
-      </div>
-
-      <button class="btn secondary" onclick="sendMobileOtp()">Send Mobile OTP</button>
+      <button id="sendOtpBtn" class="btn secondary" onclick="sendEmailOtp()">Send Email OTP</button>
 
       <div id="otpBox" class="otp-box">
         <div class="row">
-          <label>Enter OTP</label>
+          <label>Enter OTP <span class="hint">Valid for 10 minutes</span></label>
           <input id="signupOtp" type="text" placeholder="Enter 6-digit OTP" maxlength="6" />
         </div>
 
-        <button class="btn" onclick="verifyMobileOtp()">Verify OTP</button>
+        <button id="verifyOtpBtn" class="btn" onclick="verifyEmailOtp()">Verify OTP</button>
 
         <div id="demoOtp" class="demo-otp"></div>
       </div>
 
       <div id="verifiedBadge" class="verified-badge">
-        Mobile number verified successfully ✅
+        Email verified successfully ✅
       </div>
 
-      <div class="row" style="margin-top: 18px;">
-        <label>Password</label>
-        <input id="signupPassword" type="password" placeholder="Create password" />
+      <div class="grid-2" style="margin-top: 18px;">
+        <div class="row">
+          <label>Username <span class="hint">For login</span></label>
+          <input id="signupUsername" type="text" placeholder="Example: anubhav123" />
+        </div>
+
+        <div class="row">
+          <label>Mobile Number <span class="hint">Optional</span></label>
+          <input id="signupPhone" type="tel" placeholder="9876543210" maxlength="10" />
+        </div>
       </div>
 
-      <div class="row">
-        <label>Recheck Password</label>
-        <input id="signupConfirmPassword" type="password" placeholder="Re-enter password" />
+      <div class="grid-2">
+        <div class="row">
+          <label>Password</label>
+          <div class="field-wrap">
+            <input id="signupPassword" class="password-input" type="password" placeholder="Create password" oninput="updateStrength()" />
+            <button class="toggle-pass" type="button" onclick="togglePassword('signupPassword', this)">Show</button>
+          </div>
+          <div class="strength"><span id="strengthBar"></span></div>
+        </div>
+
+        <div class="row">
+          <label>Recheck Password</label>
+          <div class="field-wrap">
+            <input id="signupConfirmPassword" class="password-input" type="password" placeholder="Re-enter password" />
+            <button class="toggle-pass" type="button" onclick="togglePassword('signupConfirmPassword', this)">Show</button>
+          </div>
+        </div>
       </div>
+
+      <label class="terms">
+        <input id="termsCheck" type="checkbox" />
+        <span>I confirm this is my email and agree to use this account responsibly.</span>
+      </label>
 
       <button id="createAccountBtn" class="btn" onclick="createAccount()" disabled>
         Create Account
@@ -334,13 +505,13 @@
       <div id="signupMessage" class="message"></div>
 
       <p class="mini">
-        Demo note: OTP is shown on screen and printed in Render logs. Real SMS can be added later using Twilio/Fast2SMS.
+        Student-friendly verification: email OTP is free for demo/testing through Gmail SMTP. If mail credentials are missing, OTP appears in Render logs for testing.
       </p>
     </div>
   </div>
 
   <script>
-    let mobileVerified = false;
+    let emailVerified = false;
 
     function showPanel(type) {
       document.querySelectorAll(".tab").forEach(btn => btn.classList.remove("active"));
@@ -367,6 +538,38 @@
       box.textContent = "";
     }
 
+    function setLoading(buttonId, isLoading, textWhenLoading, normalText) {
+      const btn = document.getElementById(buttonId);
+      btn.disabled = isLoading;
+      btn.classList.toggle("loading", isLoading);
+      btn.textContent = isLoading ? textWhenLoading : normalText;
+    }
+
+    function togglePassword(inputId, btn) {
+      const input = document.getElementById(inputId);
+      input.type = input.type === "password" ? "text" : "password";
+      btn.textContent = input.type === "password" ? "Show" : "Hide";
+    }
+
+    function updateStrength() {
+      const password = document.getElementById("signupPassword").value;
+      let score = 0;
+
+      if (password.length >= 6) score += 25;
+      if (password.length >= 10) score += 20;
+      if (/[A-Z]/.test(password)) score += 20;
+      if (/[0-9]/.test(password)) score += 20;
+      if (/[^A-Za-z0-9]/.test(password)) score += 15;
+
+      document.getElementById("strengthBar").style.width = Math.min(score, 100) + "%";
+    }
+
+    function resetVerificationState() {
+      emailVerified = false;
+      document.getElementById("createAccountBtn").disabled = true;
+      document.getElementById("verifiedBadge").classList.remove("show");
+    }
+
     async function loginUser() {
       clearMessage("loginMessage");
 
@@ -374,11 +577,13 @@
       const password = document.getElementById("loginPassword").value;
 
       if (!loginId || !password) {
-        setMessage("loginMessage", "Enter username and password.", "error");
+        setMessage("loginMessage", "Enter username/email and password.", "error");
         return;
       }
 
       try {
+        setLoading("loginBtn", true, "Logging in...", "Login");
+
         const res = await fetch("/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -399,29 +604,33 @@
           setMessage("loginMessage", data.message || "Login failed.", "error");
         }
       } catch (error) {
-        setMessage("loginMessage", "Server error during login.", "error");
+        setMessage("loginMessage", "Server error during login: " + error.message, "error");
+      } finally {
+        setLoading("loginBtn", false, "Logging in...", "Login");
       }
     }
 
-    async function sendMobileOtp() {
+    async function sendEmailOtp() {
       clearMessage("signupMessage");
 
-      const phone = document.getElementById("signupPhone").value.trim();
+      const email = document.getElementById("signupEmail").value.trim();
 
-      if (!phone || phone.length !== 10) {
-        setMessage("signupMessage", "Enter valid 10-digit mobile number.", "error");
+      if (!email) {
+        setMessage("signupMessage", "Enter email first.", "error");
         return;
       }
 
-      mobileVerified = false;
-      document.getElementById("createAccountBtn").disabled = true;
-      document.getElementById("verifiedBadge").classList.remove("show");
+      resetVerificationState();
+      document.getElementById("demoOtp").classList.remove("show");
+      document.getElementById("demoOtp").textContent = "";
 
       try {
+        setLoading("sendOtpBtn", true, "Sending OTP...", "Send Email OTP");
+
         const res = await fetch("/send-otp", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ phone: phone })
+          body: JSON.stringify({ email: email })
         });
 
         const data = await res.json();
@@ -430,22 +639,26 @@
           document.getElementById("otpBox").classList.add("show");
 
           if (data.demo_otp) {
-            document.getElementById("demoOtp").textContent = "Demo OTP: " + data.demo_otp;
+            const demoBox = document.getElementById("demoOtp");
+            demoBox.textContent = "Demo OTP: " + data.demo_otp;
+            demoBox.classList.add("show");
           }
 
-          setMessage("signupMessage", data.message || "OTP generated successfully.", "success");
+          setMessage("signupMessage", data.message || "OTP sent successfully.", "success");
         } else {
           setMessage("signupMessage", data.message || "OTP sending failed.", "error");
         }
       } catch (error) {
         setMessage("signupMessage", "Server error while sending OTP: " + error.message, "error");
+      } finally {
+        setLoading("sendOtpBtn", false, "Sending OTP...", "Send Email OTP");
       }
     }
 
-    async function verifyMobileOtp() {
+    async function verifyEmailOtp() {
       clearMessage("signupMessage");
 
-      const phone = document.getElementById("signupPhone").value.trim();
+      const email = document.getElementById("signupEmail").value.trim();
       const otp = document.getElementById("signupOtp").value.trim();
 
       if (!otp) {
@@ -454,11 +667,13 @@
       }
 
       try {
+        setLoading("verifyOtpBtn", true, "Verifying...", "Verify OTP");
+
         const res = await fetch("/verify-otp", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            phone: phone,
+            email: email,
             otp: otp
           })
         });
@@ -466,15 +681,17 @@
         const data = await res.json();
 
         if (data.status === "success") {
-          mobileVerified = true;
+          emailVerified = true;
           document.getElementById("verifiedBadge").classList.add("show");
           document.getElementById("createAccountBtn").disabled = false;
-          setMessage("signupMessage", data.message || "Mobile verified.", "success");
+          setMessage("signupMessage", data.message || "Email verified.", "success");
         } else {
           setMessage("signupMessage", data.message || "OTP verification failed.", "error");
         }
       } catch (error) {
         setMessage("signupMessage", "Server error while verifying OTP: " + error.message, "error");
+      } finally {
+        setLoading("verifyOtpBtn", false, "Verifying...", "Verify OTP");
       }
     }
 
@@ -486,14 +703,15 @@
       const phone = document.getElementById("signupPhone").value.trim();
       const password = document.getElementById("signupPassword").value;
       const confirmPassword = document.getElementById("signupConfirmPassword").value;
+      const acceptedTerms = document.getElementById("termsCheck").checked;
 
-      if (!mobileVerified) {
-        setMessage("signupMessage", "Please verify mobile OTP first.", "error");
+      if (!emailVerified) {
+        setMessage("signupMessage", "Please verify email OTP first.", "error");
         return;
       }
 
-      if (!username || !email || !phone || !password || !confirmPassword) {
-        setMessage("signupMessage", "Fill all signup fields.", "error");
+      if (!username || !email || !password || !confirmPassword) {
+        setMessage("signupMessage", "Fill username, email, password, and recheck password.", "error");
         return;
       }
 
@@ -502,7 +720,14 @@
         return;
       }
 
+      if (!acceptedTerms) {
+        setMessage("signupMessage", "Please accept Terms & Privacy to continue.", "error");
+        return;
+      }
+
       try {
+        setLoading("createAccountBtn", true, "Creating Account...", "Create Account");
+
         const res = await fetch("/complete-signup", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -511,7 +736,8 @@
             email: email,
             phone: phone,
             password: password,
-            confirm_password: confirmPassword
+            confirm_password: confirmPassword,
+            accepted_terms: acceptedTerms
           })
         });
 
@@ -529,8 +755,15 @@
         }
       } catch (error) {
         setMessage("signupMessage", "Server error while creating account: " + error.message, "error");
+      } finally {
+        setLoading("createAccountBtn", false, "Creating Account...", "Create Account");
+        if (emailVerified) {
+          document.getElementById("createAccountBtn").disabled = false;
+        }
       }
     }
+
+    document.getElementById("signupEmail").addEventListener("input", resetVerificationState);
   </script>
 </body>
 </html>
