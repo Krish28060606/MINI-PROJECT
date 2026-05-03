@@ -387,11 +387,13 @@ def login_page():
     return render_template("login.html")
 
 
-@app.route("/index")
+@app.route("/index", methods=["GET", "POST"])
 @login_required
 def index():
     user_name = "User"
+    result = None  # ✅ important
 
+    # 👤 Fetch user name (UNCHANGED)
     try:
         conn = get_connection()
         cur = conn.cursor()
@@ -408,12 +410,38 @@ def index():
     except Exception as e:
         print("User name fetch error:", e)
 
+    # 🚀 NEW: HANDLE FORM SUBMISSION
+    if request.method == "POST":
+        text = request.form.get("input_text")
+        tone = request.form.get("tone")
+
+        if not text:
+            result = "Please enter text first."
+        else:
+            if not tone:
+                tone = "Professional"
+
+            prompt = f"""
+Rewrite the following text in a {tone} tone.
+Make it clear, engaging, and high quality.
+
+Text:
+{text}
+"""
+
+            # 🔥 USE YOUR EXISTING AI SYSTEM (VERY IMPORTANT)
+            result = call_ai(prompt, "generate")
+
+            # ✅ SAVE HISTORY (YOUR EXISTING FEATURE)
+            save_history("generate_with_tone", text, result)
+
+    # 🎯 FINAL RETURN
     return render_template(
         "index.html",
         user_name=user_name,
-        user_id=session["user_id"]
+        user_id=session["user_id"],
+        result=result
     )
-
 
 @app.route("/send-otp", methods=["POST"])
 def send_otp():
