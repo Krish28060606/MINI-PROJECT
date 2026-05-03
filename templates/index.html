@@ -1,106 +1,550 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>AI Writer</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI.CREATIVE Studio</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 </head>
-
 <body>
+  <div class="page-bg">
+    <span class="orb orb-one"></span>
+    <span class="orb orb-two"></span>
+    <span class="orb orb-three"></span>
+    <span class="mesh"></span>
+  </div>
 
-<!-- NAVBAR -->
-<div class="navbar">
-    <div class="logo">✨ AI Writer</div>
+  <header class="topbar">
+    <button class="brand" onclick="openPanel('overview')">
+      <span class="brand-icon">AI</span>
+      <span>
+        <strong>AI.CREATIVE Studio</strong>
+        <small>Crafted by Krish Dubey</small>
+      </span>
+    </button>
 
-    <div class="nav-right">
-        <button id="themeToggle">🌙</button>
-        <a href="/logout" class="logout-btn">Logout</a>
+    <nav class="top-links">
+      <button class="nav-chip active" data-panel-btn="overview" onclick="openPanel('overview')">Overview</button>
+      <button class="nav-chip" data-panel-btn="topic" onclick="openPanel('topic')">Topic Studio</button>
+      <button class="nav-chip" data-panel-btn="improve" onclick="openPanel('improve')">Improve Studio</button>
+      <button class="nav-chip" data-panel-btn="recent" onclick="openPanel('recent')">Recent History</button>
+    </nav>
+
+    <div class="nav-actions">
+      <button id="themeToggle" class="ghost-btn" onclick="toggleTheme()">☀️ Light</button>
+      <button class="ghost-btn" onclick="downloadCurrentResult()">⬇ Download</button>
+      <button class="logout-btn" onclick="logoutUser()">Logout</button>
     </div>
-</div>
+  </header>
 
-<!-- SIDEBAR -->
-<div class="sidebar">
-    <h2>Dashboard</h2>
-    <ul>
-        <li onclick="showSection('generate')">✍ Generate</li>
-        <li onclick="showSection('history')">📜 History</li>
-        <li onclick="showSection('settings')">⚙ Settings</li>
-    </ul>
-</div>
+  <main class="app-shell">
+    <section class="hero-card">
+      <div class="hero-copy">
+        <p class="eyebrow">Premium AI writing workspace</p>
+        <h1>
+          Welcome{% if user_name %}, {{ user_name }}{% endif %}.
+          <span>Write smarter. Present better.</span>
+        </h1>
+        <p class="hero-text">
+          Generate descriptions, improve writing, and tailor content for students, teachers,
+          bloggers, poets, and more — all inside one premium dashboard.
+        </p>
 
-<!-- MAIN CONTENT -->
-<div class="main">
-
-    <!-- GENERATE -->
-    <div id="generate" class="section active">
-        <h1>AI Writing Assistant</h1>
-
-        <form method="POST" action="/generate">
-            <textarea name="input_text" placeholder="Start writing here..."></textarea>
-
-            <div class="controls">
-                <select name="tone">
-                    <option>Student</option>
-                    <option>Teacher</option>
-                    <option>Blogger</option>
-                    <option>Poet</option>
-                    <option>Professional</option>
-                </select>
-
-                <button type="submit" class="generate-btn">
-                    Generate ✨
-                </button>
-            </div>
-        </form>
-
-        <div class="loader" id="loader"></div>
-
-        {% if result %}
-        <div class="output-card">
-            <h3>AI Output</h3>
-            <p>{{ result }}</p>
-            <button class="download-btn">Download</button>
+        <div class="hero-actions">
+          <button class="primary-btn" onclick="openPanel('topic')">✨ Start Topic Studio</button>
+          <button class="secondary-btn" onclick="openPanel('improve')">🚀 Improve My Text</button>
         </div>
-        {% endif %}
-    </div>
 
-    <!-- HISTORY -->
-    <div id="history" class="section">
-        <h1>History</h1>
-
-        <div class="history-container">
-            {% for item in history %}
-            <div class="history-card">
-                <p><strong>Input:</strong> {{ item.input }}</p>
-                <p><strong>Output:</strong> {{ item.output }}</p>
-            </div>
-            {% endfor %}
+        <div class="mini-stats">
+          <div class="mini-stat">
+            <strong>Smart Tones</strong>
+            <span>Formal • Creative • Academic</span>
+          </div>
+          <div class="mini-stat">
+            <strong>Audience Aware</strong>
+            <span>Students • Teachers • Bloggers • Poets</span>
+          </div>
+          <div class="mini-stat">
+            <strong>Download Ready</strong>
+            <span>Presentation-friendly output</span>
+          </div>
         </div>
-    </div>
+      </div>
 
-    <!-- SETTINGS -->
-    <div id="settings" class="section">
-        <h1>Settings</h1>
-        <p>Theme, preferences coming soon...</p>
-    </div>
+      <div class="hero-showcase">
+        <div class="showcase-card floating-card">
+          <div class="pill">Project Identity</div>
+          <h3>Designed & developed by <span>Krish Dubey</span></h3>
+          <p>B.Tech CSE AI-ML • GLA University</p>
+        </div>
 
-</div>
+        <div class="showcase-card glass">
+          <div class="creator-row">
+            <div class="avatar">KD</div>
+            <div>
+              <strong>Creative Writing Platform</strong>
+              <small>AI + Flask + PostgreSQL + Modern UI</small>
+            </div>
+          </div>
 
-<script>
-function showSection(id){
-    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-}
+          <div class="showcase-grid">
+            <div>🔐 Verified Auth</div>
+            <div>🧠 AI Writing</div>
+            <div>📜 Saved History</div>
+            <div>⬇ Easy Export</div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-document.getElementById("themeToggle").onclick = () => {
-    document.body.classList.toggle("light");
-};
+    <section id="overviewPanel" class="panel-page active-page">
+      <section class="stats-grid">
+        <article class="stat-card">
+          <span>🧠</span>
+          <p>Total Actions</p>
+          <strong id="totalActions">0</strong>
+        </article>
+        <article class="stat-card">
+          <span>📝</span>
+          <p>Words Typed</p>
+          <strong id="wordCount">0</strong>
+        </article>
+        <article class="stat-card">
+          <span>🔤</span>
+          <p>Characters</p>
+          <strong id="charCount">0</strong>
+        </article>
+        <article class="stat-card">
+          <span>⭐</span>
+          <p>Professional Score</p>
+          <strong id="professionalScore">--</strong>
+        </article>
+      </section>
 
-document.querySelector("form").addEventListener("submit", () => {
-    document.getElementById("loader").style.display = "block";
-});
-</script>
+      <section class="overview-grid">
+        <div class="overview-card slide-up">
+          <div class="card-head">
+            <h2>Quick Start</h2>
+            <span>One tap ideas</span>
+          </div>
+          <div class="quick-buttons">
+            <button onclick="document.getElementById('topicInput').value='Artificial Intelligence in Education'; openPanel('topic');">AI in Education</button>
+            <button onclick="document.getElementById('topicInput').value='Future of Data Engineering'; openPanel('topic');">Data Engineering</button>
+            <button onclick="document.getElementById('topicInput').value='The importance of creativity in modern learning'; openPanel('topic');">Creativity</button>
+            <button onclick="document.getElementById('userText').value='ai helps students write better but they should still think on their own'; updateWordCount(); openPanel('improve');">Use Sample Text</button>
+          </div>
+        </div>
 
+        <div class="overview-card slide-up delay-1">
+          <div class="card-head">
+            <h2>Workflow</h2>
+            <span>Simple & effective</span>
+          </div>
+          <div class="workflow">
+            <div><b>1</b><span>Choose your studio</span></div>
+            <div><b>2</b><span>Select audience & tone</span></div>
+            <div><b>3</b><span>Generate or improve text</span></div>
+            <div><b>4</b><span>Copy, download, or save</span></div>
+          </div>
+        </div>
+
+        <div class="overview-card slide-up delay-2 full-span">
+          <div class="card-head">
+            <h2>Feature Highlights</h2>
+            <span>Why this dashboard stands out</span>
+          </div>
+          <div class="feature-slider">
+            <div class="feature-card">
+              <div class="feature-icon">🎯</div>
+              <h3>Audience Based Output</h3>
+              <p>Write specifically for students, teachers, bloggers, poets, professionals, and more.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🎨</div>
+              <h3>Tone Control</h3>
+              <p>Choose formal, friendly, academic, creative, motivational, or storytelling tone.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">⚡</div>
+              <h3>One-Click Actions</h3>
+              <p>Generate, correct, enhance, analyze professionalism, and estimate originality risk fast.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🪄</div>
+              <h3>Presentation Ready Visuals</h3>
+              <p>Modern cards, hover effects, animations, and section-based flow for better engagement.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <section id="topicPanel" class="panel-page">
+      <div class="panel-banner">
+        <div>
+          <p class="eyebrow">Tool 1</p>
+          <h2>Topic Studio</h2>
+        </div>
+        <button class="ghost-btn" onclick="openPanel('overview')">← Back to Overview</button>
+      </div>
+
+      <div class="studio-grid">
+        <div class="input-card">
+          <div class="card-title">
+            <span>💡</span>
+            <div>
+              <h3>Generate Description</h3>
+              <p>Create a smart description from any topic.</p>
+            </div>
+          </div>
+
+          <label for="topicInput">Topic</label>
+          <input type="text" id="topicInput" placeholder="Example: Artificial Intelligence in Education" />
+
+          <div class="grid-2">
+            <div>
+              <label for="lengthSelect">Length</label>
+              <select id="lengthSelect">
+                <option value="short">Short</option>
+                <option value="medium">Medium</option>
+                <option value="long">Long</option>
+              </select>
+            </div>
+            <div>
+              <label for="topicTone">Tone</label>
+              <select id="topicTone">
+                <option value="formal">Formal</option>
+                <option value="friendly">Friendly</option>
+                <option value="academic">Academic</option>
+                <option value="creative">Creative</option>
+                <option value="motivational">Motivational</option>
+                <option value="storytelling">Storytelling</option>
+              </select>
+            </div>
+          </div>
+
+          <label>Write for / on behalf of</label>
+          <div class="audience-chips" id="topicAudience">
+            <button type="button" class="audience-chip active" data-value="students" onclick="selectAudience('topic','students',this)">Students</button>
+            <button type="button" class="audience-chip" data-value="teachers" onclick="selectAudience('topic','teachers',this)">Teachers</button>
+            <button type="button" class="audience-chip" data-value="bloggers" onclick="selectAudience('topic','bloggers',this)">Bloggers</button>
+            <button type="button" class="audience-chip" data-value="poets" onclick="selectAudience('topic','poets',this)">Poets</button>
+            <button type="button" class="audience-chip" data-value="professionals" onclick="selectAudience('topic','professionals',this)">Professionals</button>
+          </div>
+
+          <button class="primary-btn full-btn pulse-btn" onclick="generateTopic()">✨ Generate Description</button>
+
+          <div class="feedback-box">
+            <label for="topicFeedback">Need changes?</label>
+            <textarea id="topicFeedback" placeholder="Example: Make it more powerful, concise, and presentation-friendly..."></textarea>
+            <button class="secondary-btn full-btn" onclick="regenerateTopic()">🔁 Regenerate With Feedback</button>
+          </div>
+        </div>
+
+        <div class="result-card">
+          <div class="result-top">
+            <h3>AI Description</h3>
+            <span id="topicStatus" class="status-pill">Ready</span>
+          </div>
+
+          <div class="loader" id="loaderTopic"></div>
+          <p id="topicOutput" class="output-text empty-state">Your generated description will appear here.</p>
+
+          <div class="result-actions">
+            <button class="ghost-btn" onclick="copyText('topicOutput')">📋 Copy</button>
+            <button class="ghost-btn" onclick="downloadText('topicOutput','ai-topic-description.txt')">⬇ Download</button>
+            <button class="ghost-btn danger-lite" onclick="clearOutput('topicOutput')">Clear</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="improvePanel" class="panel-page">
+      <div class="panel-banner">
+        <div>
+          <p class="eyebrow">Tool 2</p>
+          <h2>Improve Studio</h2>
+        </div>
+        <button class="ghost-btn" onclick="openPanel('overview')">← Back to Overview</button>
+      </div>
+
+      <div class="studio-grid improve-grid">
+        <div class="input-card">
+          <div class="card-title">
+            <span>🚀</span>
+            <div>
+              <h3>Improve Your Text</h3>
+              <p>Paste your writing and customize how AI should shape it.</p>
+            </div>
+          </div>
+
+          <label for="userText">Your Text</label>
+          <textarea id="userText" placeholder="Write or paste your text here..." oninput="updateWordCount()"></textarea>
+
+          <div class="grid-2">
+            <div>
+              <label for="textTone">Tone</label>
+              <select id="textTone">
+                <option value="formal">Formal</option>
+                <option value="friendly">Friendly</option>
+                <option value="academic">Academic</option>
+                <option value="creative">Creative</option>
+                <option value="motivational">Motivational</option>
+                <option value="storytelling">Storytelling</option>
+              </select>
+            </div>
+            <div>
+              <label>Audience</label>
+              <div class="mini-label">Choose below</div>
+            </div>
+          </div>
+
+          <div class="audience-chips" id="textAudience">
+            <button type="button" class="audience-chip active" data-value="students" onclick="selectAudience('text','students',this)">Students</button>
+            <button type="button" class="audience-chip" data-value="teachers" onclick="selectAudience('text','teachers',this)">Teachers</button>
+            <button type="button" class="audience-chip" data-value="bloggers" onclick="selectAudience('text','bloggers',this)">Bloggers</button>
+            <button type="button" class="audience-chip" data-value="poets" onclick="selectAudience('text','poets',this)">Poets</button>
+            <button type="button" class="audience-chip" data-value="professionals" onclick="selectAudience('text','professionals',this)">Professionals</button>
+          </div>
+
+          <div class="action-groups">
+            <div class="action-group">
+              <h4>Analysis</h4>
+              <div class="btn-group">
+                <button onclick="wordCount()">Word Count</button>
+                <button onclick="checkProfessional()">Professionalism</button>
+                <button onclick="checkPlagiarism()">Plagiarism</button>
+              </div>
+            </div>
+
+            <div class="action-group">
+              <h4>AI Actions</h4>
+              <div class="btn-group">
+                <button onclick="generateText()">Generate</button>
+                <button onclick="correctText()">Correction</button>
+                <button onclick="enhanceText()">AI Enhanced</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="analysis-panel">
+            <div class="analysis-card">
+              <span>📊</span>
+              <h4>Writing Stats</h4>
+              <p>Words: <b id="miniWordCount">0</b></p>
+              <p>Characters: <b id="miniCharCount">0</b></p>
+            </div>
+
+            <div class="analysis-card">
+              <span>🔍</span>
+              <h4>Plagiarism Analysis</h4>
+              <p id="plagiarismResult">No analysis yet</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="result-card">
+          <div class="result-top">
+            <h3>AI Result</h3>
+            <span id="textStatus" class="status-pill">Ready</span>
+          </div>
+
+          <div class="loader" id="loaderText"></div>
+          <p id="textOutput" class="output-text empty-state">Your AI improved text will appear here.</p>
+
+          <div class="result-actions">
+            <button class="ghost-btn" onclick="copyText('textOutput')">📋 Copy</button>
+            <button class="ghost-btn" onclick="downloadText('textOutput','ai-writing-result.txt')">⬇ Download</button>
+            <button class="ghost-btn danger-lite" onclick="clearOutput('textOutput')">Clear</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="recentPanel" class="panel-page">
+      <div class="panel-banner">
+        <div>
+          <p class="eyebrow">Saved outputs</p>
+          <h2>Recent History</h2>
+        </div>
+        <button class="ghost-btn" onclick="clearRecentOutputs()">Clear Recent</button>
+      </div>
+
+      <div class="history-card">
+        <div id="recentList" class="recent-list">
+          <p class="empty-recent">No recent outputs yet. Generate something to show it here.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast">Done</div>
+
+  <script>
+    window.CURRENT_USER_ID = "{{ user_id }}";
+  </script>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+  <script>
+    let selectedAudience = { topic: 'students', text: 'students' };
+
+    function openPanel(panel) {
+      document.querySelectorAll('.panel-page').forEach(el => el.classList.remove('active-page'));
+      const target = document.getElementById(panel + 'Panel');
+      if (target) target.classList.add('active-page');
+
+      document.querySelectorAll('[data-panel-btn]').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.querySelector('[data-panel-btn="' + panel + '"]');
+      if (activeBtn) activeBtn.classList.add('active');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function selectAudience(type, value, el) {
+      selectedAudience[type] = value;
+      const parent = document.getElementById(type === 'topic' ? 'topicAudience' : 'textAudience');
+      if (!parent) return;
+      parent.querySelectorAll('.audience-chip').forEach(chip => chip.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    function showToastMessage(msg) {
+      const toast = document.getElementById('toast');
+      if (!toast) return;
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
+    }
+
+    function downloadCurrentResult() {
+      const topicVisible = document.getElementById('topicPanel').classList.contains('active-page');
+      const textVisible = document.getElementById('improvePanel').classList.contains('active-page');
+      if (topicVisible) { downloadText('topicOutput', 'ai-topic-description.txt'); return; }
+      if (textVisible) { downloadText('textOutput', 'ai-writing-result.txt'); return; }
+
+      const content = 'AI.CREATIVE Studio\nCreated by Krish Dubey\n\nOpen Topic Studio or Improve Studio to generate exportable results.';
+      const blob = new Blob([content], { type: 'text/plain' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'ai-creative-overview.txt';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      showToastMessage('Overview downloaded');
+    }
+
+    function clearOutput(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.textContent = id === 'topicOutput'
+          ? 'Your generated description will appear here.'
+          : 'Your AI improved text will appear here.';
+        el.classList.add('empty-state');
+      }
+    }
+
+    if (typeof window.copyText !== 'function') {
+      window.copyText = function(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        navigator.clipboard.writeText(el.textContent || '');
+        showToastMessage('Copied to clipboard');
+      }
+    }
+
+    if (typeof window.downloadText !== 'function') {
+      window.downloadText = function(id, filename) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const text = el.textContent || '';
+        const blob = new Blob([text], { type: 'text/plain' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        showToastMessage('Downloaded');
+      }
+    }
+
+    if (typeof window.logoutUser !== 'function') {
+      window.logoutUser = function() { window.location.href = '/logout'; }
+    }
+
+    if (typeof window.toggleTheme !== 'function') {
+      window.toggleTheme = function() {
+        document.body.classList.toggle('light-theme');
+        const btn = document.getElementById('themeToggle');
+        if (btn) btn.textContent = document.body.classList.contains('light-theme') ? '🌙 Dark' : '☀️ Light';
+      }
+    }
+
+    const __originalGenerateTopic = window.generateTopic;
+    if (typeof __originalGenerateTopic === 'function') {
+      window.generateTopic = function() {
+        const input = document.getElementById('topicInput');
+        const original = input.value;
+        const tone = document.getElementById('topicTone').value;
+        const audience = selectedAudience.topic;
+        if (original.trim()) input.value = original + ' | Write for ' + audience + ' in a ' + tone + ' tone.';
+        openPanel('topic');
+        __originalGenerateTopic();
+        setTimeout(() => { input.value = original; }, 80);
+      }
+    }
+
+    const __originalRegenerateTopic = window.regenerateTopic;
+    if (typeof __originalRegenerateTopic === 'function') {
+      window.regenerateTopic = function() {
+        const feedback = document.getElementById('topicFeedback');
+        const original = feedback.value;
+        const tone = document.getElementById('topicTone').value;
+        const audience = selectedAudience.topic;
+        feedback.value = (original ? original + ' ' : '') + 'Please shape it for ' + audience + ' with a ' + tone + ' tone.';
+        __originalRegenerateTopic();
+        setTimeout(() => { feedback.value = original; }, 80);
+      }
+    }
+
+    function wrapTextAction(functionName) {
+      const originalFn = window[functionName];
+      if (typeof originalFn !== 'function') return;
+      window[functionName] = function() {
+        const textArea = document.getElementById('userText');
+        const original = textArea.value;
+        const tone = document.getElementById('textTone').value;
+        const audience = selectedAudience.text;
+        if (original.trim()) textArea.value = original + '\n\nInstruction: Tailor this for ' + audience + ' using a ' + tone + ' tone.';
+        openPanel('improve');
+        originalFn();
+        setTimeout(() => { textArea.value = original; updateWordCount(); }, 100);
+      }
+    }
+
+    wrapTextAction('generateText');
+    wrapTextAction('correctText');
+    wrapTextAction('enhanceText');
+
+    const __originalUpdateWordCount = window.updateWordCount;
+    if (typeof __originalUpdateWordCount === 'function') {
+      window.updateWordCount = function() {
+        __originalUpdateWordCount();
+        const text = document.getElementById('userText')?.value || '';
+        const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+        const chars = text.length;
+        const miniWords = document.getElementById('miniWordCount');
+        const miniChars = document.getElementById('miniCharCount');
+        if (miniWords) miniWords.textContent = words;
+        if (miniChars) miniChars.textContent = chars;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      openPanel('overview');
+      if (typeof updateWordCount === 'function') updateWordCount();
+    });
+  </script>
 </body>
 </html>
