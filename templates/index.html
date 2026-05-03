@@ -1,141 +1,108 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI-Enhanced Creative Writing Platform</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/static/style.css">
+    <title>AI Creative Writing</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
-<body class="bg-main">
 
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo">
-                <div class="logo-icon"><i class="fas fa-feather-alt"></i></div>
-                <span>CreativeAI</span>
-            </div>
-            <div class="nav-actions">
-                <button id="theme-toggle" class="icon-btn" title="Toggle Theme">
-                    <i class="fas fa-moon" id="theme-icon"></i>
-                </button>
-                <div class="user-profile">
-                    <img src="https://ui-avatars.com/api/?name=User&background=4f8ef7&color=fff" alt="Profile" class="avatar">
-                    <a href="/logout" class="logout-link"><i class="fas fa-sign-out-alt"></i></a>
-                </div>
-            </div>
-        </div>
-    </nav>
+<body>
 
-    <div class="app-layout">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="sidebar-content">
-                <nav class="side-nav">
-                    <a href="#generate" class="side-link active"><i class="fas fa-plus-circle"></i> <span>New Draft</span></a>
-                    <a href="#history" class="side-link"><i class="fas fa-history"></i> <span>History</span></a>
-                    <a href="#settings" class="side-link"><i class="fas fa-cog"></i> <span>Settings</span></a>
-                </nav>
-                <div class="sidebar-footer">
-                    <div class="pro-badge">PRO PLAN</div>
-                </div>
-            </div>
-        </aside>
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="logo">✦ AI Writer</div>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Writing Section -->
-            <section id="generate" class="content-section">
-                <div class="section-header">
-                    <h1>Elevate Your Writing</h1>
-                    <p>Harness the power of AI to refine your message.</p>
-                </div>
-
-                <div class="writing-container">
-                    <form id="writing-form" action="/generate" method="POST" class="glass-card">
-                        <div class="input-group">
-                            <label for="text-input">Your Content</label>
-                            <textarea id="text-input" name="text_input" placeholder="Start typing or paste your content here..." required></textarea>
-                        </div>
-
-                        <div class="controls-row">
-                            <div class="input-group select-group">
-                                <label for="tone">Tone of Voice</label>
-                                <select id="tone" name="tone">
-                                    <option value="professional">Professional</option>
-                                    <option value="student">Student</option>
-                                    <option value="blogger">Blogger</option>
-                                    <option value="poet">Poet</option>
-                                    <option value="academic">Academic</option>
-                                    <option value="casual">Casual</option>
-                                </select>
-                            </div>
-                            <button type="submit" id="generate-btn" class="primary-btn">
-                                <span class="btn-text">Generate Enhancement</span>
-                                <div class="spinner" id="loader"></div>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- AI Output Section -->
-                <div id="output-container" class="output-wrapper hidden">
-                    <div class="glass-card output-card">
-                        <div class="card-header">
-                            <span class="ai-badge"><i class="fas fa-magic"></i> AI Enhancement</span>
-                            <button id="download-btn" class="secondary-btn sm"><i class="fas fa-download"></i> Download</button>
-                        </div>
-                        <div class="output-content" id="ai-output">
-                            <!-- Response injected here -->
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- History Section -->
-            <section id="history" class="content-section hidden">
-                <div class="section-header">
-                    <h2>Recent Creations</h2>
-                </div>
-                <div class="history-grid" id="history-list">
-                    <!-- History cards will be generated here -->
-                </div>
-            </section>
-        </main>
+    <div class="nav-right">
+        <button id="themeToggle">🌙</button>
+        <a href="/logout" class="logout-btn">Logout</a>
     </div>
+</nav>
 
-    <script src="/static/script.js"></script>
-    <script>
-        // Smooth transitions and simple routing for demo
-        document.querySelectorAll('.side-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                document.querySelectorAll('.side-link').forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
-                
-                const target = link.getAttribute('href').substring(1);
-                document.querySelectorAll('.content-section').forEach(sec => sec.classList.add('hidden'));
-                document.getElementById(target).classList.remove('hidden');
-            });
-        });
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h2>Dashboard</h2>
+    <ul>
+        <li onclick="showSection('generate')">✍ Generate</li>
+        <li onclick="showSection('history')">📜 History</li>
+        <li onclick="showSection('settings')">⚙ Settings</li>
+    </ul>
+</div>
 
-        // Theme Toggle Implementation
-        const toggle = document.getElementById('theme-toggle');
-        const icon = document.getElementById('theme-icon');
-        const root = document.documentElement;
+<!-- MAIN CONTENT -->
+<div class="main">
 
-        toggle.addEventListener('click', () => {
-            if (root.getAttribute('data-theme') === 'dark') {
-                root.setAttribute('data-theme', 'light');
-                icon.className = 'fas fa-sun';
-            } else {
-                root.setAttribute('data-theme', 'dark');
-                icon.className = 'fas fa-moon';
-            }
-        });
-    </script>
+    <!-- GENERATE SECTION -->
+    <section id="generate" class="section active">
+        <h1>AI Writing Assistant</h1>
+
+        <form method="POST" action="/generate">
+            
+            <textarea name="input_text" placeholder="Start writing here..."></textarea>
+
+            <div class="controls">
+                <select name="tone">
+                    <option>Student</option>
+                    <option>Teacher</option>
+                    <option>Blogger</option>
+                    <option>Poet</option>
+                    <option>Professional</option>
+                </select>
+
+                <button type="submit" class="generate-btn">
+                    Generate ✨
+                </button>
+            </div>
+        </form>
+
+        <!-- LOADER -->
+        <div class="loader" id="loader"></div>
+
+        <!-- OUTPUT -->
+        <div class="output-card">
+            {{ result }}
+            <button class="download-btn">Download</button>
+        </div>
+    </section>
+
+    <!-- HISTORY -->
+    <section id="history" class="section">
+        <h1>History</h1>
+        <div class="history-container">
+            {% for item in history %}
+            <div class="history-card">
+                <p>{{ item.input }}</p>
+                <span>{{ item.output }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="settings" class="section">
+        <h1>Settings</h1>
+        <p>Theme, preferences coming soon...</p>
+    </section>
+
+</div>
+
+<script>
+function showSection(id){
+    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+const toggle = document.getElementById("themeToggle");
+
+toggle.onclick = () => {
+    document.body.classList.toggle("light");
+};
+
+document.querySelector("form").addEventListener("submit", () => {
+    document.getElementById("loader").style.display = "block";
+});
+</script>
+
 </body>
 </html>
