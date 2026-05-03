@@ -2,23 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Creative Writing</title>
-    <link rel="stylesheet" href="style.css">
+    <title>AI Writer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
 <!-- NAVBAR -->
-<nav class="navbar">
-    <div class="logo">✦ AI Writer</div>
+<div class="navbar">
+    <div class="logo">✨ AI Writer</div>
 
     <div class="nav-right">
         <button id="themeToggle">🌙</button>
         <a href="/logout" class="logout-btn">Logout</a>
     </div>
-</nav>
+</div>
 
 <!-- SIDEBAR -->
 <div class="sidebar">
@@ -33,12 +32,11 @@
 <!-- MAIN CONTENT -->
 <div class="main">
 
-    <!-- GENERATE SECTION -->
-    <section id="generate" class="section active">
+    <!-- GENERATE -->
+    <div id="generate" class="section active">
         <h1>AI Writing Assistant</h1>
 
         <form method="POST" action="/generate">
-            
             <textarea name="input_text" placeholder="Start writing here..."></textarea>
 
             <div class="controls">
@@ -56,34 +54,36 @@
             </div>
         </form>
 
-        <!-- LOADER -->
         <div class="loader" id="loader"></div>
 
-        <!-- OUTPUT -->
+        {% if result %}
         <div class="output-card">
-            {{ result }}
+            <h3>AI Output</h3>
+            <p>{{ result }}</p>
             <button class="download-btn">Download</button>
         </div>
-    </section>
+        {% endif %}
+    </div>
 
     <!-- HISTORY -->
-    <section id="history" class="section">
+    <div id="history" class="section">
         <h1>History</h1>
+
         <div class="history-container">
             {% for item in history %}
             <div class="history-card">
-                <p>{{ item.input }}</p>
-                <span>{{ item.output }}</span>
+                <p><strong>Input:</strong> {{ item.input }}</p>
+                <p><strong>Output:</strong> {{ item.output }}</p>
             </div>
             {% endfor %}
         </div>
-    </section>
+    </div>
 
     <!-- SETTINGS -->
-    <section id="settings" class="section">
+    <div id="settings" class="section">
         <h1>Settings</h1>
         <p>Theme, preferences coming soon...</p>
-    </section>
+    </div>
 
 </div>
 
@@ -93,9 +93,7 @@ function showSection(id){
     document.getElementById(id).classList.add('active');
 }
 
-const toggle = document.getElementById("themeToggle");
-
-toggle.onclick = () => {
+document.getElementById("themeToggle").onclick = () => {
     document.body.classList.toggle("light");
 };
 
