@@ -20,8 +20,6 @@ body.light{
 /* NAVBAR */
 .navbar{
     position:fixed;
-    top:0;
-    left:0;
     width:100%;
     height:60px;
     background:rgba(255,255,255,0.05);
@@ -35,23 +33,12 @@ body.light{
 
 .logo{
     font-size:20px;
-    font-weight:600;
     color:#4f8ef7;
 }
 
-.nav-right button{
-    margin-right:10px;
-    padding:8px;
-    border:none;
-    border-radius:10px;
-    background:#4f8ef7;
-    color:white;
-    cursor:pointer;
-}
-
 .logout-btn{
-    text-decoration:none;
     color:white;
+    text-decoration:none;
 }
 
 /* SIDEBAR */
@@ -62,11 +49,6 @@ body.light{
     backdrop-filter:blur(10px);
     padding-top:80px;
     position:fixed;
-}
-
-.sidebar h2{
-    text-align:center;
-    margin-bottom:20px;
 }
 
 .sidebar ul{
@@ -90,7 +72,7 @@ body.light{
     width:100%;
 }
 
-/* SECTIONS */
+/* SECTION */
 .section{
     display:none;
 }
@@ -106,7 +88,7 @@ textarea{
     padding:20px;
     border:none;
     border-radius:15px;
-    background:rgba(255,255,255,0.05);
+    background:rgba(255,255,255,0.08);
     color:white;
     margin-bottom:20px;
 }
@@ -120,20 +102,19 @@ textarea{
 select{
     padding:10px;
     border-radius:10px;
-    border:none;
 }
 
+/* BUTTON */
 .generate-btn{
     background:#00d4aa;
-    border:none;
     padding:12px 20px;
+    border:none;
     border-radius:12px;
     cursor:pointer;
-    transition:0.3s;
 }
 
 .generate-btn:hover{
-    box-shadow:0 0 10px #00d4aa;
+    box-shadow:0 0 15px #00d4aa;
 }
 
 /* OUTPUT */
@@ -141,8 +122,7 @@ select{
     margin-top:20px;
     padding:20px;
     border-radius:15px;
-    background:rgba(255,255,255,0.05);
-    animation:fadeIn 1s ease;
+    background:rgba(255,255,255,0.08);
 }
 
 .download-btn{
@@ -151,7 +131,6 @@ select{
     border:none;
     border-radius:10px;
     background:#f59e0b;
-    cursor:pointer;
 }
 
 /* HISTORY */
@@ -164,13 +143,7 @@ select{
 .history-card{
     padding:15px;
     border-radius:15px;
-    background:rgba(255,255,255,0.05);
-    transition:0.3s;
-}
-
-.history-card:hover{
-    transform:translateY(-5px);
-    box-shadow:0 0 10px #4f8ef7;
+    background:rgba(255,255,255,0.08);
 }
 
 /* LOADER */
@@ -185,22 +158,12 @@ select{
     animation:spin 1s linear infinite;
 }
 
-/* ANIMATIONS */
 @keyframes spin{
     100%{transform:rotate(360deg);}
 }
 
-@keyframes fadeIn{
-    from{opacity:0;}
-    to{opacity:1;}
-}
-
 /* RESPONSIVE */
 @media(max-width:768px){
-    .sidebar{
-        display:none;
-    }
-    .main{
-        margin-left:0;
-    }
+    .sidebar{display:none;}
+    .main{margin-left:0;}
 }
