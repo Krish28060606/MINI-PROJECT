@@ -1,13 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
-/* High-end polish additions (CSS-only; no HTML/JS behavior changes) */
-:root {
-  color-scheme: dark;
-  --focus-ring: rgba(56, 189, 248, .45);
-  --ring: rgba(56, 189, 248, .25);
-  --sheen: linear-gradient(135deg, rgba(255,255,255,.20), rgba(255,255,255,0));
-}
-
 :root {
   --bg: #050816;
   --bg-2: #0b1024;
@@ -41,8 +33,6 @@ body.light-theme {
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-
-::selection { background: rgba(56,189,248,.25); color: var(--text); }
 
 body {
   min-height: 100vh;
@@ -182,80 +172,23 @@ button { border: none; }
   color: #03131f;
   background: linear-gradient(135deg, var(--green), var(--blue));
   box-shadow: 0 16px 34px rgba(56,189,248,.22);
-  position: relative;
-}
-
-.primary-btn::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: var(--sheen);
-  opacity: 0;
-  transition: opacity .25s ease;
-  pointer-events: none;
 }
 
 .primary-btn:hover { transform: translateY(-3px); }
-.primary-btn:hover::before { opacity: 1; }
-
-.primary-btn:active { transform: translateY(-1px) scale(.99); }
-
-.primary-btn:focus-visible,
-.secondary-btn:focus-visible,
-.ghost-btn:focus-visible,
-.logout-btn:focus-visible,
-.nav-chip:focus-visible,
-.audience-chip:focus-visible,
-.btn-group button:focus-visible {
-  outline: 3px solid var(--focus-ring);
-  outline-offset: 2px;
-}
-
 
 .secondary-btn {
   padding: 14px 20px;
   color: var(--text);
   background: var(--card-strong);
   border: 1px solid var(--border);
-  position: relative;
 }
-
-.secondary-btn::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: var(--sheen);
-  opacity: 0;
-  transition: opacity .25s ease;
-  pointer-events: none;
-}
-
-.secondary-btn:hover::before { opacity: 1; }
-
 
 .ghost-btn {
   padding: 11px 15px;
   color: var(--text);
   background: rgba(255,255,255,.08);
   border: 1px solid var(--border);
-  position: relative;
 }
-
-.ghost-btn::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: var(--sheen);
-  opacity: 0;
-  transition: opacity .25s ease;
-  pointer-events: none;
-}
-
-.ghost-btn:hover::before { opacity: 1; }
-
 
 .logout-btn {
   padding: 11px 16px;
@@ -385,35 +318,9 @@ button { border: none; }
   background: rgba(255,255,255,.12);
   backdrop-filter: blur(24px);
   box-shadow: var(--soft-shadow), inset 0 1px 0 rgba(255,255,255,0.1);
-  transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   transform: translateZ(0);
-  position: relative;
-  overflow: hidden;
 }
-
-.showcase-card::after {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  background: var(--sheen);
-  opacity: 0;
-  transition: opacity .25s ease;
-  pointer-events: none;
-}
-
-.showcase-card:hover::after { opacity: .95; }
-
-/* “Glass” modifier used in templates */
-.showcase-card.glass {
-  background: rgba(255,255,255,.10);
-  border-color: rgba(255,255,255,.18);
-  box-shadow: var(--soft-shadow), 0 0 0 1px rgba(56,189,248,.10) inset;
-}
-
-/* Missing hooks */
-.full-btn { width: 100%; }
-.active-section { display: block; }
-
 
 .floating-card { animation: slideFloat 4s ease-in-out infinite alternate; }
 
@@ -917,14 +824,3 @@ input:focus, textarea:focus, select:focus {
   .nav-chip { width: calc(50% - 6px); }
   .hero-actions button, .result-actions button, .quick-buttons button { width: 100%; }
 }
-
-/* Reduced motion for accessibility */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
