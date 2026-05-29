@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<<<<<<< HEAD
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI.CREATIVE Studio</title>
@@ -559,5 +560,168 @@
       if (typeof updateWordCount === 'function') updateWordCount();
     });
   </script>
+=======
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* BODY */
+body {
+    background: #0f1117;
+    color: white;
+    scroll-behavior: smooth;
+}
+
+/* NAVBAR */
+.navbar {
+    position: sticky;
+    top: 0;
+    background: #111827;
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    z-index: 1000;
+}
+
+/* BUTTON */
+.nav-btn {
+    background: #4f8ef7;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.nav-btn:hover {
+    background: #2563eb;
+    transform: translateY(-2px);
+}
+
+/* SECTION */
+.section {
+    min-height: 100vh;
+    padding: 80px 20px;
+    text-align: center;
+}
+
+/* CARDS */
+.card {
+    background: rgba(255,255,255,0.05);
+    padding: 20px;
+    margin: 15px auto;
+    width: 280px;
+    border-radius: 12px;
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: scale(1.05);
+    background: rgba(255,255,255,0.08);
+}
+
+/* HEADINGS */
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+/* TEXT */
+p {
+    opacity: 0.8;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <button type="button" class="nav-btn" onclick="scrollToSection('home')">Home</button>
+    <button type="button" class="nav-btn" onclick="scrollToSection('features')">Features</button>
+    <button type="button" class="nav-btn" onclick="scrollToSection('history')">History</button>
+</div>
+
+<!-- HOME -->
+<section id="home" class="section">
+    <h1 id="greeting">Hello, {{ username }}</h1>
+    <p>Welcome to your AI Writing Assistant</p>
+</section>
+
+<!-- FEATURES -->
+<section id="features" class="section">
+    <h2>Features</h2>
+
+    <div class="card">✍️ AI Writing</div>
+    <div class="card">🧠 Grammar Correction</div>
+    <div class="card">🎭 Tone Adjustment</div>
+
+</section>
+
+<!-- HISTORY -->
+<section id="history" class="section">
+    <h2>History</h2>
+    <p>Your previous generated content will appear here</p>
+</section>
+
+<!-- JS -->
+<script>
+
+/* SMOOTH SCROLL */
+function scrollToSection(id) {
+    const section = document.getElementById(id);
+    if (section) {
+        section.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    }
+}
+
+/* PREVENT PAGE JUMP */
+document.querySelectorAll("button").forEach(btn => {
+    btn.addEventListener("click", function(e) {
+        if (this.type !== "submit") {
+            e.preventDefault();
+        }
+    });
+});
+
+/* DYNAMIC GREETING */
+function setGreeting() {
+    const hour = new Date().getHours();
+    let text = "Hello";
+
+    if (hour < 12) text = "Good Morning";
+    else if (hour < 18) text = "Good Afternoon";
+    else text = "Good Evening";
+
+    document.getElementById("greeting").innerHTML = `${text}, {{ username }}`;
+}
+
+setGreeting();
+
+</script>
+
+>>>>>>> 6812e93b1ddf4ed58ed91d9a4f073488da186c65
 </body>
 </html>
