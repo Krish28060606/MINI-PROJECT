@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI.CREATIVE - Secure Login</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='auth.css') }}" />
+</head>
+
+<body>
+  <div class="aurora"></div>
+
+  <a class="home-link" href="/">← Back to Home</a>
+
+  <main class="auth-shell">
+    <section class="auth-info">
+      <div class="logo-pill">AI.CREATIVE</div>
+      <h1>Secure AI writing workspace</h1>
+      <p>
+        Verified signup, hashed password storage, protected dashboard access,
+        and AI tools for creative writing.
+      </p>
+
+      <div class="info-grid">
+        <div>
+          <strong>🔐 OTP Signup</strong>
+          <span>Email verification before account creation</span>
+        </div>
+        <div>
+          <strong>🧠 AI Writing</strong>
+          <span>Generate, correct, enhance, and analyze content</span>
+        </div>
+        <div>
+          <strong>🗄️ PostgreSQL</strong>
+          <span>Secure user and writing history storage</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="auth-card">
+      <div class="badge">🔐 Email OTP + username login</div>
+
+      <div class="tabs">
+        <button class="tab active" onclick="showPanel('login')">Login</button>
+        <button class="tab" onclick="showPanel('signup')">Create Account</button>
+      </div>
+
+      <div id="loginPanel" class="panel active">
+        <h2>Welcome back</h2>
+        <p class="sub">Login using your username or email and password.</p>
+
+        <div class="row">
+          <label>Username / Email</label>
+          <input id="loginId" type="text" placeholder="Enter username or email" />
+        </div>
+
+        <div class="row">
+          <label>Password <span class="hint">Protected</span></label>
+          <div class="field-wrap">
+            <input id="loginPassword" class="password-input" type="password" placeholder="Enter password" />
+            <button class="toggle-pass" type="button" onclick="togglePassword('loginPassword', this)">Show</button>
+          </div>
+        </div>
+
+        <button id="loginBtn" class="btn" onclick="loginUser()">Login</button>
+
+        <div class="security-strip">
+          <div>OTP Verified Signup</div>
+          <div>Hashed Passwords</div>
+          <div>Secure Session</div>
+        </div>
+
+        <div id="loginMessage" class="message"></div>
+      </div>
+
+      <div id="signupPanel" class="panel">
+        <h2>Create verified account</h2>
+        <p class="sub">Step 1: verify email OTP. Step 2: create username and password.</p>
+
+        <div class="row">
+          <label>Email <span class="hint">Gmail / Outlook / GLA</span></label>
+          <input id="signupEmail" type="email" placeholder="example@gmail.com" />
+        </div>
+
+        <button id="sendOtpBtn" class="btn secondary" onclick="sendEmailOtp()">Send Email OTP</button>
+
+        <div id="otpArea" class="otp-area">
+          <div class="row">
+            <label>Enter OTP <span class="hint">Valid for 10 minutes</span></label>
+            <input id="signupOtp" type="text" placeholder="Enter 6-digit OTP" maxlength="6" />
+          </div>
+
+          <button id="verifyOtpBtn" class="btn secondary" onclick="verifyEmailOtp()">Verify OTP</button>
+        </div>
+
+        <div id="verifiedBadge" class="verified-badge">Email verified successfully ✅</div>
+
+        <div class="grid-2">
+          <div class="row">
+            <label>Username <span class="hint">For login</span></label>
+            <input id="signupUsername" type="text" placeholder="Example: krishdubey24" />
+          </div>
+
+          <div class="row">
+            <label>Mobile Number <span class="hint">Optional</span></label>
+            <input id="signupPhone" type="tel" placeholder="9876543210" maxlength="10" />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="row">
+            <label>Password</label>
+            <div class="field-wrap">
+              <input id="signupPassword" class="password-input" type="password" placeholder="Create password" oninput="updateStrength()" />
+              <button class="toggle-pass" type="button" onclick="togglePassword('signupPassword', this)">Show</button>
+            </div>
+            <div class="strength"><span id="strengthBar"></span></div>
+          </div>
+
+          <div class="row">
+            <label>Recheck Password</label>
+            <div class="field-wrap">
+              <input id="signupConfirmPassword" class="password-input" type="password" placeholder="Re-enter password" />
+              <button class="toggle-pass" type="button" onclick="togglePassword('signupConfirmPassword', this)">Show</button>
+            </div>
+          </div>
+        </div>
+        <button id="createAccountBtn" class="btn" onclick="createAccount()">Create Account</button>
+
+        <div id="signupMessage" class="message"></div>
+
+        <p class="mini">
+          Student-friendly verification: email OTP is sent using Postmark API, which works on Render Free.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <script src="{{ url_for('static', filename='auth.js') }}"></script>
+</body>
+</html>

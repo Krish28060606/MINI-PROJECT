@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI.CREATIVE | AI Writing Platform</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Inter, Arial, sans-serif;
+      scroll-behavior: smooth;
+    }
+
+    :root {
+      --text: #f8fafc;
+      --muted: #cbd5e1;
+      --soft: rgba(255,255,255,0.10);
+      --border: rgba(255,255,255,0.16);
+      --cyan: #67e8f9;
+      --green: #34d399;
+      --violet: #a78bfa;
+      --dark: #06111f;
+    }
+
+    body {
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 16% 18%, rgba(34, 211, 238, 0.18), transparent 28%),
+        radial-gradient(circle at 84% 12%, rgba(167, 139, 250, 0.20), transparent 26%),
+        linear-gradient(135deg, #06111f, #0b1831 45%, #162b4d 100%);
+      overflow-x: hidden;
+    }
+
+    .scene {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .scene::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 50% 24%, rgba(255,255,255,0.13), transparent 15%),
+        linear-gradient(to top, rgba(6,17,31,0.92), rgba(6,17,31,0.50) 42%, rgba(6,17,31,0.10));
+    }
+
+    .forest {
+      position: absolute;
+      inset: 0;
+      opacity: 0.34;
+      background:
+        linear-gradient(to top, rgba(6,17,31,1), rgba(6,17,31,0.42) 40%, transparent),
+        repeating-linear-gradient(90deg,
+          transparent 0 42px,
+          rgba(6,17,31,0.95) 42px 55px,
+          transparent 55px 110px,
+          rgba(11,28,51,0.96) 110px 124px,
+          transparent 124px 190px
+        );
+      transform: scale(1.08);
+      mask-image: linear-gradient(to top, black 78%, transparent 100%);
+    }
+
+    .grass {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 130px;
+      background:
+        linear-gradient(to top, rgba(6,17,31,1), rgba(6,17,31,0.2)),
+        repeating-linear-gradient(100deg,
+          rgba(15, 36, 58, 1) 0 3px,
+          transparent 3px 12px,
+          rgba(17, 41, 63, 0.9) 12px 14px,
+          transparent 14px 22px
+        );
+      opacity: 0.90;
+      mask-image: linear-gradient(to top, black 70%, transparent 100%);
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(60px);
+      opacity: 0.28;
+      animation: float 8s ease-in-out infinite alternate;
+    }
+
+    .orb.one {
+      width: 330px;
+      height: 330px;
+      background: var(--cyan);
+      top: 5%;
+      left: -80px;
+    }
+
+    .orb.two {
+      width: 310px;
+      height: 310px;
+      background: var(--violet);
+      top: 15%;
+      right: -90px;
+      animation-delay: .8s;
+    }
+
+    .orb.three {
+      width: 340px;
+      height: 340px;
+      background: var(--green);
+      bottom: -120px;
+      left: 32%;
+      animation-delay: 1.3s;
+    }
+
+    @keyframes float {
+      from { transform: translateY(0) scale(1); }
+      to { transform: translateY(-28px) scale(1.08); }
+    }
+
+    .deer {
+      position: absolute;
+      left: 10%;
+      bottom: 96px;
+      width: 160px;
+      height: 220px;
+      opacity: 0.34;
+      transform: scale(1.08);
+    }
+
+    .deer .body,
+    .deer .neck,
+    .deer .head,
+    .deer .leg,
+    .deer .antler {
+      position: absolute;
+      background: rgba(3, 9, 18, 0.96);
+    }
+
+    .deer .body {
+      bottom: 45px;
+      left: 22px;
+      width: 92px;
+      height: 92px;
+      border-radius: 48% 45% 42% 45%;
+    }
+
+    .deer .neck {
+      bottom: 112px;
+      left: 82px;
+      width: 22px;
+      height: 55px;
+      border-radius: 15px;
+      transform: rotate(-16deg);
+      transform-origin: bottom center;
+    }
+
+    .deer .head {
+      bottom: 150px;
+      left: 88px;
+      width: 40px;
+      height: 28px;
+      border-radius: 45% 55% 50% 50%;
+      transform: rotate(-7deg);
+    }
+
+    .deer .leg {
+      width: 8px;
+      height: 72px;
+      bottom: 0;
+      border-radius: 10px;
+    }
+
+    .deer .l1 { left: 42px; }
+    .deer .l2 { left: 68px; height: 78px; }
+    .deer .l3 { left: 95px; }
+    .deer .l4 { left: 116px; height: 76px; }
+
+    .deer .antler {
+      width: 4px;
+      border-radius: 3px;
+      transform-origin: bottom center;
+    }
+
+    .deer .a1 { left: 100px; bottom: 176px; height: 42px; transform: rotate(-18deg); }
+    .deer .a2 { left: 110px; bottom: 178px; height: 48px; transform: rotate(12deg); }
+    .deer .a3 { left: 96px; bottom: 201px; height: 20px; transform: rotate(-54deg); }
+    .deer .a4 { left: 104px; bottom: 198px; height: 20px; transform: rotate(-8deg); }
+    .deer .a5 { left: 114px; bottom: 203px; height: 20px; transform: rotate(36deg); }
+    .deer .a6 { left: 119px; bottom: 190px; height: 18px; transform: rotate(58deg); }
+
+    .wrap {
+      position: relative;
+      z-index: 2;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(14px);
+      background: rgba(4, 10, 20, 0.52);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .nav-inner {
+      width: min(1180px, 92%);
+      min-height: 82px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .logo {
+      color: white;
+      text-decoration: none;
+      font-weight: 950;
+      font-size: 28px;
+      letter-spacing: -1px;
+    }
+
+    .logo span {
+      color: var(--cyan);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      color: rgba(255,255,255,0.88);
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 15px;
+      transition: .2s ease;
+    }
+
+    .nav-links a:hover {
+      color: white;
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 18px;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 900;
+      transition: .2s ease;
+      border: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    .btn-outline {
+      color: white;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-primary {
+      color: #04111e;
+      background: linear-gradient(135deg, var(--cyan), var(--green));
+      box-shadow: 0 16px 40px rgba(52,211,153,0.18);
+      border: 0;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .hero {
+      width: min(1180px, 92%);
+      min-height: calc(100vh - 82px);
+      margin: auto;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      align-items: center;
+      gap: 34px;
+      padding: 52px 0 86px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      padding: 11px 15px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.13);
+      color: #dbeafe;
+      font-weight: 900;
+      margin-bottom: 22px;
+      backdrop-filter: blur(12px);
+    }
+
+    .hero h1 {
+      font-size: clamp(48px, 7vw, 86px);
+      line-height: .94;
+      letter-spacing: -3px;
+      margin-bottom: 20px;
+      text-shadow: 0 12px 35px rgba(0,0,0,0.28);
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, #ffffff, var(--cyan), #c4b5fd);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.75;
+      max-width: 650px;
+      margin-bottom: 28px;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 30px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(120px, 1fr));
+      gap: 14px;
+      max-width: 650px;
+    }
+
+    .stat {
+      padding: 18px;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.09);
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(14px);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 28px;
+      margin-bottom: 4px;
+    }
+
+    .stat span {
+      color: #c7d2fe;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .showcase {
+      position: relative;
+    }
+
+    .project-card {
+      position: relative;
+      border-radius: 30px;
+      padding: 26px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow: 0 35px 90px rgba(0,0,0,0.35);
+      backdrop-filter: blur(24px);
+      overflow: hidden;
+    }
+
+    .project-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at top right, rgba(255,255,255,0.23), transparent 28%),
+        radial-gradient(circle at bottom left, rgba(125,211,252,0.20), transparent 28%);
+      pointer-events: none;
+    }
+
+    .project-card > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .creator-pill {
+      width: fit-content;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(103,232,249,0.22), rgba(167,139,250,0.20));
+      border: 1px solid rgba(255,255,255,0.16);
+      font-weight: 950;
+      margin-bottom: 18px;
+      color: #e0f2fe;
+    }
+
+    .project-card h2 {
+      font-size: clamp(34px, 4vw, 52px);
+      line-height: 1;
+      letter-spacing: -2px;
+      margin-bottom: 14px;
+    }
+
+    .project-card h2 span {
+      color: var(--cyan);
+    }
+
+    .project-card p {
+      color: #d8e7f7;
+      line-height: 1.7;
+      margin-bottom: 20px;
+      font-size: 16px;
+    }
+
+    .creator-box {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: center;
+      padding: 16px;
+      border-radius: 22px;
+      background: rgba(2, 6, 23, 0.35);
+      border: 1px solid rgba(255,255,255,0.12);
+      margin-bottom: 16px;
+    }
+
+    .avatar {
+      width: 58px;
+      height: 58px;
+      border-radius: 20px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--cyan), var(--green), var(--violet));
+      color: #06111f;
+      font-size: 24px;
+      font-weight: 950;
+    }
+
+    .creator-box strong {
+      display: block;
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    .creator-box span {
+      color: #cbd5e1;
+      font-weight: 800;
+    }
+
+    .preview-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .preview-list div {
+      padding: 14px 15px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.11);
+      color: #e2e8f0;
+      font-weight: 800;
+    }
+
+    .floating-badge {
+      position: absolute;
+      right: -18px;
+      top: 24px;
+      padding: 14px 17px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.14);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 20px 46px rgba(0,0,0,0.24);
+      font-weight: 950;
+      animation: hoverCard 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes hoverCard {
+      from { transform: translateY(0); }
+      to { transform: translateY(-12px); }
+    }
+
+    .section {
+      width: min(1180px, 92%);
+      margin: auto;
+      padding: 25px 0 95px;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 34px;
+    }
+
+    .section-title h2 {
+      font-size: clamp(34px, 5vw, 52px);
+      letter-spacing: -2px;
+      margin-bottom: 12px;
+    }
+
+    .section-title p {
+      color: var(--muted);
+      max-width: 780px;
+      margin: auto;
+      line-height: 1.7;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .feature {
+      padding: 22px;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.09);
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(14px);
+      transition: .2s ease;
+    }
+
+    .feature:hover {
+      transform: translateY(-5px);
+      background: rgba(255,255,255,0.12);
+    }
+
+    .feature .icon {
+      width: 52px;
+      height: 52px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(103,232,249,0.24), rgba(167,139,250,0.25));
+      margin-bottom: 16px;
+      font-size: 23px;
+    }
+
+    .feature h3 {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .feature p {
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 15px;
+    }
+
+    footer {
+      width: min(1180px, 92%);
+      margin: auto;
+      padding: 0 0 45px;
+      color: #b9c9de;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    @media (max-width: 1020px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .feature-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .floating-badge {
+        right: 16px;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .nav-inner {
+        flex-direction: column;
+        padding: 16px 0;
+      }
+
+      .nav-links {
+        justify-content: center;
+      }
+
+      .nav-actions {
+        width: 100%;
+      }
+
+      .nav-actions .btn {
+        flex: 1;
+      }
+
+      .stats,
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding-top: 32px;
+      }
+
+      .hero h1 {
+        letter-spacing: -2px;
+      }
+
+      .floating-badge {
+        position: static;
+        margin-top: 14px;
+        width: fit-content;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="scene">
+    <div class="orb one"></div>
+    <div class="orb two"></div>
+    <div class="orb three"></div>
+    <div class="forest"></div>
+    <div class="grass"></div>
+
+    <div class="deer">
+      <div class="body"></div>
+      <div class="neck"></div>
+      <div class="head"></div>
+      <div class="leg l1"></div>
+      <div class="leg l2"></div>
+      <div class="leg l3"></div>
+      <div class="leg l4"></div>
+      <div class="antler a1"></div>
+      <div class="antler a2"></div>
+      <div class="antler a3"></div>
+      <div class="antler a4"></div>
+      <div class="antler a5"></div>
+      <div class="antler a6"></div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <nav>
+      <div class="nav-inner">
+        <a href="/" class="logo">AI<span>.CREATIVE</span></a>
+
+        <div class="nav-links">
+          <a href="#home">Home</a>
+          <a href="#about">About</a>
+          <a href="#features">Features</a>
+          <a href="#contact">Contact</a>
+        </div>
+
+        <div class="nav-actions">
+          <a class="btn btn-outline" href="/auth">Login</a>
+          <a class="btn btn-primary" href="/auth?mode=signup">Sign Up</a>
+        </div>
+      </div>
+    </nav>
+
+    <section class="hero" id="home">
+      <div>
+        <div class="eyebrow">✨ Smart writing platform for students, creators, and dreamers</div>
+
+        <h1>
+          Make your first
+          <span>impression unforgettable.</span>
+        </h1>
+
+        <p>
+          AI.CREATIVE helps you generate, improve, and polish writing with a premium
+          experience, secure signup, and a modern creative dashboard that feels as powerful as your ideas.
+        </p>
+
+        <div class="cta-row">
+          <a class="btn btn-primary" href="/auth?mode=signup">Create Verified Account</a>
+          <a class="btn btn-outline" href="/auth">Open Login</a>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <strong>OTP</strong>
+            <span>Email verified signup</span>
+          </div>
+          <div class="stat">
+            <strong>AI</strong>
+            <span>Generate, correct & enhance</span>
+          </div>
+          <div class="stat">
+            <strong>DB</strong>
+            <span>Secure saved history</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="showcase">
+        <div class="project-card">
+          <div class="creator-pill">Project Creator</div>
+
+          <h2>
+            Designed & developed by <span>Krish Dubey</span>
+          </h2>
+
+          <p>
+            A B.Tech CSE AI-ML mini project focused on creative writing, secure authentication,
+            AI-powered enhancement, and real database-backed user history.
+          </p>
+
+          <div class="creator-box">
+            <div class="avatar">KD</div>
+            <div>
+              <strong>Krish Dubey</strong>
+              <span>B.Tech CSE AI-ML • GLA University</span>
+            </div>
+          </div>
+
+          <div class="preview-list">
+            <div>🔐 Secure Email OTP verification using Postmark API</div>
+            <div>🧠 AI writing generation, correction, and enhancement</div>
+            <div>🗄️ PostgreSQL storage for users and writing history</div>
+          </div>
+        </div>
+
+        <div class="floating-badge">⚡ Built for 10/10 presentation impact</div>
+      </div>
+    </section>
+
+    <section class="section" id="about">
+      <div class="section-title">
+        <h2>About the platform</h2>
+        <p>
+          This project is built to enhance creativity, not replace it. From rough drafts to refined content,
+          AI.CREATIVE gives users a secure and beautiful environment to write better and present better.
+        </p>
+      </div>
+    </section>
+
+    <section class="section" id="features">
+      <div class="section-title">
+        <h2>Why this project feels different</h2>
+        <p>
+          It combines an immersive first page, secure OTP signup, AI writing tools, and a real deployed
+          dashboard experience.
+        </p>
+      </div>
+
+      <div class="feature-grid">
+        <div class="feature">
+          <div class="icon">✍️</div>
+          <h3>Generate</h3>
+          <p>Create fresh content ideas, descriptions, and drafts with the help of AI.</p>
+        </div>
+
+        <div class="feature">
+          <div class="icon">🪄</div>
+          <h3>Enhance</h3>
+          <p>Transform normal writing into polished, improved, and expressive content.</p>
+        </div>
+
+        <div class="feature">
+          <div class="icon">🛡️</div>
+          <h3>Secure Access</h3>
+          <p>Email OTP verification, hashed passwords, and protected sessions keep it reliable.</p>
+        </div>
+
+        <div class="feature">
+          <div class="icon">📜</div>
+          <h3>History</h3>
+          <p>Users can keep track of previous work and revisit saved AI outputs easily.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="contact">
+      <div class="section-title">
+        <h2>Ready to enter?</h2>
+        <p>
+          Start with a verified account and experience a creative workspace that looks presentation-ready from the first click.
+        </p>
+      </div>
+
+      <div class="cta-row" style="justify-content:center;">
+        <a class="btn btn-primary" href="/auth?mode=signup">Start Now</a>
+        <a class="btn btn-outline" href="/auth">Login</a>
+      </div>
+    </section>
+
+    <footer>
+      © 2026 AI.CREATIVE • Designed and developed by Krish Dubey
+    </footer>
+  </div>
+</body>
+</html>
